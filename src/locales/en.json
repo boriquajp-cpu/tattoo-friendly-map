@@ -25,7 +25,7 @@
     "summaryLabel": {
       "high": "Almost certainly allowed",
       "conditional": "Allowed with conditions",
-      "mixed": "Varies by facility",
+      "mixed": "Reviews are mixed",
       "low": "Likely to be refused",
       "no_data": "No information"
     },

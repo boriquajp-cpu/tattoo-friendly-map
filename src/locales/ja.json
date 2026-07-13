@@ -25,7 +25,7 @@
     "summaryLabel": {
       "high": "ほぼ確実に入れる",
       "conditional": "条件付きで入れる",
-      "mixed": "施設による",
+      "mixed": "口コミが分かれている",
       "low": "断られやすい",
       "no_data": "情報なし"
     },

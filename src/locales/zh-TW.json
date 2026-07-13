@@ -25,7 +25,7 @@
     "summaryLabel": {
       "high": "幾乎確定可以入場",
       "conditional": "符合條件可入場",
-      "mixed": "視設施而定",
+      "mixed": "評價不一",
       "low": "容易被拒絕",
       "no_data": "尚無資訊"
     },
