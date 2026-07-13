@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../../contexts/AuthContext';
 import type { SupportedLang } from '../../types';
 
 interface LayoutProps {
@@ -26,14 +27,19 @@ const navLinkStyle = ({ isActive }: { isActive: boolean }): React.CSSProperties 
 export default function Layout({ children }: LayoutProps) {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const { user, signOut } = useAuth();
 
   const changeLanguage = (lang: SupportedLang) => {
-    // i18next では 'zh_tw' を 'zh-TW' として登録している場合があるため変換
     const i18nLang = lang === 'zh_tw' ? 'zh-TW' : lang;
     void i18n.changeLanguage(i18nLang);
   };
 
   const currentLang = (i18n.language === 'zh-TW' ? 'zh_tw' : i18n.language) as SupportedLang;
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: '#f9fafb' }}>
@@ -77,9 +83,33 @@ export default function Layout({ children }: LayoutProps) {
           <NavLink to="/list" style={navLinkStyle}>
             {t('nav.list')}
           </NavLink>
-          <NavLink to="/login" style={navLinkStyle}>
-            {t('nav.login')}
-          </NavLink>
+          {user ? (
+            <>
+              <NavLink to="/my-reports" style={navLinkStyle}>
+                {t('nav.mypage')}
+              </NavLink>
+              <button
+                type="button"
+                onClick={() => void handleSignOut()}
+                style={{
+                  padding: '6px 12px',
+                  borderRadius: '6px',
+                  fontSize: '14px',
+                  fontWeight: 400,
+                  color: '#6b7280',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                }}
+              >
+                {t('auth.logoutButton')}
+              </button>
+            </>
+          ) : (
+            <NavLink to="/login" style={navLinkStyle}>
+              {t('nav.login')}
+            </NavLink>
+          )}
         </nav>
 
         {/* 言語切り替え */}

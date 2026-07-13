@@ -93,6 +93,19 @@
     "registerLink": "アカウント登録はこちら",
     "logoutButton": "ログアウト"
   },
+  "mypage": {
+    "title": "マイページ",
+    "myReports": "私の報告",
+    "noReports": "まだ報告がありません",
+    "edit": "編集",
+    "save": "保存",
+    "delete": "削除",
+    "deleteConfirm": "この報告を削除しますか？",
+    "deleteSuccess": "削除しました",
+    "deleteError": "削除に失敗しました",
+    "editSuccess": "更新しました",
+    "editError": "更新に失敗しました"
+  },
   "disclaimer": {
     "title": "ご利用にあたって",
     "body": "このアプリの情報はユーザー報告に基づいており、正確性を保証するものではありません。訪問前に施設へ直接ご確認ください。",

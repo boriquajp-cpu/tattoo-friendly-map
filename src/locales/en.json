@@ -93,6 +93,19 @@
     "registerLink": "Create an account",
     "logoutButton": "Logout"
   },
+  "mypage": {
+    "title": "My Page",
+    "myReports": "My Reports",
+    "noReports": "No reports yet",
+    "edit": "Edit",
+    "save": "Save",
+    "delete": "Delete",
+    "deleteConfirm": "Are you sure you want to delete this report?",
+    "deleteSuccess": "Deleted successfully",
+    "deleteError": "Failed to delete",
+    "editSuccess": "Updated successfully",
+    "editError": "Failed to update"
+  },
   "disclaimer": {
     "title": "Please Note",
     "body": "The information in this app is based on user reports and cannot be guaranteed for accuracy. Please confirm directly with the facility before your visit.",

@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
 import type {
   ReportFormData,
   ReportResult,
@@ -63,6 +64,7 @@ export default function ReportFormPage() {
   const { id: facilityId } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { user } = useAuth();
 
   const [formData, setFormData] = useState<Partial<ReportFormData>>({
     facility_id: facilityId ?? '',
@@ -102,7 +104,7 @@ export default function ReportFormPage() {
         facility_response: formData.facility_response ?? 'nothing_asked',
         comment_original: formData.comment ?? null,
         comment_lang: formData.lang ?? 'ja',
-        user_id: null,
+        user_id: user?.id ?? null,
       });
       if (error) throw error;
       alert(t('report.submitSuccess'));

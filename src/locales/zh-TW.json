@@ -93,6 +93,19 @@
     "registerLink": "點此註冊帳號",
     "logoutButton": "登出"
   },
+  "mypage": {
+    "title": "我的頁面",
+    "myReports": "我的回報",
+    "noReports": "尚無回報",
+    "edit": "編輯",
+    "save": "儲存",
+    "delete": "刪除",
+    "deleteConfirm": "確定要刪除這則回報嗎？",
+    "deleteSuccess": "已刪除",
+    "deleteError": "刪除失敗",
+    "editSuccess": "已更新",
+    "editError": "更新失敗"
+  },
   "disclaimer": {
     "title": "使用須知",
     "body": "本應用程式的資訊來自使用者回報，無法保證其正確性。造訪前請直接向設施確認。",
