@@ -1,75 +1,68 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { supabase } from '../lib/supabase';
 import FacilityCard from '../components/FacilityCard/FacilityCard';
 import type { FacilityCategory, FacilityWithStats, SummaryLabel } from '../types';
 
 const ALL_CATEGORIES: FacilityCategory[] = ['onsen', 'gym_pool', 'outdoor'];
 const ALL_LABELS: SummaryLabel[] = ['high', 'conditional', 'mixed', 'low', 'no_data'];
 
-// ダミーデータ（Supabase 接続前の表示確認用）
-const DUMMY_FACILITIES: FacilityWithStats[] = [
-  {
-    id: '1',
-    name: 'サンプル温泉 A',
-    address: '台湾 台北市',
-    category: 'onsen',
-    latitude: 25.033,
-    longitude: 121.565,
-    country_code: 'TW',
-    created_at: '',
-    updated_at: '',
-    stats: {
-      facility_id: '1',
-      total_reports: 12,
-      admitted_count: 9,
-      conditional_count: 2,
-      denied_count: 1,
-      summary_label: 'high',
-      confidence: 'high',
-      last_updated: '',
-    },
-  },
-  {
-    id: '2',
-    name: 'サンプルジム B',
-    address: '台湾 台北市',
-    category: 'gym_pool',
-    latitude: 25.04,
-    longitude: 121.55,
-    country_code: 'TW',
-    created_at: '',
-    updated_at: '',
-    stats: {
-      facility_id: '2',
-      total_reports: 4,
-      admitted_count: 1,
-      conditional_count: 1,
-      denied_count: 2,
-      summary_label: 'low',
-      confidence: 'medium',
-      last_updated: '',
-    },
-  },
-  {
-    id: '3',
-    name: 'サンプルアウトドア C',
-    address: '台湾 新北市',
-    category: 'outdoor',
-    latitude: 25.01,
-    longitude: 121.46,
-    country_code: 'TW',
-    created_at: '',
-    updated_at: '',
-    stats: null,
-  },
-];
-
 export default function FacilityListPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
+  const [facilities, setFacilities] = useState<FacilityWithStats[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState('');
   const [activeCategories, setActiveCategories] = useState<Set<FacilityCategory>>(new Set());
   const [activeLabels, setActiveLabels] = useState<Set<SummaryLabel>>(new Set());
+
+  useEffect(() => {
+    const fetchFacilities = async () => {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('facilities')
+        .select('*, facility_stats(*)')
+        .order('name_ja', { ascending: true });
+
+      if (error) {
+        console.error('施設データ取得エラー:', error);
+        setLoading(false);
+        return;
+      }
+
+      const lang = i18n.language === 'zh-TW' ? 'zh_tw' : 'ja';
+      const mapped: FacilityWithStats[] = (data ?? []).map((f) => ({
+        id: f.id,
+        name: lang === 'zh_tw' ? (f.name_zh_tw ?? f.name_ja) : f.name_ja,
+        address: lang === 'zh_tw' ? (f.address_zh_tw ?? f.address_ja) : f.address_ja,
+        category: f.category as FacilityCategory,
+        latitude: f.lat,
+        longitude: f.lng,
+        website_url: f.official_url ?? undefined,
+        phone: f.phone ?? undefined,
+        country_code: 'JP',
+        created_at: f.created_at,
+        updated_at: f.updated_at,
+        stats: f.facility_stats
+          ? {
+              facility_id: f.facility_stats.facility_id,
+              total_reports: f.facility_stats.report_count_12mo,
+              admitted_count: 0,
+              conditional_count: 0,
+              denied_count: 0,
+              summary_label: f.facility_stats.summary_label as SummaryLabel,
+              confidence: f.facility_stats.confidence_level ?? 'low',
+              last_updated: f.facility_stats.last_updated,
+            }
+          : null,
+      }));
+
+      setFacilities(mapped);
+      setLoading(false);
+    };
+
+    void fetchFacilities();
+  }, [i18n.language]);
 
   const toggleCategory = (cat: FacilityCategory) => {
     setActiveCategories((prev) => {
@@ -87,11 +80,12 @@ export default function FacilityListPage() {
     });
   };
 
-  const filtered = DUMMY_FACILITIES.filter((f) => {
+  const filtered = facilities.filter((f) => {
+    const q = searchText.toLowerCase();
     const matchSearch =
-      searchText === '' ||
-      f.name.toLowerCase().includes(searchText.toLowerCase()) ||
-      f.address.toLowerCase().includes(searchText.toLowerCase());
+      q === '' ||
+      f.name.toLowerCase().includes(q) ||
+      f.address.toLowerCase().includes(q);
 
     const matchCategory =
       activeCategories.size === 0 || activeCategories.has(f.category);
@@ -170,11 +164,15 @@ export default function FacilityListPage() {
 
       {/* 件数 */}
       <p style={{ margin: '0 0 12px', fontSize: '13px', color: '#6b7280' }}>
-        {filtered.length} 件
+        {loading ? t('common.loading') : `${filtered.length} 件`}
       </p>
 
       {/* 施設一覧 */}
-      {filtered.length === 0 ? (
+      {loading ? (
+        <p style={{ textAlign: 'center', color: '#9ca3af', padding: '32px 0' }}>
+          {t('common.loading')}
+        </p>
+      ) : filtered.length === 0 ? (
         <p style={{ textAlign: 'center', color: '#9ca3af', padding: '32px 0' }}>
           {t('common.noData')}
         </p>
