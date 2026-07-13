@@ -1,0 +1,101 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "retry": "Retry",
+    "close": "Close",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "search": "Search",
+    "filter": "Filter",
+    "noData": "No information available"
+  },
+  "nav": {
+    "map": "Map",
+    "list": "List",
+    "mypage": "My Page",
+    "login": "Login"
+  },
+  "facility": {
+    "categories": {
+      "onsen": "Onsen / Public Bath",
+      "gym_pool": "Gym / Pool",
+      "outdoor": "Outdoor Facility"
+    },
+    "summaryLabel": {
+      "high": "Almost certainly allowed",
+      "conditional": "Allowed with conditions",
+      "mixed": "Varies by facility",
+      "low": "Likely to be refused",
+      "no_data": "No information"
+    },
+    "confidence": {
+      "high": "Confidence: High",
+      "medium": "Confidence: Medium",
+      "low": "Confidence: Low"
+    },
+    "reportCount": "{{count}} report(s) (last 12 months)",
+    "noReports": "No reports yet",
+    "bookingLinks": {
+      "klook": "Book on Klook",
+      "kkday": "Book on KKday",
+      "agoda": "Book on Agoda",
+      "tripCom": "Book on Trip.com",
+      "official": "Official Website"
+    }
+  },
+  "report": {
+    "title": "Report Your Experience",
+    "visitDate": "Visit Date",
+    "result": {
+      "label": "Entry Result",
+      "admitted": "Admitted without issue",
+      "admitted_with_sticker": "Admitted after covering with sticker",
+      "admitted_with_cover": "Admitted after covering with clothing",
+      "denied": "Entry denied",
+      "not_asked": "Not checked"
+    },
+    "tattooSize": {
+      "label": "Tattoo Size",
+      "small": "Small (smaller than palm)",
+      "medium": "Medium (about palm-sized)",
+      "large": "Large (larger than palm)",
+      "multiple": "Multiple tattoos"
+    },
+    "tattooLocation": {
+      "label": "Tattoo Location (select all that apply)",
+      "arm": "Arm",
+      "leg": "Leg",
+      "back": "Back",
+      "chest_stomach": "Chest / Stomach",
+      "neck_face": "Neck / Face",
+      "other": "Other"
+    },
+    "facilityResponse": {
+      "label": "Facility Response",
+      "nothing_asked": "Not asked about tattoos",
+      "verbal_check": "Verbally confirmed",
+      "written_agreement": "Asked to sign a written agreement",
+      "private_bath_offered": "Offered a private bath",
+      "other_condition": "Other conditions applied"
+    },
+    "comment": "Comment (optional)",
+    "commentPlaceholder": "Please describe the situation in detail",
+    "photo": "Photo (optional — facility exterior or sticker only)",
+    "submitSuccess": "Thank you for your report!",
+    "submitError": "Submission failed. Please try again."
+  },
+  "auth": {
+    "loginTitle": "Login",
+    "email": "Email Address",
+    "password": "Password",
+    "loginButton": "Login",
+    "registerLink": "Create an account",
+    "logoutButton": "Logout"
+  },
+  "disclaimer": {
+    "title": "Please Note",
+    "body": "The information in this app is based on user reports and cannot be guaranteed for accuracy. Please confirm directly with the facility before your visit.",
+    "confirm": "I understand"
+  }
+}

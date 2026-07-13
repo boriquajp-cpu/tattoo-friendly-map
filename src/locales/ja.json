@@ -1,0 +1,101 @@
+{
+  "common": {
+    "loading": "読み込み中...",
+    "error": "エラーが発生しました",
+    "retry": "再試行",
+    "close": "閉じる",
+    "submit": "送信",
+    "cancel": "キャンセル",
+    "search": "検索",
+    "filter": "絞り込み",
+    "noData": "情報がありません"
+  },
+  "nav": {
+    "map": "マップ",
+    "list": "一覧",
+    "mypage": "マイページ",
+    "login": "ログイン"
+  },
+  "facility": {
+    "categories": {
+      "onsen": "温泉・銭湯",
+      "gym_pool": "ジム・プール",
+      "outdoor": "屋外施設"
+    },
+    "summaryLabel": {
+      "high": "ほぼ確実に入れる",
+      "conditional": "条件付きで入れる",
+      "mixed": "施設による",
+      "low": "断られやすい",
+      "no_data": "情報なし"
+    },
+    "confidence": {
+      "high": "信頼度：高",
+      "medium": "信頼度：中",
+      "low": "信頼度：低"
+    },
+    "reportCount": "{{count}}件の報告（直近12ヶ月）",
+    "noReports": "まだ報告がありません",
+    "bookingLinks": {
+      "klook": "Klookで予約",
+      "kkday": "KKdayで予約",
+      "agoda": "Agodaで予約",
+      "tripCom": "Trip.comで予約",
+      "official": "公式サイト"
+    }
+  },
+  "report": {
+    "title": "体験を報告する",
+    "visitDate": "訪問日",
+    "result": {
+      "label": "入場の結果",
+      "admitted": "問題なく入れた",
+      "admitted_with_sticker": "シールで隠せば入れた",
+      "admitted_with_cover": "服で隠せば入れた",
+      "denied": "断られた",
+      "not_asked": "確認されなかった"
+    },
+    "tattooSize": {
+      "label": "タトゥーのサイズ",
+      "small": "小（手のひら未満）",
+      "medium": "中（手のひら程度）",
+      "large": "大（手のひら以上）",
+      "multiple": "複数あり"
+    },
+    "tattooLocation": {
+      "label": "タトゥーの場所（複数選択可）",
+      "arm": "腕",
+      "leg": "脚",
+      "back": "背中",
+      "chest_stomach": "胸・腹",
+      "neck_face": "首・顔",
+      "other": "その他"
+    },
+    "facilityResponse": {
+      "label": "施設の対応",
+      "nothing_asked": "特に確認されなかった",
+      "verbal_check": "口頭で確認された",
+      "written_agreement": "書面への同意を求められた",
+      "private_bath_offered": "個室風呂を案内された",
+      "other_condition": "その他の条件があった"
+    },
+    "comment": "コメント（任意）",
+    "commentPlaceholder": "詳細な状況を教えてください",
+    "photo": "写真（任意・施設外観やシールのみ）",
+    "submitSuccess": "報告ありがとうございます！",
+    "submitError": "送信に失敗しました。再度お試しください。"
+  },
+  "auth": {
+    "loginTitle": "ログイン",
+    "email": "メールアドレス",
+    "password": "パスワード",
+    "loginButton": "ログイン",
+    "registerLink": "アカウント登録はこちら",
+    "logoutButton": "ログアウト"
+  },
+  "disclaimer": {
+    "title": "ご利用にあたって",
+    "body": "このアプリの情報はユーザー報告に基づいており、正確性を保証するものではありません。訪問前に施設へ直接ご確認ください。",
+    "confirm": "確認しました"
+  }
+}

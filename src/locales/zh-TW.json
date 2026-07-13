@@ -1,0 +1,101 @@
+{
+  "common": {
+    "loading": "載入中...",
+    "error": "發生錯誤",
+    "retry": "重試",
+    "close": "關閉",
+    "submit": "送出",
+    "cancel": "取消",
+    "search": "搜尋",
+    "filter": "篩選",
+    "noData": "尚無資訊"
+  },
+  "nav": {
+    "map": "地圖",
+    "list": "列表",
+    "mypage": "我的頁面",
+    "login": "登入"
+  },
+  "facility": {
+    "categories": {
+      "onsen": "溫泉・公共澡堂",
+      "gym_pool": "健身房・游泳池",
+      "outdoor": "戶外設施"
+    },
+    "summaryLabel": {
+      "high": "幾乎確定可以入場",
+      "conditional": "符合條件可入場",
+      "mixed": "視設施而定",
+      "low": "容易被拒絕",
+      "no_data": "尚無資訊"
+    },
+    "confidence": {
+      "high": "可信度：高",
+      "medium": "可信度：中",
+      "low": "可信度：低"
+    },
+    "reportCount": "{{count}} 則回報（近12個月）",
+    "noReports": "尚無回報",
+    "bookingLinks": {
+      "klook": "透過 Klook 預訂",
+      "kkday": "透過 KKday 預訂",
+      "agoda": "透過 Agoda 預訂",
+      "tripCom": "透過 Trip.com 預訂",
+      "official": "官方網站"
+    }
+  },
+  "report": {
+    "title": "回報體驗",
+    "visitDate": "造訪日期",
+    "result": {
+      "label": "入場結果",
+      "admitted": "順利入場",
+      "admitted_with_sticker": "貼上貼紙遮住後可入場",
+      "admitted_with_cover": "用衣物遮住後可入場",
+      "denied": "被拒絕入場",
+      "not_asked": "未被確認"
+    },
+    "tattooSize": {
+      "label": "刺青大小",
+      "small": "小（小於手掌）",
+      "medium": "中（約手掌大小）",
+      "large": "大（大於手掌）",
+      "multiple": "多處"
+    },
+    "tattooLocation": {
+      "label": "刺青位置（可複選）",
+      "arm": "手臂",
+      "leg": "腿部",
+      "back": "背部",
+      "chest_stomach": "胸部・腹部",
+      "neck_face": "頸部・臉部",
+      "other": "其他"
+    },
+    "facilityResponse": {
+      "label": "設施的應對方式",
+      "nothing_asked": "未特別詢問",
+      "verbal_check": "口頭確認",
+      "written_agreement": "要求簽署書面同意書",
+      "private_bath_offered": "引導至包廂浴室",
+      "other_condition": "其他條件"
+    },
+    "comment": "留言（選填）",
+    "commentPlaceholder": "請描述詳細情況",
+    "photo": "照片（選填・僅限設施外觀或貼紙）",
+    "submitSuccess": "感謝您的回報！",
+    "submitError": "送出失敗，請再試一次。"
+  },
+  "auth": {
+    "loginTitle": "登入",
+    "email": "電子郵件",
+    "password": "密碼",
+    "loginButton": "登入",
+    "registerLink": "點此註冊帳號",
+    "logoutButton": "登出"
+  },
+  "disclaimer": {
+    "title": "使用須知",
+    "body": "本應用程式的資訊來自使用者回報，無法保證其正確性。造訪前請直接向設施確認。",
+    "confirm": "我已了解"
+  }
+}
