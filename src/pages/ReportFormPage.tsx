@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { supabase } from '../lib/supabase';
 import type {
   ReportFormData,
   ReportResult,
@@ -70,7 +71,6 @@ export default function ReportFormPage() {
   });
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
-  const [photoFile, setPhotoFile] = useState<File | null>(null);
 
   const toggleLocation = (loc: TattooLocation) => {
     setFormData((prev) => {
@@ -93,10 +93,18 @@ export default function ReportFormPage() {
     setSubmitting(true);
     setErrorMsg('');
     try {
-      // TODO: Supabase へ報告データを送信
-      // const { error } = await supabase.from('reports').insert({ ...formData });
-      // if (error) throw error;
-      console.log('Report submitted:', formData, photoFile);
+      const { error } = await supabase.from('reports').insert({
+        facility_id: formData.facility_id,
+        visit_date: formData.visit_date ?? new Date().toISOString().slice(0, 10),
+        result: formData.result,
+        tattoo_size: formData.tattoo_size ?? 'small',
+        tattoo_location: formData.tattoo_locations ?? [],
+        facility_response: formData.facility_response ?? 'nothing_asked',
+        comment_original: formData.comment ?? null,
+        comment_lang: formData.lang ?? 'ja',
+        user_id: null,
+      });
+      if (error) throw error;
       alert(t('report.submitSuccess'));
       navigate(`/facility/${facilityId}`);
     } catch (err) {
@@ -261,7 +269,7 @@ export default function ReportFormPage() {
             type="file"
             accept="image/*"
             style={{ fontSize: '14px' }}
-            onChange={(e) => setPhotoFile(e.target.files?.[0] ?? null)}
+            onChange={() => {/* TODO: Supabase Storage upload */}}
           />
         </div>
 

@@ -1,110 +1,96 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Map, { Marker, NavigationControl } from 'react-map-gl/mapbox';
+import Map, { Marker, NavigationControl } from 'react-map-gl/maplibre';
 import { useTranslation } from 'react-i18next';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import 'maplibre-gl/dist/maplibre-gl.css';
+import { supabase } from '../lib/supabase';
 import type { FacilityCategory, FacilityWithStats, SummaryLabel } from '../types';
 
-const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN as string;
-
-// 許可レベルごとのピン色
 const SUMMARY_COLORS: Record<SummaryLabel, string> = {
-  high: '#22c55e',        // 緑
-  conditional: '#eab308', // 黄
-  mixed: '#f97316',       // 橙
-  low: '#ef4444',         // 赤
-  no_data: '#9ca3af',     // 灰
+  high: '#22c55e',
+  conditional: '#eab308',
+  mixed: '#f97316',
+  low: '#ef4444',
+  no_data: '#9ca3af',
 };
 
 const ALL_CATEGORIES: FacilityCategory[] = ['onsen', 'gym_pool', 'outdoor'];
 
-// ダミーデータ（Supabase 接続前の表示確認用）
-const DUMMY_FACILITIES: FacilityWithStats[] = [
-  {
-    id: '1',
-    name: 'サンプル温泉 A',
-    address: '台湾 台北市',
-    category: 'onsen',
-    latitude: 25.033,
-    longitude: 121.565,
-    country_code: 'TW',
-    created_at: '',
-    updated_at: '',
-    stats: {
-      facility_id: '1',
-      total_reports: 12,
-      admitted_count: 9,
-      conditional_count: 2,
-      denied_count: 1,
-      summary_label: 'high',
-      confidence: 'high',
-      last_updated: '',
-    },
-  },
-  {
-    id: '2',
-    name: 'サンプルジム B',
-    address: '台湾 台北市',
-    category: 'gym_pool',
-    latitude: 25.04,
-    longitude: 121.55,
-    country_code: 'TW',
-    created_at: '',
-    updated_at: '',
-    stats: {
-      facility_id: '2',
-      total_reports: 4,
-      admitted_count: 1,
-      conditional_count: 1,
-      denied_count: 2,
-      summary_label: 'low',
-      confidence: 'medium',
-      last_updated: '',
-    },
-  },
-];
-
 export default function MapPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
 
   const [activeCategories, setActiveCategories] = useState<Set<FacilityCategory>>(
     new Set(ALL_CATEGORIES)
   );
-  const [facilities] = useState<FacilityWithStats[]>(DUMMY_FACILITIES);
+  const [facilities, setFacilities] = useState<FacilityWithStats[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchFacilities = async () => {
+      const { data, error } = await supabase
+        .from('facilities')
+        .select('*, facility_stats(*)');
+
+      if (error) {
+        console.error('施設データ取得エラー:', error);
+        setLoading(false);
+        return;
+      }
+
+      // DBフィールド → TypeScript型にマッピング
+      const lang = i18n.language === 'zh-TW' ? 'zh_tw' : 'ja';
+      const mapped: FacilityWithStats[] = (data ?? []).map((f) => ({
+        id: f.id,
+        name: lang === 'zh_tw' ? f.name_zh_tw : f.name_ja,
+        address: lang === 'zh_tw' ? f.address_zh_tw : f.address_ja,
+        category: f.category as FacilityCategory,
+        latitude: f.lat,
+        longitude: f.lng,
+        website_url: f.official_url ?? undefined,
+        phone: f.phone ?? undefined,
+        country_code: 'JP',
+        created_at: f.created_at,
+        updated_at: f.updated_at,
+        stats: f.facility_stats
+          ? {
+              facility_id: f.facility_stats.facility_id,
+              total_reports: f.facility_stats.report_count_12mo,
+              admitted_count: 0,
+              conditional_count: 0,
+              denied_count: 0,
+              summary_label: f.facility_stats.summary_label as SummaryLabel,
+              confidence: f.facility_stats.confidence_level ?? 'low',
+              last_updated: f.facility_stats.last_updated,
+            }
+          : null,
+      }));
+
+      setFacilities(mapped);
+      setLoading(false);
+    };
+
+    void fetchFacilities();
+  }, [i18n.language]);
 
   const toggleCategory = useCallback((cat: FacilityCategory) => {
     setActiveCategories((prev) => {
       const next = new Set(prev);
-      if (next.has(cat)) {
-        next.delete(cat);
-      } else {
-        next.add(cat);
-      }
+      if (next.has(cat)) next.delete(cat);
+      else next.add(cat);
       return next;
     });
   }, []);
 
   const filteredFacilities = facilities.filter((f) => activeCategories.has(f.category));
 
-  const getPinColor = (facility: FacilityWithStats): string => {
-    const label: SummaryLabel = facility.stats?.summary_label ?? 'no_data';
-    return SUMMARY_COLORS[label];
-  };
+  const getPinColor = (facility: FacilityWithStats): string =>
+    SUMMARY_COLORS[facility.stats?.summary_label ?? 'no_data'];
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       {/* カテゴリフィルター */}
-      <div
-        style={{
-          display: 'flex',
-          gap: '8px',
-          padding: '8px 16px',
-          backgroundColor: '#fff',
-          borderBottom: '1px solid #e5e7eb',
-          flexWrap: 'wrap',
-        }}
-      >
+      <div style={{ display: 'flex', gap: '8px', padding: '8px 16px', backgroundColor: '#fff', borderBottom: '1px solid #e5e7eb', flexWrap: 'wrap' }}>
         {ALL_CATEGORIES.map((cat) => (
           <button
             key={cat}
@@ -125,22 +111,18 @@ export default function MapPage() {
             {t(`facility.categories.${cat}`)}
           </button>
         ))}
+        {loading && <span style={{ fontSize: '12px', color: '#9ca3af', alignSelf: 'center' }}>読み込み中...</span>}
+        {!loading && <span style={{ fontSize: '12px', color: '#6b7280', alignSelf: 'center' }}>{filteredFacilities.length}件</span>}
       </div>
 
       {/* マップ */}
       <div style={{ flex: 1 }}>
         <Map
-          mapboxAccessToken={MAPBOX_TOKEN}
-          initialViewState={{
-            longitude: 121.5654,
-            latitude: 25.033,
-            zoom: 11,
-          }}
+          initialViewState={{ longitude: 135.5, latitude: 35.0, zoom: 5 }}
           style={{ width: '100%', height: '100%' }}
-          mapStyle="mapbox://styles/mapbox/streets-v12"
+          mapStyle="https://tiles.openfreemap.org/styles/liberty"
         >
           <NavigationControl position="top-right" />
-
           {filteredFacilities.map((facility) => (
             <Marker
               key={facility.id}
@@ -167,28 +149,10 @@ export default function MapPage() {
       </div>
 
       {/* 凡例 */}
-      <div
-        style={{
-          display: 'flex',
-          gap: '12px',
-          padding: '6px 16px',
-          backgroundColor: '#fff',
-          borderTop: '1px solid #e5e7eb',
-          flexWrap: 'wrap',
-          fontSize: '12px',
-        }}
-      >
+      <div style={{ display: 'flex', gap: '12px', padding: '6px 16px', backgroundColor: '#fff', borderTop: '1px solid #e5e7eb', flexWrap: 'wrap', fontSize: '12px' }}>
         {(Object.entries(SUMMARY_COLORS) as [SummaryLabel, string][]).map(([label, color]) => (
           <span key={label} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <span
-              style={{
-                width: '12px',
-                height: '12px',
-                borderRadius: '50%',
-                backgroundColor: color,
-                display: 'inline-block',
-              }}
-            />
+            <span style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: color, display: 'inline-block' }} />
             {t(`facility.summaryLabel.${label}`)}
           </span>
         ))}

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { supabase } from '../lib/supabase';
 import type { FacilityWithStats, Report, SummaryLabel } from '../types';
 
 const SUMMARY_BADGE_STYLE: Record<SummaryLabel, { bg: string; color: string }> = {
@@ -11,66 +12,11 @@ const SUMMARY_BADGE_STYLE: Record<SummaryLabel, { bg: string; color: string }> =
   no_data:     { bg: '#f3f4f6', color: '#374151' },
 };
 
-// ダミーデータ（Supabase 接続前の表示確認用）
-const DUMMY_FACILITY: FacilityWithStats = {
-  id: '1',
-  name: 'サンプル温泉 A',
-  address: '台湾 台北市 中正区',
-  category: 'onsen',
-  latitude: 25.033,
-  longitude: 121.565,
-  country_code: 'TW',
-  website_url: 'https://example.com',
-  official_policy: '入れ墨・タトゥーをお持ちのお客様は入場できません。',
-  created_at: '',
-  updated_at: '',
-  stats: {
-    facility_id: '1',
-    total_reports: 12,
-    admitted_count: 9,
-    conditional_count: 2,
-    denied_count: 1,
-    summary_label: 'high',
-    confidence: 'high',
-    last_updated: '',
-  },
-};
-
-const DUMMY_REPORTS: Report[] = [
-  {
-    id: 'r1',
-    facility_id: '1',
-    user_id: null,
-    result: 'admitted',
-    tattoo_size: 'small',
-    tattoo_locations: ['arm'],
-    facility_response: 'nothing_asked',
-    visit_date: '2026-06-15',
-    comment: 'スタッフに何も言われず普通に入れました。',
-    lang: 'ja',
-    helpful_count: 5,
-    created_at: '2026-06-15T10:00:00Z',
-  },
-  {
-    id: 'r2',
-    facility_id: '1',
-    user_id: null,
-    result: 'admitted_with_cover',
-    tattoo_size: 'medium',
-    tattoo_locations: ['back'],
-    facility_response: 'verbal_check',
-    visit_date: '2026-05-20',
-    comment: 'カバーするよう口頭で言われましたが入れました。',
-    lang: 'ja',
-    helpful_count: 3,
-    created_at: '2026-05-20T10:00:00Z',
-  },
-];
 
 export default function FacilityDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [facility, setFacility] = useState<FacilityWithStats | null>(null);
   const [reports, setReports] = useState<Report[]>([]);
@@ -78,12 +24,57 @@ export default function FacilityDetailPage() {
 
   useEffect(() => {
     if (!id) return;
-    // TODO: Supabase から施設データ・報告を取得する
-    // const { data } = await supabase.from('facilities').select('*, stats:facility_stats(*)').eq('id', id).single();
-    setFacility(DUMMY_FACILITY);
-    setReports(DUMMY_REPORTS);
-    setLoading(false);
-  }, [id]);
+    const fetch = async () => {
+      const [{ data: f }, { data: r }] = await Promise.all([
+        supabase.from('facilities').select('*, facility_stats(*)').eq('id', id).single(),
+        supabase.from('reports').select('*').eq('facility_id', id).order('visit_date', { ascending: false }).limit(20),
+      ]);
+      if (f) {
+        const lang = i18n.language === 'zh-TW' ? 'zh_tw' : 'ja';
+        setFacility({
+          id: f.id,
+          name: lang === 'zh_tw' ? f.name_zh_tw : f.name_ja,
+          address: lang === 'zh_tw' ? f.address_zh_tw : f.address_ja,
+          category: f.category,
+          latitude: f.lat,
+          longitude: f.lng,
+          website_url: f.official_url ?? undefined,
+          phone: f.phone ?? undefined,
+          country_code: 'JP',
+          created_at: f.created_at,
+          updated_at: f.updated_at,
+          stats: f.facility_stats ? {
+            facility_id: f.facility_stats.facility_id,
+            total_reports: f.facility_stats.report_count_12mo,
+            admitted_count: 0,
+            conditional_count: 0,
+            denied_count: 0,
+            summary_label: f.facility_stats.summary_label as SummaryLabel,
+            confidence: f.facility_stats.confidence_level ?? 'low',
+            last_updated: f.facility_stats.last_updated,
+          } : null,
+        });
+      }
+      if (r) {
+        setReports(r.map((rep) => ({
+          id: rep.id,
+          facility_id: rep.facility_id,
+          user_id: rep.user_id,
+          result: rep.result,
+          tattoo_size: rep.tattoo_size,
+          tattoo_locations: rep.tattoo_location ?? [],
+          facility_response: rep.facility_response,
+          visit_date: rep.visit_date,
+          comment: rep.comment_original,
+          lang: rep.comment_lang ?? 'ja',
+          helpful_count: 0,
+          created_at: rep.created_at,
+        })));
+      }
+      setLoading(false);
+    };
+    void fetch();
+  }, [id, i18n.language]);
 
   if (loading) {
     return <p style={{ padding: '32px', textAlign: 'center' }}>{t('common.loading')}</p>;
