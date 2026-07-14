@@ -1,8 +1,10 @@
 import { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import FacilityCard from '../components/FacilityCard/FacilityCard';
 import { useFavorites } from '../hooks/useFavorites';
+import { useRecentlyViewed } from '../hooks/useRecentlyViewed';
 import type { FacilityCategory, FacilityWithStats, SummaryLabel } from '../types';
 
 const ALL_CATEGORIES: FacilityCategory[] = ['onsen', 'gym_pool', 'outdoor'];
@@ -16,14 +18,28 @@ const getPrefecture = (address: string): string => {
 export default function FacilityListPage() {
   const { t, i18n } = useTranslation();
 
+  const navigate = useNavigate();
   const { isFavorite, toggle } = useFavorites();
+  const { items: recentItems } = useRecentlyViewed();
   const [facilities, setFacilities] = useState<FacilityWithStats[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchText, setSearchText] = useState('');
-  const [activeCategories, setActiveCategories] = useState<Set<FacilityCategory>>(new Set());
-  const [activeLabels, setActiveLabels] = useState<Set<SummaryLabel>>(new Set());
-  const [activePrefecture, setActivePrefecture] = useState('');
+  const [searchText, setSearchText] = useState(() => sessionStorage.getItem('list_search') ?? '');
+  const [activeCategories, setActiveCategories] = useState<Set<FacilityCategory>>(() => {
+    try { return new Set(JSON.parse(sessionStorage.getItem('list_categories') ?? '[]') as FacilityCategory[]); }
+    catch { return new Set(); }
+  });
+  const [activeLabels, setActiveLabels] = useState<Set<SummaryLabel>>(() => {
+    try { return new Set(JSON.parse(sessionStorage.getItem('list_labels') ?? '[]') as SummaryLabel[]); }
+    catch { return new Set(); }
+  });
+  const [activePrefecture, setActivePrefecture] = useState(() => sessionStorage.getItem('list_prefecture') ?? '');
   const [favoritesOnly, setFavoritesOnly] = useState(false);
+
+  // フィルター状態をsessionStorageに保持
+  useEffect(() => { sessionStorage.setItem('list_search', searchText); }, [searchText]);
+  useEffect(() => { sessionStorage.setItem('list_categories', JSON.stringify([...activeCategories])); }, [activeCategories]);
+  useEffect(() => { sessionStorage.setItem('list_labels', JSON.stringify([...activeLabels])); }, [activeLabels]);
+  useEffect(() => { sessionStorage.setItem('list_prefecture', activePrefecture); }, [activePrefecture]);
 
   useEffect(() => {
     const fetchFacilities = async () => {
@@ -137,10 +153,47 @@ export default function FacilityListPage() {
 
   return (
     <div style={{ maxWidth: '720px', margin: '0 auto', padding: '16px' }}>
+
+      {/* 最近見た施設 */}
+      {recentItems.length > 0 && (
+        <div style={{ marginBottom: '16px' }}>
+          <p style={{ margin: '0 0 8px', fontSize: '12px', fontWeight: 600, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            {t('facilityList.recentlyViewed')}
+          </p>
+          <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px' }}>
+            {recentItems.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => navigate(`/facility/${item.id}`)}
+                style={{
+                  flexShrink: 0,
+                  padding: '6px 12px',
+                  borderRadius: '8px',
+                  border: '1px solid #e5e7eb',
+                  backgroundColor: '#f9fafb',
+                  cursor: 'pointer',
+                  fontSize: '13px',
+                  fontWeight: 500,
+                  color: '#374151',
+                  whiteSpace: 'nowrap',
+                  maxWidth: '160px',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  textAlign: 'left',
+                }}
+              >
+                {item.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* 検索ボックス */}
       <input
         type="text"
-        placeholder={t('common.search')}
+        placeholder={t('facilityList.searchPlaceholder')}
         value={searchText}
         onChange={(e) => setSearchText(e.target.value)}
         style={{

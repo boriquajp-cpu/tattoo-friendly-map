@@ -137,7 +137,13 @@
     "facilityCount": " 個設施",
     "nearMe": "顯示目前位置",
     "allAreas": "全部地區",
-    "geoError": "無法取得目前位置。"
+    "geoError": "無法取得目前位置。",
+    "searchThisArea": "搜尋此區域",
+    "resetArea": "重置搜尋"
+  },
+  "facilityList": {
+    "recentlyViewed": "最近瀏覽",
+    "searchPlaceholder": "搜尋設施名稱或地址"
   },
   "facilityRequest": {
     "title": "申請新增設施",

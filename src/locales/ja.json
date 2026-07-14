@@ -137,7 +137,13 @@
     "facilityCount": "件",
     "nearMe": "現在地を表示",
     "allAreas": "すべてのエリア",
-    "geoError": "現在地の取得に失敗しました。"
+    "geoError": "現在地の取得に失敗しました。",
+    "searchThisArea": "このエリアを検索",
+    "resetArea": "検索をリセット"
+  },
+  "facilityList": {
+    "recentlyViewed": "最近見た施設",
+    "searchPlaceholder": "施設名・住所で検索"
   },
   "facilityRequest": {
     "title": "施設の追加を申請する",

@@ -137,7 +137,13 @@
     "facilityCount": " facilities",
     "nearMe": "Show My Location",
     "allAreas": "All Areas",
-    "geoError": "Unable to get your current location."
+    "geoError": "Unable to get your current location.",
+    "searchThisArea": "Search This Area",
+    "resetArea": "Reset Search"
+  },
+  "facilityList": {
+    "recentlyViewed": "Recently Viewed",
+    "searchPlaceholder": "Search by name or address"
   },
   "facilityRequest": {
     "title": "Request a Facility",

@@ -40,6 +40,8 @@ export default function MapPage() {
   const [viewState, setViewState] = useState(getInitialViewState);
   const [geoLoading, setGeoLoading] = useState(false);
   const [geoError, setGeoError] = useState('');
+  const [mapMoved, setMapMoved] = useState(false);
+  const [areaBounds, setAreaBounds] = useState<{ n: number; s: number; e: number; w: number } | null>(null);
 
   useEffect(() => {
     const fetchFacilities = async () => {
@@ -84,7 +86,19 @@ export default function MapPage() {
     });
   }, []);
 
-  const filteredFacilities = facilities.filter((f) => activeCategories.has(f.category));
+  const handleSearchArea = useCallback(() => {
+    const bounds = mapRef.current?.getBounds();
+    if (!bounds) return;
+    setAreaBounds({ n: bounds.getNorth(), s: bounds.getSouth(), e: bounds.getEast(), w: bounds.getWest() });
+    setMapMoved(false);
+  }, []);
+
+  const categoryFiltered = facilities.filter((f) => activeCategories.has(f.category));
+  const filteredFacilities = areaBounds
+    ? categoryFiltered.filter((f) =>
+        f.latitude >= areaBounds.s && f.latitude <= areaBounds.n &&
+        f.longitude >= areaBounds.w && f.longitude <= areaBounds.e)
+    : categoryFiltered;
 
   // GeoJSON for clustering
   const geojson = useMemo(() => ({
@@ -192,6 +206,7 @@ export default function MapPage() {
           onMove={(evt) => {
             setViewState(evt.viewState);
             sessionStorage.setItem('mapViewState', JSON.stringify(evt.viewState));
+            setMapMoved(true);
           }}
           style={{ width: '100%', height: '100%' }}
           mapStyle="https://tiles.openfreemap.org/styles/liberty"
@@ -274,6 +289,38 @@ export default function MapPage() {
             />
           </Source>
         </Map>
+
+        {/* このエリアを検索 / リセットボタン */}
+        <div style={{ position: 'absolute', top: '12px', left: '50%', transform: 'translateX(-50%)', zIndex: 10, display: 'flex', gap: '8px' }}>
+          {mapMoved && (
+            <button
+              type="button"
+              onClick={handleSearchArea}
+              style={{
+                padding: '8px 16px', borderRadius: '20px',
+                backgroundColor: '#fff', border: '1px solid #d1d5db',
+                fontSize: '13px', fontWeight: 600, cursor: 'pointer',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.15)', color: '#374151',
+              }}
+            >
+              🔍 {t('map.searchThisArea')}
+            </button>
+          )}
+          {areaBounds && (
+            <button
+              type="button"
+              onClick={() => { setAreaBounds(null); setMapMoved(false); }}
+              style={{
+                padding: '8px 16px', borderRadius: '20px',
+                backgroundColor: '#6366f1', border: 'none',
+                fontSize: '13px', fontWeight: 600, cursor: 'pointer',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.15)', color: '#fff',
+              }}
+            >
+              ✕ {t('map.resetArea')}
+            </button>
+          )}
+        </div>
 
         {/* 凡例オーバーレイ */}
         <div style={{

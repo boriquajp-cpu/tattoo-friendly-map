@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import CorrectionModal from '../components/CorrectionModal/CorrectionModal';
 import { useFavorites } from '../hooks/useFavorites';
+import { useRecentlyViewed } from '../hooks/useRecentlyViewed';
 import type { FacilityWithStats, Report, SummaryLabel } from '../types';
 
 const SHARE_COLORS: Record<string, string> = {
@@ -26,6 +27,7 @@ export default function FacilityDetailPage() {
   const { t, i18n } = useTranslation();
 
   const { isFavorite, toggle } = useFavorites();
+  const { addItem } = useRecentlyViewed();
   const [facility, setFacility] = useState<FacilityWithStats | null>(null);
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
@@ -40,6 +42,12 @@ export default function FacilityDetailPage() {
         supabase.from('reports').select('*').eq('facility_id', id).order('visit_date', { ascending: false }).limit(50),
       ]);
       if (f) {
+        addItem({
+          id: f.id,
+          name: i18n.language === 'zh-TW' ? (f.name_zh_tw ?? f.name_ja) : f.name_ja,
+          category: f.category,
+          summary_label: f.facility_stats?.summary_label ?? 'no_data',
+        });
         const lang = i18n.language === 'zh-TW' ? 'zh_tw' : 'ja';
         setFacility({
           id: f.id,
