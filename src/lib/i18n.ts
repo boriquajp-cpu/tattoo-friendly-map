@@ -21,7 +21,7 @@ i18n
       escapeValue: false, // React handles XSS escaping automatically
     },
     detection: {
-      order: ['querystring', 'navigator', 'htmlTag'],
+      order: ['localStorage', 'querystring', 'navigator', 'htmlTag'],
       caches: ['localStorage'],
     },
   });

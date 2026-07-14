@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import FacilityCard from '../components/FacilityCard/FacilityCard';
@@ -6,6 +6,11 @@ import type { FacilityCategory, FacilityWithStats, SummaryLabel } from '../types
 
 const ALL_CATEGORIES: FacilityCategory[] = ['onsen', 'gym_pool', 'outdoor'];
 const ALL_LABELS: SummaryLabel[] = ['high', 'conditional', 'mixed', 'low', 'no_data'];
+
+const getPrefecture = (address: string): string => {
+  const match = address.match(/^(.{2,4}[都道府県])/);
+  return match ? match[1] : '';
+};
 
 export default function FacilityListPage() {
   const { t, i18n } = useTranslation();
@@ -15,6 +20,7 @@ export default function FacilityListPage() {
   const [searchText, setSearchText] = useState('');
   const [activeCategories, setActiveCategories] = useState<Set<FacilityCategory>>(new Set());
   const [activeLabels, setActiveLabels] = useState<Set<SummaryLabel>>(new Set());
+  const [activePrefecture, setActivePrefecture] = useState('');
 
   useEffect(() => {
     const fetchFacilities = async () => {
@@ -35,6 +41,7 @@ export default function FacilityListPage() {
         id: f.id,
         name: lang === 'zh_tw' ? (f.name_zh_tw ?? f.name_ja) : f.name_ja,
         address: lang === 'zh_tw' ? (f.address_zh_tw ?? f.address_ja) : f.address_ja,
+        address_ja: f.address_ja,
         category: f.category as FacilityCategory,
         latitude: f.lat,
         longitude: f.lng,
@@ -63,6 +70,16 @@ export default function FacilityListPage() {
 
     void fetchFacilities();
   }, [i18n.language]);
+
+  // 都道府県リスト（address_jaから抽出・重複除去）
+  const prefectures = useMemo(() => {
+    const set = new Set<string>();
+    facilities.forEach((f) => {
+      const pref = getPrefecture(f.address_ja ?? f.address);
+      if (pref) set.add(pref);
+    });
+    return Array.from(set).sort();
+  }, [facilities]);
 
   const toggleCategory = (cat: FacilityCategory) => {
     setActiveCategories((prev) => {
@@ -94,7 +111,23 @@ export default function FacilityListPage() {
       activeLabels.size === 0 ||
       (f.stats ? activeLabels.has(f.stats.summary_label) : activeLabels.has('no_data'));
 
-    return matchSearch && matchCategory && matchLabel;
+    const matchPrefecture =
+      activePrefecture === '' ||
+      getPrefecture(f.address_ja ?? f.address) === activePrefecture;
+
+    return matchSearch && matchCategory && matchLabel && matchPrefecture;
+  });
+
+  const chipStyle = (active: boolean): React.CSSProperties => ({
+    padding: '3px 12px',
+    borderRadius: '9999px',
+    border: '1px solid',
+    borderColor: active ? '#6366f1' : '#d1d5db',
+    backgroundColor: active ? '#6366f1' : '#fff',
+    color: active ? '#fff' : '#374151',
+    cursor: 'pointer',
+    fontSize: '13px',
+    whiteSpace: 'nowrap',
   });
 
   return (
@@ -116,6 +149,29 @@ export default function FacilityListPage() {
         }}
       />
 
+      {/* ⑧ 都道府県フィルター */}
+      {prefectures.length > 0 && (
+        <div style={{ display: 'flex', gap: '6px', flexWrap: 'nowrap', overflowX: 'auto', marginBottom: '8px', paddingBottom: '4px' }}>
+          <button
+            type="button"
+            onClick={() => setActivePrefecture('')}
+            style={chipStyle(activePrefecture === '')}
+          >
+            {t('map.allAreas')}
+          </button>
+          {prefectures.map((pref) => (
+            <button
+              key={pref}
+              type="button"
+              onClick={() => setActivePrefecture(activePrefecture === pref ? '' : pref)}
+              style={chipStyle(activePrefecture === pref)}
+            >
+              {pref}
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* カテゴリフィルター */}
       <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '8px' }}>
         {ALL_CATEGORIES.map((cat) => (
@@ -123,16 +179,7 @@ export default function FacilityListPage() {
             key={cat}
             type="button"
             onClick={() => toggleCategory(cat)}
-            style={{
-              padding: '3px 12px',
-              borderRadius: '9999px',
-              border: '1px solid',
-              borderColor: activeCategories.has(cat) ? '#6366f1' : '#d1d5db',
-              backgroundColor: activeCategories.has(cat) ? '#6366f1' : '#fff',
-              color: activeCategories.has(cat) ? '#fff' : '#374151',
-              cursor: 'pointer',
-              fontSize: '13px',
-            }}
+            style={chipStyle(activeCategories.has(cat))}
           >
             {t(`facility.categories.${cat}`)}
           </button>
@@ -146,16 +193,7 @@ export default function FacilityListPage() {
             key={label}
             type="button"
             onClick={() => toggleLabel(label)}
-            style={{
-              padding: '3px 12px',
-              borderRadius: '9999px',
-              border: '1px solid',
-              borderColor: activeLabels.has(label) ? '#6366f1' : '#d1d5db',
-              backgroundColor: activeLabels.has(label) ? '#6366f1' : '#fff',
-              color: activeLabels.has(label) ? '#fff' : '#374151',
-              cursor: 'pointer',
-              fontSize: '13px',
-            }}
+            style={chipStyle(activeLabels.has(label))}
           >
             {t(`facility.summaryLabel.${label}`)}
           </button>
@@ -164,7 +202,7 @@ export default function FacilityListPage() {
 
       {/* 件数 */}
       <p style={{ margin: '0 0 12px', fontSize: '13px', color: '#6b7280' }}>
-        {loading ? t('common.loading') : `${filtered.length} 件`}
+        {loading ? t('common.loading') : `${filtered.length} ${t('map.facilityCount')}`}
       </p>
 
       {/* 施設一覧 */}

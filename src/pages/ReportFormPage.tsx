@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
@@ -125,12 +125,40 @@ export default function ReportFormPage() {
         onClick={() => navigate(-1)}
         style={{ background: 'none', border: 'none', color: '#6366f1', cursor: 'pointer', fontSize: '14px', marginBottom: '12px', padding: 0 }}
       >
-        ← 戻る
+        ← {t('common.back')}
       </button>
 
-      <h1 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '20px' }}>
+      <h1 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '12px' }}>
         {t('report.title')}
       </h1>
+
+      {/* ⑪ 未ログイン誘導バナー */}
+      {!user && (
+        <div
+          style={{
+            backgroundColor: '#eff6ff',
+            border: '1px solid #bfdbfe',
+            borderRadius: '8px',
+            padding: '10px 14px',
+            marginBottom: '16px',
+            fontSize: '13px',
+            color: '#1d4ed8',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '8px',
+            flexWrap: 'wrap',
+          }}
+        >
+          <span>{t('report.loginPrompt')}</span>
+          <Link
+            to="/login"
+            style={{ color: '#1d4ed8', fontWeight: 600, whiteSpace: 'nowrap', textDecoration: 'underline' }}
+          >
+            {t('report.loginLink')}
+          </Link>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
 
@@ -160,7 +188,7 @@ export default function ReportFormPage() {
               setFormData((p) => ({ ...p, result: e.target.value as ReportResult }))
             }
           >
-            <option value="">-- 選択してください --</option>
+            <option value="">{t('common.selectPlaceholder')}</option>
             {RESULTS.map((r) => (
               <option key={r} value={r}>
                 {t(`report.result.${r}`)}
@@ -180,7 +208,7 @@ export default function ReportFormPage() {
               setFormData((p) => ({ ...p, tattoo_size: (e.target.value || undefined) as TattooSize | undefined }))
             }
           >
-            <option value="">-- 選択してください --</option>
+            <option value="">{t('common.selectPlaceholder')}</option>
             {TATTOO_SIZES.map((s) => (
               <option key={s} value={s}>
                 {t(`report.tattooSize.${s}`)}
@@ -241,7 +269,7 @@ export default function ReportFormPage() {
               }))
             }
           >
-            <option value="">-- 選択してください --</option>
+            <option value="">{t('common.selectPlaceholder')}</option>
             {FACILITY_RESPONSES.map((fr) => (
               <option key={fr} value={fr}>
                 {t(`report.facilityResponse.${fr}`)}
@@ -297,7 +325,7 @@ export default function ReportFormPage() {
               cursor: submitting ? 'not-allowed' : 'pointer',
             }}
           >
-            {submitting ? '送信中...' : t('common.submit')}
+            {submitting ? t('common.submitting') : t('common.submit')}
           </button>
           <button
             type="button"

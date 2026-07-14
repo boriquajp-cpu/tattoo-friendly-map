@@ -4,11 +4,15 @@
     "error": "エラーが発生しました",
     "retry": "再試行",
     "close": "閉じる",
+    "back": "戻る",
     "submit": "送信",
     "cancel": "キャンセル",
     "search": "検索",
     "filter": "絞り込み",
-    "noData": "情報がありません"
+    "noData": "情報がありません",
+    "selectPlaceholder": "選択してください",
+    "submitting": "送信中...",
+    "viewDetail": "詳細を見る"
   },
   "nav": {
     "map": "マップ",
@@ -36,6 +40,14 @@
     },
     "reportCount": "{{count}}件の報告（直近12ヶ月）",
     "noReports": "まだ報告がありません",
+    "reportList": "報告一覧",
+    "officialPolicy": "公式ポリシー",
+    "admittedCount": "入場可 {{count}}件",
+    "conditionalCount": "条件付き {{count}}件",
+    "deniedCount": "断られた {{count}}件",
+    "share": "シェアする",
+    "shareCopied": "コピーしました！",
+    "shareCopyLink": "リンクをコピー",
     "bookingLinks": {
       "klook": "Klookで予約",
       "kkday": "KKdayで予約",
@@ -83,7 +95,9 @@
     "commentPlaceholder": "詳細な状況を教えてください",
     "photo": "写真（任意・施設外観やシールのみ）",
     "submitSuccess": "報告ありがとうございます！",
-    "submitError": "送信に失敗しました。再度お試しください。"
+    "submitError": "送信に失敗しました。再度お試しください。",
+    "loginPrompt": "ログインすると報告を後から編集・削除できます。",
+    "loginLink": "ログインする"
   },
   "auth": {
     "loginTitle": "ログイン",
@@ -105,6 +119,26 @@
     "deleteError": "削除に失敗しました",
     "editSuccess": "更新しました",
     "editError": "更新に失敗しました"
+  },
+  "map": {
+    "facilityCount": "件",
+    "nearMe": "現在地を表示",
+    "allAreas": "すべてのエリア"
+  },
+  "facilityRequest": {
+    "title": "施設の追加を申請する",
+    "description": "掲載されていない施設の追加をリクエストできます。内容を確認後、順次対応いたします。",
+    "nameJa": "施設名（日本語）",
+    "nameJaPlaceholder": "例：○○温泉 渋谷店",
+    "addressJa": "住所",
+    "addressJaPlaceholder": "例：東京都渋谷区○○1-2-3",
+    "category": "カテゴリ",
+    "officialUrl": "公式サイトURL（任意）",
+    "message": "補足・コメント（任意）",
+    "messagePlaceholder": "タトゥー可否に関する情報があれば教えてください",
+    "submit": "申請する",
+    "success": "申請を受け付けました。ありがとうございます！",
+    "error": "送信に失敗しました。再度お試しください。"
   },
   "disclaimer": {
     "title": "ご利用にあたって",

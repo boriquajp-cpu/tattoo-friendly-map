@@ -114,8 +114,11 @@ export interface Facility {
   /** 施設名（原語） */
   readonly name: string;
 
-  /** 施設の住所 */
+  /** 施設の住所（表示言語に応じた値） */
   readonly address: string;
+
+  /** 施設の住所（日本語・都道府県抽出用） */
+  readonly address_ja?: string;
 
   /** 施設カテゴリ */
   readonly category: FacilityCategory;

@@ -4,6 +4,12 @@ import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import type { FacilityWithStats, Report, SummaryLabel } from '../types';
 
+const SHARE_COLORS: Record<string, string> = {
+  line: '#06C755',
+  twitter: '#000',
+  copy: '#6366f1',
+};
+
 const SUMMARY_BADGE_STYLE: Record<SummaryLabel, { bg: string; color: string }> = {
   high:        { bg: '#dcfce7', color: '#166534' },
   conditional: { bg: '#fef9c3', color: '#854d0e' },
@@ -11,7 +17,6 @@ const SUMMARY_BADGE_STYLE: Record<SummaryLabel, { bg: string; color: string }> =
   low:         { bg: '#fee2e2', color: '#991b1b' },
   no_data:     { bg: '#f3f4f6', color: '#374151' },
 };
-
 
 export default function FacilityDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -21,13 +26,14 @@ export default function FacilityDetailPage() {
   const [facility, setFacility] = useState<FacilityWithStats | null>(null);
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (!id) return;
     const fetch = async () => {
       const [{ data: f }, { data: r }] = await Promise.all([
         supabase.from('facilities').select('*, facility_stats(*)').eq('id', id).single(),
-        supabase.from('reports').select('*').eq('facility_id', id).order('visit_date', { ascending: false }).limit(20),
+        supabase.from('reports').select('*').eq('facility_id', id).order('visit_date', { ascending: false }).limit(50),
       ]);
       if (f) {
         const lang = i18n.language === 'zh-TW' ? 'zh_tw' : 'ja';
@@ -89,6 +95,29 @@ export default function FacilityDetailPage() {
     );
   }
 
+  const handleShare = async (platform: 'line' | 'twitter' | 'copy') => {
+    const url = window.location.href;
+    const text = `${facility?.name ?? ''} | Tattoo Map Japan`;
+    if (platform === 'line') {
+      window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(url)}`, '_blank');
+    } else if (platform === 'twitter') {
+      window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`, '_blank');
+    } else {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  // レポートから件数を計算
+  const admittedCount = reports.filter((r) =>
+    ['admitted', 'admitted_with_sticker', 'admitted_with_cover'].includes(r.result)
+  ).length;
+  const conditionalCount = reports.filter((r) =>
+    ['admitted_with_sticker', 'admitted_with_cover'].includes(r.result)
+  ).length;
+  const deniedCount = reports.filter((r) => r.result === 'denied').length;
+
   const stats = facility.stats;
   const summaryLabel: SummaryLabel = stats?.summary_label ?? 'no_data';
   const { bg, color } = SUMMARY_BADGE_STYLE[summaryLabel];
@@ -100,16 +129,11 @@ export default function FacilityDetailPage() {
         type="button"
         onClick={() => navigate(-1)}
         style={{
-          background: 'none',
-          border: 'none',
-          color: '#6366f1',
-          cursor: 'pointer',
-          fontSize: '14px',
-          marginBottom: '12px',
-          padding: 0,
+          background: 'none', border: 'none', color: '#6366f1',
+          cursor: 'pointer', fontSize: '14px', marginBottom: '12px', padding: 0,
         }}
       >
-        ← 戻る
+        ← {t('common.back')}
       </button>
 
       {/* 施設ヘッダー */}
@@ -122,23 +146,12 @@ export default function FacilityDetailPage() {
       </div>
 
       {/* 集計結果 */}
-      <div
-        style={{
-          backgroundColor: bg,
-          borderRadius: '12px',
-          padding: '16px',
-          marginBottom: '20px',
-        }}
-      >
+      <div style={{ backgroundColor: bg, borderRadius: '12px', padding: '16px', marginBottom: '20px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
           <span
             style={{
-              padding: '4px 14px',
-              borderRadius: '9999px',
-              backgroundColor: color,
-              color: '#fff',
-              fontWeight: 700,
-              fontSize: '14px',
+              padding: '4px 14px', borderRadius: '9999px',
+              backgroundColor: color, color: '#fff', fontWeight: 700, fontSize: '14px',
             }}
           >
             {t(`facility.summaryLabel.${summaryLabel}`)}
@@ -155,12 +168,12 @@ export default function FacilityDetailPage() {
           )}
         </div>
 
-        {/* 件数内訳 */}
-        {stats && (
+        {/* 件数内訳（レポートから計算） */}
+        {reports.length > 0 && (
           <div style={{ marginTop: '12px', display: 'flex', gap: '16px', fontSize: '13px', flexWrap: 'wrap' }}>
-            <span>入場可 {stats.admitted_count}件</span>
-            <span>条件付 {stats.conditional_count}件</span>
-            <span>拒否 {stats.denied_count}件</span>
+            <span style={{ color: '#166534' }}>✓ {t('facility.admittedCount', { count: admittedCount })}</span>
+            <span style={{ color: '#854d0e' }}>◎ {t('facility.conditionalCount', { count: conditionalCount })}</span>
+            <span style={{ color: '#991b1b' }}>✕ {t('facility.deniedCount', { count: deniedCount })}</span>
           </div>
         )}
       </div>
@@ -169,19 +182,18 @@ export default function FacilityDetailPage() {
       {facility.official_policy && (
         <div
           style={{
-            border: '1px solid #e5e7eb',
-            borderRadius: '8px',
-            padding: '12px 16px',
-            marginBottom: '20px',
-            backgroundColor: '#f9fafb',
+            border: '1px solid #e5e7eb', borderRadius: '8px',
+            padding: '12px 16px', marginBottom: '20px', backgroundColor: '#f9fafb',
           }}
         >
-          <p style={{ margin: '0 0 4px', fontSize: '12px', fontWeight: 600, color: '#374151' }}>公式ポリシー</p>
+          <p style={{ margin: '0 0 4px', fontSize: '12px', fontWeight: 600, color: '#374151' }}>
+            {t('facility.officialPolicy')}
+          </p>
           <p style={{ margin: 0, fontSize: '14px', color: '#4b5563' }}>{facility.official_policy}</p>
         </div>
       )}
 
-      {/* 予約リンク */}
+      {/* 公式サイト */}
       {facility.website_url && (
         <div style={{ marginBottom: '20px' }}>
           <a
@@ -189,14 +201,10 @@ export default function FacilityDetailPage() {
             target="_blank"
             rel="noopener noreferrer"
             style={{
-              display: 'inline-block',
-              padding: '8px 16px',
-              backgroundColor: '#6366f1',
-              color: '#fff',
-              borderRadius: '8px',
-              textDecoration: 'none',
-              fontSize: '14px',
-              fontWeight: 500,
+              display: 'inline-block', padding: '8px 16px',
+              backgroundColor: '#6366f1', color: '#fff',
+              borderRadius: '8px', textDecoration: 'none',
+              fontSize: '14px', fontWeight: 500,
             }}
           >
             {t('facility.bookingLinks.official')}
@@ -209,22 +217,48 @@ export default function FacilityDetailPage() {
         <Link
           to={`/facility/${facility.id}/report`}
           style={{
-            display: 'inline-block',
-            padding: '10px 20px',
-            backgroundColor: '#f97316',
-            color: '#fff',
-            borderRadius: '8px',
-            textDecoration: 'none',
-            fontSize: '14px',
-            fontWeight: 600,
+            display: 'inline-block', padding: '10px 20px',
+            backgroundColor: '#f97316', color: '#fff',
+            borderRadius: '8px', textDecoration: 'none',
+            fontSize: '14px', fontWeight: 600,
           }}
         >
           {t('report.title')}
         </Link>
       </div>
 
+      {/* ⑩ SNSシェア */}
+      <div style={{ marginBottom: '28px' }}>
+        <p style={{ fontSize: '13px', color: '#6b7280', marginBottom: '8px' }}>{t('facility.share')}</p>
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          {(['line', 'twitter', 'copy'] as const).map((platform) => (
+            <button
+              key={platform}
+              type="button"
+              onClick={() => { void handleShare(platform); }}
+              style={{
+                padding: '7px 16px',
+                backgroundColor: SHARE_COLORS[platform],
+                color: '#fff',
+                border: 'none',
+                borderRadius: '20px',
+                fontSize: '13px',
+                fontWeight: 600,
+                cursor: 'pointer',
+              }}
+            >
+              {platform === 'line' && 'LINE'}
+              {platform === 'twitter' && '𝕏 Twitter'}
+              {platform === 'copy' && (copied ? t('facility.shareCopied') : t('facility.shareCopyLink'))}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* 報告一覧 */}
-      <h2 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '12px' }}>報告一覧</h2>
+      <h2 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '12px' }}>
+        {t('facility.reportList')}
+      </h2>
       {reports.length === 0 ? (
         <p style={{ color: '#9ca3af', textAlign: 'center', padding: '24px 0' }}>
           {t('facility.noReports')}
@@ -235,21 +269,16 @@ export default function FacilityDetailPage() {
             <div
               key={report.id}
               style={{
-                border: '1px solid #e5e7eb',
-                borderRadius: '10px',
-                padding: '14px 16px',
-                backgroundColor: '#fff',
+                border: '1px solid #e5e7eb', borderRadius: '10px',
+                padding: '14px 16px', backgroundColor: '#fff',
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                 <span
                   style={{
-                    fontSize: '12px',
-                    fontWeight: 600,
-                    padding: '2px 8px',
-                    borderRadius: '4px',
-                    backgroundColor: '#e0e7ff',
-                    color: '#3730a3',
+                    fontSize: '12px', fontWeight: 600,
+                    padding: '2px 8px', borderRadius: '4px',
+                    backgroundColor: '#e0e7ff', color: '#3730a3',
                   }}
                 >
                   {t(`report.result.${report.result}`)}
@@ -272,10 +301,6 @@ export default function FacilityDetailPage() {
                   <span>{t(`report.facilityResponse.${report.facility_response}`)}</span>
                 )}
               </div>
-
-              <p style={{ margin: '8px 0 0', fontSize: '12px', color: '#9ca3af' }}>
-                参考になった {report.helpful_count}件
-              </p>
             </div>
           ))}
         </div>

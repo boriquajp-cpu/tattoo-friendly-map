@@ -4,11 +4,15 @@
     "error": "An error occurred",
     "retry": "Retry",
     "close": "Close",
+    "back": "Back",
     "submit": "Submit",
     "cancel": "Cancel",
     "search": "Search",
     "filter": "Filter",
-    "noData": "No information available"
+    "noData": "No information available",
+    "selectPlaceholder": "Please select",
+    "submitting": "Submitting...",
+    "viewDetail": "View Details"
   },
   "nav": {
     "map": "Map",
@@ -36,6 +40,14 @@
     },
     "reportCount": "{{count}} report(s) (last 12 months)",
     "noReports": "No reports yet",
+    "reportList": "User Reports",
+    "officialPolicy": "Official Policy",
+    "admittedCount": "Admitted: {{count}}",
+    "conditionalCount": "Conditional: {{count}}",
+    "deniedCount": "Denied: {{count}}",
+    "share": "Share",
+    "shareCopied": "Copied!",
+    "shareCopyLink": "Copy Link",
     "bookingLinks": {
       "klook": "Book on Klook",
       "kkday": "Book on KKday",
@@ -83,7 +95,9 @@
     "commentPlaceholder": "Please describe the situation in detail",
     "photo": "Photo (optional — facility exterior or sticker only)",
     "submitSuccess": "Thank you for your report!",
-    "submitError": "Submission failed. Please try again."
+    "submitError": "Submission failed. Please try again.",
+    "loginPrompt": "Log in to edit or delete your reports later.",
+    "loginLink": "Log in"
   },
   "auth": {
     "loginTitle": "Login",
@@ -105,6 +119,26 @@
     "deleteError": "Failed to delete",
     "editSuccess": "Updated successfully",
     "editError": "Failed to update"
+  },
+  "map": {
+    "facilityCount": " facilities",
+    "nearMe": "Show My Location",
+    "allAreas": "All Areas"
+  },
+  "facilityRequest": {
+    "title": "Request a Facility",
+    "description": "You can request to add a facility not yet listed. We'll review and add it as soon as possible.",
+    "nameJa": "Facility Name (Japanese)",
+    "nameJaPlaceholder": "e.g. ○○ Onsen Shibuya",
+    "addressJa": "Address",
+    "addressJaPlaceholder": "e.g. 1-2-3 ○○, Shibuya-ku, Tokyo",
+    "category": "Category",
+    "officialUrl": "Official Website (optional)",
+    "message": "Additional Notes (optional)",
+    "messagePlaceholder": "If you have any info about tattoo policies, please share",
+    "submit": "Submit Request",
+    "success": "Your request has been received. Thank you!",
+    "error": "Submission failed. Please try again."
   },
   "disclaimer": {
     "title": "Please Note",

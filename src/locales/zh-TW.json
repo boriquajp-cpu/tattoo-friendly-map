@@ -4,11 +4,15 @@
     "error": "發生錯誤",
     "retry": "重試",
     "close": "關閉",
+    "back": "返回",
     "submit": "送出",
     "cancel": "取消",
     "search": "搜尋",
     "filter": "篩選",
-    "noData": "尚無資訊"
+    "noData": "尚無資訊",
+    "selectPlaceholder": "請選擇",
+    "submitting": "送出中...",
+    "viewDetail": "查看詳情"
   },
   "nav": {
     "map": "地圖",
@@ -36,6 +40,14 @@
     },
     "reportCount": "{{count}} 則回報（近12個月）",
     "noReports": "尚無回報",
+    "reportList": "使用者回報",
+    "officialPolicy": "官方政策",
+    "admittedCount": "可入場 {{count}} 則",
+    "conditionalCount": "條件入場 {{count}} 則",
+    "deniedCount": "被拒絕 {{count}} 則",
+    "share": "分享",
+    "shareCopied": "已複製！",
+    "shareCopyLink": "複製連結",
     "bookingLinks": {
       "klook": "透過 Klook 預訂",
       "kkday": "透過 KKday 預訂",
@@ -83,7 +95,9 @@
     "commentPlaceholder": "請描述詳細情況",
     "photo": "照片（選填・僅限設施外觀或貼紙）",
     "submitSuccess": "感謝您的回報！",
-    "submitError": "送出失敗，請再試一次。"
+    "submitError": "送出失敗，請再試一次。",
+    "loginPrompt": "登入後可隨時編輯或刪除您的回報。",
+    "loginLink": "前往登入"
   },
   "auth": {
     "loginTitle": "登入",
@@ -105,6 +119,26 @@
     "deleteError": "刪除失敗",
     "editSuccess": "已更新",
     "editError": "更新失敗"
+  },
+  "map": {
+    "facilityCount": " 個設施",
+    "nearMe": "顯示目前位置",
+    "allAreas": "全部地區"
+  },
+  "facilityRequest": {
+    "title": "申請新增設施",
+    "description": "您可以申請新增尚未收錄的設施。我們將依序審核並處理您的申請。",
+    "nameJa": "設施名稱（日文）",
+    "nameJaPlaceholder": "例：○○溫泉 澀谷店",
+    "addressJa": "地址",
+    "addressJaPlaceholder": "例：東京都澀谷區○○1-2-3",
+    "category": "類別",
+    "officialUrl": "官方網站（選填）",
+    "message": "補充說明（選填）",
+    "messagePlaceholder": "如有刺青相關資訊，歡迎告知",
+    "submit": "送出申請",
+    "success": "已收到您的申請，感謝您！",
+    "error": "送出失敗，請再試一次。"
   },
   "disclaimer": {
     "title": "使用須知",
