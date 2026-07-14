@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import CorrectionModal from '../components/CorrectionModal/CorrectionModal';
+import { useFavorites } from '../hooks/useFavorites';
 import type { FacilityWithStats, Report, SummaryLabel } from '../types';
 
 const SHARE_COLORS: Record<string, string> = {
@@ -24,6 +25,7 @@ export default function FacilityDetailPage() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
 
+  const { isFavorite, toggle } = useFavorites();
   const [facility, setFacility] = useState<FacilityWithStats | null>(null);
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
@@ -143,7 +145,17 @@ export default function FacilityDetailPage() {
         <p style={{ margin: 0, fontSize: '11px', color: '#6b7280', textTransform: 'uppercase' }}>
           {t(`facility.categories.${facility.category}`)}
         </p>
-        <h1 style={{ margin: '4px 0', fontSize: '22px', fontWeight: 700 }}>{facility.name}</h1>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <h1 style={{ margin: '4px 0', fontSize: '22px', fontWeight: 700, flex: 1 }}>{facility.name}</h1>
+          <button
+            type="button"
+            onClick={() => toggle(facility.id)}
+            title={t('common.favorite')}
+            style={{ background: 'none', border: 'none', fontSize: '26px', cursor: 'pointer', flexShrink: 0, padding: '2px', lineHeight: 1 }}
+          >
+            {isFavorite(facility.id) ? '❤️' : '🤍'}
+          </button>
+        </div>
         <p style={{ margin: '0 0 12px', color: '#6b7280', fontSize: '14px' }}>{facility.address}</p>
 
         {/* ② ナビボタン */}

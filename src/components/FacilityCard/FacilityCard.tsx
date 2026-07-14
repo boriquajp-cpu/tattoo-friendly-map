@@ -4,6 +4,8 @@ import type { FacilityWithStats, SummaryLabel, ConfidenceLevel } from '../../typ
 
 interface FacilityCardProps {
   facility: FacilityWithStats;
+  isFavorite?: boolean;
+  onToggleFavorite?: (id: string) => void;
 }
 
 const SUMMARY_BADGE_STYLE: Record<SummaryLabel, { bg: string; color: string }> = {
@@ -20,7 +22,7 @@ const CONFIDENCE_DOT: Record<ConfidenceLevel, string> = {
   low:    '#9ca3af',
 };
 
-export default function FacilityCard({ facility }: FacilityCardProps) {
+export default function FacilityCard({ facility, isFavorite = false, onToggleFavorite }: FacilityCardProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -39,16 +41,37 @@ export default function FacilityCard({ facility }: FacilityCardProps) {
         cursor: 'pointer',
         backgroundColor: '#fff',
         transition: 'box-shadow 0.15s',
+        position: 'relative',
       }}
-      onMouseEnter={(e) => {
-        (e.currentTarget as HTMLDivElement).style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
-      }}
-      onMouseLeave={(e) => {
-        (e.currentTarget as HTMLDivElement).style.boxShadow = 'none';
-      }}
+      onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)'; }}
+      onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.boxShadow = 'none'; }}
     >
+      {/* ハートボタン */}
+      {onToggleFavorite && (
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); onToggleFavorite(facility.id); }}
+          title={t('common.favorite')}
+          style={{
+            position: 'absolute',
+            top: '12px',
+            right: '12px',
+            background: 'none',
+            border: 'none',
+            fontSize: '20px',
+            cursor: 'pointer',
+            lineHeight: 1,
+            padding: '2px',
+            color: isFavorite ? '#ef4444' : '#d1d5db',
+            transition: 'color 0.15s',
+          }}
+        >
+          {isFavorite ? '❤️' : '🤍'}
+        </button>
+      )}
+
       {/* ヘッダー行 */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px', paddingRight: onToggleFavorite ? '28px' : '0' }}>
         <div style={{ minWidth: 0 }}>
           <p style={{ margin: 0, fontSize: '11px', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             {t(`facility.categories.${facility.category}`)}
@@ -58,8 +81,6 @@ export default function FacilityCard({ facility }: FacilityCardProps) {
           </h3>
           <p style={{ margin: '4px 0 0', fontSize: '13px', color: '#6b7280' }}>{facility.address}</p>
         </div>
-
-        {/* 許可レベルバッジ */}
         <span
           style={{
             flexShrink: 0,
@@ -77,25 +98,12 @@ export default function FacilityCard({ facility }: FacilityCardProps) {
 
       {/* フッター行 */}
       <div style={{ marginTop: '12px', display: 'flex', alignItems: 'center', gap: '12px', fontSize: '13px', color: '#6b7280' }}>
-        {/* 報告件数 */}
         <span>
-          {stats
-            ? t('facility.reportCount', { count: stats.total_reports })
-            : t('facility.noReports')}
+          {stats ? t('facility.reportCount', { count: stats.total_reports }) : t('facility.noReports')}
         </span>
-
-        {/* 信頼度 */}
         {confidence && (
           <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <span
-              style={{
-                width: '8px',
-                height: '8px',
-                borderRadius: '50%',
-                backgroundColor: CONFIDENCE_DOT[confidence],
-                display: 'inline-block',
-              }}
-            />
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: CONFIDENCE_DOT[confidence], display: 'inline-block' }} />
             {t(`facility.confidence.${confidence}`)}
           </span>
         )}

@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import FacilityCard from '../components/FacilityCard/FacilityCard';
+import { useFavorites } from '../hooks/useFavorites';
 import type { FacilityCategory, FacilityWithStats, SummaryLabel } from '../types';
 
 const ALL_CATEGORIES: FacilityCategory[] = ['onsen', 'gym_pool', 'outdoor'];
@@ -15,12 +16,14 @@ const getPrefecture = (address: string): string => {
 export default function FacilityListPage() {
   const { t, i18n } = useTranslation();
 
+  const { isFavorite, toggle } = useFavorites();
   const [facilities, setFacilities] = useState<FacilityWithStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState('');
   const [activeCategories, setActiveCategories] = useState<Set<FacilityCategory>>(new Set());
   const [activeLabels, setActiveLabels] = useState<Set<SummaryLabel>>(new Set());
   const [activePrefecture, setActivePrefecture] = useState('');
+  const [favoritesOnly, setFavoritesOnly] = useState(false);
 
   useEffect(() => {
     const fetchFacilities = async () => {
@@ -115,7 +118,9 @@ export default function FacilityListPage() {
       activePrefecture === '' ||
       getPrefecture(f.address_ja ?? f.address) === activePrefecture;
 
-    return matchSearch && matchCategory && matchLabel && matchPrefecture;
+    const matchFavorite = !favoritesOnly || isFavorite(f.id);
+
+    return matchSearch && matchCategory && matchLabel && matchPrefecture && matchFavorite;
   });
 
   const chipStyle = (active: boolean): React.CSSProperties => ({
@@ -187,7 +192,7 @@ export default function FacilityListPage() {
       </div>
 
       {/* 許可レベルフィルター */}
-      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '16px' }}>
+      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '8px' }}>
         {ALL_LABELS.map((label) => (
           <button
             key={label}
@@ -198,6 +203,21 @@ export default function FacilityListPage() {
             {t(`facility.summaryLabel.${label}`)}
           </button>
         ))}
+      </div>
+
+      {/* お気に入りフィルター */}
+      <div style={{ marginBottom: '16px' }}>
+        <button
+          type="button"
+          onClick={() => setFavoritesOnly((v) => !v)}
+          style={{
+            ...chipStyle(favoritesOnly),
+            borderColor: favoritesOnly ? '#ef4444' : '#d1d5db',
+            backgroundColor: favoritesOnly ? '#ef4444' : '#fff',
+          }}
+        >
+          {favoritesOnly ? '❤️' : '🤍'} {t('common.favoriteOnly')}
+        </button>
       </div>
 
       {/* 件数 */}
@@ -217,7 +237,12 @@ export default function FacilityListPage() {
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {filtered.map((facility) => (
-            <FacilityCard key={facility.id} facility={facility} />
+            <FacilityCard
+              key={facility.id}
+              facility={facility}
+              isFavorite={isFavorite(facility.id)}
+              onToggleFavorite={toggle}
+            />
           ))}
         </div>
       )}

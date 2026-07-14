@@ -12,7 +12,9 @@
     "noData": "情報がありません",
     "selectPlaceholder": "選択してください",
     "submitting": "送信中...",
-    "viewDetail": "詳細を見る"
+    "viewDetail": "詳細を見る",
+    "favorite": "お気に入り",
+    "favoriteOnly": "お気に入りのみ"
   },
   "nav": {
     "map": "マップ",

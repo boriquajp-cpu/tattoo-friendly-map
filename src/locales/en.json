@@ -12,7 +12,9 @@
     "noData": "No information available",
     "selectPlaceholder": "Please select",
     "submitting": "Submitting...",
-    "viewDetail": "View Details"
+    "viewDetail": "View Details",
+    "favorite": "Favorite",
+    "favoriteOnly": "Favorites Only"
   },
   "nav": {
     "map": "Map",

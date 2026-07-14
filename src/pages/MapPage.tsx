@@ -1,6 +1,7 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Map, { Marker, NavigationControl } from 'react-map-gl/maplibre';
+import Map, { Source, Layer, NavigationControl } from 'react-map-gl/maplibre';
+import type { MapRef } from 'react-map-gl/maplibre';
 import { useTranslation } from 'react-i18next';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { supabase } from '../lib/supabase';
@@ -29,10 +30,9 @@ const getInitialViewState = () => {
 export default function MapPage() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const mapRef = useRef<MapRef>(null);
 
-  const [activeCategories, setActiveCategories] = useState<Set<FacilityCategory>>(
-    new Set(ALL_CATEGORIES)
-  );
+  const [activeCategories, setActiveCategories] = useState<Set<FacilityCategory>>(new Set(ALL_CATEGORIES));
   const [facilities, setFacilities] = useState<FacilityWithStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [showRequestModal, setShowRequestModal] = useState(false);
@@ -43,15 +43,8 @@ export default function MapPage() {
 
   useEffect(() => {
     const fetchFacilities = async () => {
-      const { data, error } = await supabase
-        .from('facilities')
-        .select('*, facility_stats(*)');
-
-      if (error) {
-        console.error('施設データ取得エラー:', error);
-        setLoading(false);
-        return;
-      }
+      const { data, error } = await supabase.from('facilities').select('*, facility_stats(*)');
+      if (error) { setLoading(false); return; }
 
       const lang = i18n.language === 'zh-TW' ? 'zh_tw' : 'ja';
       const mapped: FacilityWithStats[] = (data ?? []).map((f) => ({
@@ -66,52 +59,78 @@ export default function MapPage() {
         country_code: 'JP',
         created_at: f.created_at,
         updated_at: f.updated_at,
-        stats: f.facility_stats
-          ? {
-              facility_id: f.facility_stats.facility_id,
-              total_reports: f.facility_stats.report_count_12mo,
-              admitted_count: 0,
-              conditional_count: 0,
-              denied_count: 0,
-              summary_label: f.facility_stats.summary_label as SummaryLabel,
-              confidence: f.facility_stats.confidence_level ?? 'low',
-              last_updated: f.facility_stats.last_updated,
-            }
-          : null,
+        stats: f.facility_stats ? {
+          facility_id: f.facility_stats.facility_id,
+          total_reports: f.facility_stats.report_count_12mo,
+          admitted_count: 0,
+          conditional_count: 0,
+          denied_count: 0,
+          summary_label: f.facility_stats.summary_label as SummaryLabel,
+          confidence: f.facility_stats.confidence_level ?? 'low',
+          last_updated: f.facility_stats.last_updated,
+        } : null,
       }));
-
       setFacilities(mapped);
       setLoading(false);
     };
-
     void fetchFacilities();
   }, [i18n.language]);
 
   const toggleCategory = useCallback((cat: FacilityCategory) => {
     setActiveCategories((prev) => {
       const next = new Set(prev);
-      if (next.has(cat)) next.delete(cat);
-      else next.add(cat);
+      next.has(cat) ? next.delete(cat) : next.add(cat);
       return next;
     });
   }, []);
 
-  const handlePinClick = useCallback((facility: FacilityWithStats) => {
-    setSelectedFacility(facility);
-    setViewState((prev) => ({
-      ...prev,
-      longitude: facility.longitude,
-      latitude: facility.latitude,
-      zoom: Math.max(prev.zoom, 11),
-    }));
-  }, []);
+  const filteredFacilities = facilities.filter((f) => activeCategories.has(f.category));
 
-  const handleGeolocate = () => {
-    if (!navigator.geolocation) {
-      setGeoError(t('map.geoError'));
-      setTimeout(() => setGeoError(''), 3000);
+  // GeoJSON for clustering
+  const geojson = useMemo(() => ({
+    type: 'FeatureCollection' as const,
+    features: filteredFacilities.map((f) => ({
+      type: 'Feature' as const,
+      geometry: { type: 'Point' as const, coordinates: [f.longitude, f.latitude] as [number, number] },
+      properties: {
+        id: f.id,
+        name: f.name,
+        address: f.address ?? '',
+        summary_label: f.stats?.summary_label ?? 'no_data',
+      },
+    })),
+  }), [filteredFacilities]);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleMapClick = useCallback((event: any) => {
+    const features = event.features as Array<{ layer: { id: string }; geometry: { coordinates: [number, number] }; properties: Record<string, unknown> }> | undefined;
+
+    if (!features?.length) {
+      setSelectedFacility(null);
       return;
     }
+
+    const feature = features[0];
+
+    if (feature.layer.id === 'clusters') {
+      const [lng, lat] = feature.geometry.coordinates;
+      const currentZoom = mapRef.current?.getZoom() ?? 5;
+      setViewState((prev) => ({ ...prev, longitude: lng, latitude: lat, zoom: Math.min(currentZoom + 3, 16) }));
+      return;
+    }
+
+    if (feature.layer.id === 'unclustered-point') {
+      const fid = feature.properties.id as string;
+      const found = facilities.find((f) => f.id === fid);
+      if (found) {
+        setSelectedFacility(found);
+        setViewState((prev) => ({ ...prev, longitude: found.longitude, latitude: found.latitude, zoom: Math.max(prev.zoom, 11) }));
+      }
+    }
+  }, [facilities]);
+
+  const handleGeolocate = () => {
+    if (!navigator.geolocation) { setGeoError(t('map.geoError')); setTimeout(() => setGeoError(''), 3000); return; }
     setGeoLoading(true);
     setGeoError('');
     navigator.geolocation.getCurrentPosition(
@@ -130,11 +149,6 @@ export default function MapPage() {
     );
   };
 
-  const filteredFacilities = facilities.filter((f) => activeCategories.has(f.category));
-
-  const getPinColor = (facility: FacilityWithStats): string =>
-    SUMMARY_COLORS[facility.stats?.summary_label ?? 'no_data'];
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', position: 'relative' }}>
       {/* カテゴリフィルター */}
@@ -145,15 +159,11 @@ export default function MapPage() {
             type="button"
             onClick={() => toggleCategory(cat)}
             style={{
-              padding: '4px 14px',
-              borderRadius: '9999px',
-              border: '1px solid',
+              padding: '4px 14px', borderRadius: '9999px', border: '1px solid',
               borderColor: activeCategories.has(cat) ? '#6366f1' : '#d1d5db',
               backgroundColor: activeCategories.has(cat) ? '#6366f1' : '#fff',
               color: activeCategories.has(cat) ? '#fff' : '#374151',
-              cursor: 'pointer',
-              fontSize: '13px',
-              fontWeight: 500,
+              cursor: 'pointer', fontSize: '13px', fontWeight: 500,
             }}
           >
             {t(`facility.categories.${cat}`)}
@@ -166,26 +176,18 @@ export default function MapPage() {
       {/* ジオエラートースト */}
       {geoError && (
         <div style={{
-          position: 'absolute',
-          top: '52px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          backgroundColor: '#1f2937',
-          color: '#fff',
-          padding: '8px 18px',
-          borderRadius: '20px',
-          fontSize: '13px',
-          zIndex: 30,
-          whiteSpace: 'nowrap',
-          pointerEvents: 'none',
+          position: 'absolute', top: '52px', left: '50%', transform: 'translateX(-50%)',
+          backgroundColor: '#1f2937', color: '#fff', padding: '8px 18px',
+          borderRadius: '20px', fontSize: '13px', zIndex: 30, whiteSpace: 'nowrap', pointerEvents: 'none',
         }}>
           {geoError}
         </div>
       )}
 
       {/* マップ */}
-      <div style={{ flex: 1, position: 'relative' }} onClick={() => setSelectedFacility(null)}>
+      <div style={{ flex: 1, position: 'relative' }}>
         <Map
+          ref={mapRef}
           {...viewState}
           onMove={(evt) => {
             setViewState(evt.viewState);
@@ -193,49 +195,92 @@ export default function MapPage() {
           }}
           style={{ width: '100%', height: '100%' }}
           mapStyle="https://tiles.openfreemap.org/styles/liberty"
+          interactiveLayerIds={['clusters', 'unclustered-point']}
+          onClick={handleMapClick}
+          cursor="auto"
         >
           <NavigationControl position="top-right" />
-          {filteredFacilities.map((facility) => (
-            <Marker
-              key={facility.id}
-              longitude={facility.longitude}
-              latitude={facility.latitude}
-              anchor="center"
-              onClick={(e) => { e.originalEvent.stopPropagation(); handlePinClick(facility); }}
-            >
-              <div
-                title={facility.name}
-                style={{
-                  width: selectedFacility?.id === facility.id ? '38px' : '30px',
-                  height: selectedFacility?.id === facility.id ? '38px' : '30px',
-                  borderRadius: '50%',
-                  backgroundColor: getPinColor(facility),
-                  border: selectedFacility?.id === facility.id ? '3px solid #fff' : '2px solid #fff',
-                  boxShadow: selectedFacility?.id === facility.id
-                    ? '0 0 0 3px #6366f1, 0 2px 8px rgba(0,0,0,0.4)'
-                    : '0 1px 4px rgba(0,0,0,0.3)',
-                  cursor: 'pointer',
-                  transition: 'all 0.15s',
-                }}
-              />
-            </Marker>
-          ))}
+
+          <Source
+            id="facilities"
+            type="geojson"
+            data={geojson}
+            cluster={true}
+            clusterMaxZoom={13}
+            clusterRadius={45}
+          >
+            {/* クラスター円 */}
+            <Layer
+              id="clusters"
+              type="circle"
+              filter={['has', 'point_count']}
+              paint={{
+                'circle-color': '#6366f1',
+                'circle-radius': ['step', ['get', 'point_count'], 22, 10, 30, 50, 38],
+                'circle-opacity': 0.9,
+              }}
+            />
+            {/* クラスター件数 */}
+            <Layer
+              id="cluster-count"
+              type="symbol"
+              filter={['has', 'point_count']}
+              layout={{
+                'text-field': '{point_count_abbreviated}',
+                'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+                'text-size': 13,
+              }}
+              paint={{ 'text-color': '#fff' }}
+            />
+            {/* 個別ピン */}
+            <Layer
+              id="unclustered-point"
+              type="circle"
+              filter={['!', ['has', 'point_count']]}
+              paint={{
+                'circle-color': [
+                  'match', ['get', 'summary_label'],
+                  'high', '#22c55e',
+                  'conditional', '#eab308',
+                  'mixed', '#f97316',
+                  'low', '#ef4444',
+                  '#9ca3af',
+                ],
+                'circle-radius': 12,
+                'circle-stroke-width': 2,
+                'circle-stroke-color': '#fff',
+              }}
+            />
+            {/* 選択中ピン（ハイライト） */}
+            <Layer
+              id="unclustered-point-selected"
+              type="circle"
+              filter={selectedFacility
+                ? ['all', ['!', ['has', 'point_count']], ['==', ['get', 'id'], selectedFacility.id]]
+                : ['boolean', false]}
+              paint={{
+                'circle-color': [
+                  'match', ['get', 'summary_label'],
+                  'high', '#22c55e',
+                  'conditional', '#eab308',
+                  'mixed', '#f97316',
+                  'low', '#ef4444',
+                  '#9ca3af',
+                ],
+                'circle-radius': 17,
+                'circle-stroke-width': 3,
+                'circle-stroke-color': '#6366f1',
+              }}
+            />
+          </Source>
         </Map>
 
-        {/* ⑩ 凡例オーバーレイ（マップ内左下） */}
+        {/* 凡例オーバーレイ */}
         <div style={{
-          position: 'absolute',
-          bottom: '28px',
-          left: '8px',
-          backgroundColor: 'rgba(255,255,255,0.93)',
-          borderRadius: '8px',
-          padding: '7px 10px',
-          fontSize: '11px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '4px',
-          boxShadow: '0 1px 6px rgba(0,0,0,0.12)',
-          pointerEvents: 'none',
+          position: 'absolute', bottom: '28px', left: '8px',
+          backgroundColor: 'rgba(255,255,255,0.93)', borderRadius: '8px', padding: '7px 10px',
+          fontSize: '11px', display: 'flex', flexDirection: 'column', gap: '4px',
+          boxShadow: '0 1px 6px rgba(0,0,0,0.12)', pointerEvents: 'none',
         }}>
           {(Object.entries(SUMMARY_COLORS) as [SummaryLabel, string][]).map(([label, color]) => (
             <span key={label} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
@@ -246,20 +291,14 @@ export default function MapPage() {
         </div>
       </div>
 
-      {/* ⑤ ピンポップアップ（ボトムカード） */}
+      {/* ポップアップ（ボトムカード） */}
       {selectedFacility && (
         <div
           onClick={(e) => e.stopPropagation()}
           style={{
-            position: 'absolute',
-            bottom: '52px',
-            left: '12px',
-            right: '12px',
-            backgroundColor: '#fff',
-            borderRadius: '14px',
-            padding: '14px 16px',
-            boxShadow: '0 4px 24px rgba(0,0,0,0.18)',
-            zIndex: 20,
+            position: 'absolute', bottom: '52px', left: '12px', right: '12px',
+            backgroundColor: '#fff', borderRadius: '14px', padding: '14px 16px',
+            boxShadow: '0 4px 24px rgba(0,0,0,0.18)', zIndex: 20,
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -273,18 +312,12 @@ export default function MapPage() {
               <p style={{ margin: 0, fontSize: '12px', color: '#6b7280', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {selectedFacility.address}
               </p>
-              <span
-                style={{
-                  display: 'inline-block',
-                  marginTop: '6px',
-                  padding: '2px 10px',
-                  borderRadius: '9999px',
-                  fontSize: '12px',
-                  fontWeight: 600,
-                  backgroundColor: SUMMARY_COLORS[selectedFacility.stats?.summary_label ?? 'no_data'],
-                  color: '#fff',
-                }}
-              >
+              <span style={{
+                display: 'inline-block', marginTop: '6px', padding: '2px 10px',
+                borderRadius: '9999px', fontSize: '12px', fontWeight: 600,
+                backgroundColor: SUMMARY_COLORS[selectedFacility.stats?.summary_label ?? 'no_data'],
+                color: '#fff',
+              }}>
                 {t(`facility.summaryLabel.${selectedFacility.stats?.summary_label ?? 'no_data'}`)}
               </span>
             </div>
@@ -300,16 +333,9 @@ export default function MapPage() {
             type="button"
             onClick={() => navigate(`/facility/${selectedFacility.id}`)}
             style={{
-              marginTop: '12px',
-              width: '100%',
-              padding: '9px',
-              backgroundColor: '#6366f1',
-              color: '#fff',
-              border: 'none',
-              borderRadius: '8px',
-              fontSize: '14px',
-              fontWeight: 600,
-              cursor: 'pointer',
+              marginTop: '12px', width: '100%', padding: '9px',
+              backgroundColor: '#6366f1', color: '#fff', border: 'none',
+              borderRadius: '8px', fontSize: '14px', fontWeight: 600, cursor: 'pointer',
             }}
           >
             {t('common.viewDetail')}
@@ -317,29 +343,19 @@ export default function MapPage() {
         </div>
       )}
 
-      {/* ⑨ 現在地ボタン */}
+      {/* 現在地ボタン */}
       <button
         type="button"
         onClick={handleGeolocate}
         title={t('map.nearMe')}
         style={{
-          position: 'absolute',
-          bottom: selectedFacility ? '172px' : '16px',
-          right: '16px',
-          width: '40px',
-          height: '40px',
-          borderRadius: '50%',
-          backgroundColor: '#fff',
-          border: '1px solid #d1d5db',
-          fontSize: '18px',
+          position: 'absolute', bottom: selectedFacility ? '172px' : '16px', right: '16px',
+          width: '40px', height: '40px', borderRadius: '50%',
+          backgroundColor: '#fff', border: '1px solid #d1d5db', fontSize: '18px',
           cursor: geoLoading ? 'not-allowed' : 'pointer',
           boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 10,
-          transition: 'bottom 0.2s',
-          opacity: geoLoading ? 0.6 : 1,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          zIndex: 10, transition: 'bottom 0.2s', opacity: geoLoading ? 0.6 : 1,
         }}
       >
         {geoLoading ? '⏳' : '📍'}
@@ -351,31 +367,18 @@ export default function MapPage() {
         onClick={() => setShowRequestModal(true)}
         title={t('facilityRequest.title')}
         style={{
-          position: 'absolute',
-          bottom: selectedFacility ? '244px' : '104px',
-          right: '16px',
-          width: '44px',
-          height: '44px',
-          borderRadius: '50%',
-          backgroundColor: '#6366f1',
-          color: '#fff',
-          border: 'none',
-          fontSize: '22px',
-          cursor: 'pointer',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.25)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 10,
-          transition: 'bottom 0.2s',
+          position: 'absolute', bottom: selectedFacility ? '224px' : '68px', right: '16px',
+          width: '44px', height: '44px', borderRadius: '50%',
+          backgroundColor: '#6366f1', color: '#fff', border: 'none', fontSize: '22px',
+          cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.25)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          zIndex: 10, transition: 'bottom 0.2s',
         }}
       >
         ＋
       </button>
 
-      {showRequestModal && (
-        <FacilityRequestModal onClose={() => setShowRequestModal(false)} />
-      )}
+      {showRequestModal && <FacilityRequestModal onClose={() => setShowRequestModal(false)} />}
     </div>
   );
 }
