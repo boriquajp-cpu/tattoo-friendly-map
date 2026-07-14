@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
-import type { Report, ReportResult, SummaryLabel } from '../types';
+import type { Report, ReportResult } from '../types';
 
 const RESULT_COLORS: Record<ReportResult, { bg: string; color: string }> = {
   admitted:              { bg: '#dcfce7', color: '#166534' },
