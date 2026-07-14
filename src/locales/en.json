@@ -97,15 +97,21 @@
     "submitSuccess": "Thank you for your report!",
     "submitError": "Submission failed. Please try again.",
     "loginPrompt": "Log in to edit or delete your reports later.",
-    "loginLink": "Log in"
+    "loginLink": "Log in",
+    "resultRequired": "Please select an entry result."
   },
   "auth": {
     "loginTitle": "Login",
+    "registerTitle": "Create Account",
     "email": "Email Address",
     "password": "Password",
     "loginButton": "Login",
+    "registerButton": "Register",
     "registerLink": "Create an account",
-    "logoutButton": "Logout"
+    "logoutButton": "Logout",
+    "processing": "Processing...",
+    "emailRequired": "Please enter your email and password.",
+    "confirmEmailSent": "Confirmation email sent. Please check your inbox."
   },
   "mypage": {
     "title": "My Page",
@@ -123,7 +129,8 @@
   "map": {
     "facilityCount": " facilities",
     "nearMe": "Show My Location",
-    "allAreas": "All Areas"
+    "allAreas": "All Areas",
+    "geoError": "Unable to get your current location."
   },
   "facilityRequest": {
     "title": "Request a Facility",

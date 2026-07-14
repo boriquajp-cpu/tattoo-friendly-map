@@ -16,6 +16,7 @@ i18n
       en: { translation: en },
     },
     supportedLngs: ['ja', 'zh-TW', 'en'],
+    nonExplicitSupportedLngs: true,
     fallbackLng: 'ja',
     interpolation: {
       escapeValue: false, // React handles XSS escaping automatically

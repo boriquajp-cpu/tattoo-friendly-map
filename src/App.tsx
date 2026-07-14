@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Suspense } from 'react';
 
@@ -5,6 +6,7 @@ import './lib/i18n';
 
 import { AuthProvider } from './contexts/AuthContext';
 import Layout from './components/Layout/Layout';
+import DisclaimerModal from './components/DisclaimerModal/DisclaimerModal';
 import MapPage from './pages/MapPage';
 import FacilityListPage from './pages/FacilityListPage';
 import FacilityDetailPage from './pages/FacilityDetailPage';
@@ -13,6 +15,15 @@ import LoginPage from './pages/LoginPage';
 import MyReportsPage from './pages/MyReportsPage';
 
 function App() {
+  const [showDisclaimer, setShowDisclaimer] = useState(
+    () => !localStorage.getItem('disclaimer_accepted')
+  );
+
+  const handleDisclaimerConfirm = () => {
+    localStorage.setItem('disclaimer_accepted', '1');
+    setShowDisclaimer(false);
+  };
+
   return (
     <AuthProvider>
       <BrowserRouter>
@@ -36,6 +47,7 @@ function App() {
               />
             </Routes>
           </Layout>
+          {showDisclaimer && <DisclaimerModal onConfirm={handleDisclaimerConfirm} />}
         </Suspense>
       </BrowserRouter>
     </AuthProvider>

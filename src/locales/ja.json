@@ -97,15 +97,21 @@
     "submitSuccess": "報告ありがとうございます！",
     "submitError": "送信に失敗しました。再度お試しください。",
     "loginPrompt": "ログインすると報告を後から編集・削除できます。",
-    "loginLink": "ログインする"
+    "loginLink": "ログインする",
+    "resultRequired": "入場結果を選択してください。"
   },
   "auth": {
     "loginTitle": "ログイン",
+    "registerTitle": "新規登録",
     "email": "メールアドレス",
     "password": "パスワード",
     "loginButton": "ログイン",
+    "registerButton": "登録する",
     "registerLink": "アカウント登録はこちら",
-    "logoutButton": "ログアウト"
+    "logoutButton": "ログアウト",
+    "processing": "処理中...",
+    "emailRequired": "メールアドレスとパスワードを入力してください。",
+    "confirmEmailSent": "確認メールを送信しました。メールを確認してください。"
   },
   "mypage": {
     "title": "マイページ",
@@ -123,7 +129,8 @@
   "map": {
     "facilityCount": "件",
     "nearMe": "現在地を表示",
-    "allAreas": "すべてのエリア"
+    "allAreas": "すべてのエリア",
+    "geoError": "現在地の取得に失敗しました。"
   },
   "facilityRequest": {
     "title": "施設の追加を申請する",

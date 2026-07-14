@@ -39,6 +39,7 @@ export default function MapPage() {
   const [selectedFacility, setSelectedFacility] = useState<FacilityWithStats | null>(null);
   const [viewState, setViewState] = useState(getInitialViewState);
   const [geoLoading, setGeoLoading] = useState(false);
+  const [geoError, setGeoError] = useState('');
 
   useEffect(() => {
     const fetchFacilities = async () => {
@@ -106,8 +107,13 @@ export default function MapPage() {
   }, []);
 
   const handleGeolocate = () => {
-    if (!navigator.geolocation) return;
+    if (!navigator.geolocation) {
+      setGeoError(t('map.geoError'));
+      setTimeout(() => setGeoError(''), 3000);
+      return;
+    }
     setGeoLoading(true);
+    setGeoError('');
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const next = { longitude: pos.coords.longitude, latitude: pos.coords.latitude, zoom: 13 };
@@ -115,7 +121,11 @@ export default function MapPage() {
         sessionStorage.setItem('mapViewState', JSON.stringify(next));
         setGeoLoading(false);
       },
-      () => setGeoLoading(false),
+      () => {
+        setGeoLoading(false);
+        setGeoError(t('map.geoError'));
+        setTimeout(() => setGeoError(''), 3000);
+      },
       { timeout: 8000 }
     );
   };
@@ -153,8 +163,28 @@ export default function MapPage() {
         {!loading && <span style={{ fontSize: '12px', color: '#6b7280', alignSelf: 'center' }}>{filteredFacilities.length}{t('map.facilityCount')}</span>}
       </div>
 
+      {/* ジオエラートースト */}
+      {geoError && (
+        <div style={{
+          position: 'absolute',
+          top: '52px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          backgroundColor: '#1f2937',
+          color: '#fff',
+          padding: '8px 18px',
+          borderRadius: '20px',
+          fontSize: '13px',
+          zIndex: 30,
+          whiteSpace: 'nowrap',
+          pointerEvents: 'none',
+        }}>
+          {geoError}
+        </div>
+      )}
+
       {/* マップ */}
-      <div style={{ flex: 1 }} onClick={() => setSelectedFacility(null)}>
+      <div style={{ flex: 1, position: 'relative' }} onClick={() => setSelectedFacility(null)}>
         <Map
           {...viewState}
           onMove={(evt) => {
@@ -191,6 +221,29 @@ export default function MapPage() {
             </Marker>
           ))}
         </Map>
+
+        {/* ⑩ 凡例オーバーレイ（マップ内左下） */}
+        <div style={{
+          position: 'absolute',
+          bottom: '28px',
+          left: '8px',
+          backgroundColor: 'rgba(255,255,255,0.93)',
+          borderRadius: '8px',
+          padding: '7px 10px',
+          fontSize: '11px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '4px',
+          boxShadow: '0 1px 6px rgba(0,0,0,0.12)',
+          pointerEvents: 'none',
+        }}>
+          {(Object.entries(SUMMARY_COLORS) as [SummaryLabel, string][]).map(([label, color]) => (
+            <span key={label} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <span style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: color, display: 'inline-block', flexShrink: 0 }} />
+              {t(`facility.summaryLabel.${label}`)}
+            </span>
+          ))}
+        </div>
       </div>
 
       {/* ⑤ ピンポップアップ（ボトムカード） */}
@@ -264,16 +317,6 @@ export default function MapPage() {
         </div>
       )}
 
-      {/* 凡例 */}
-      <div style={{ display: 'flex', gap: '10px', padding: '6px 16px', backgroundColor: '#fff', borderTop: '1px solid #e5e7eb', flexWrap: 'wrap', fontSize: '11px' }}>
-        {(Object.entries(SUMMARY_COLORS) as [SummaryLabel, string][]).map(([label, color]) => (
-          <span key={label} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <span style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: color, display: 'inline-block', flexShrink: 0 }} />
-            {t(`facility.summaryLabel.${label}`)}
-          </span>
-        ))}
-      </div>
-
       {/* ⑨ 現在地ボタン */}
       <button
         type="button"
@@ -281,7 +324,7 @@ export default function MapPage() {
         title={t('map.nearMe')}
         style={{
           position: 'absolute',
-          bottom: selectedFacility ? '196px' : '56px',
+          bottom: selectedFacility ? '172px' : '16px',
           right: '16px',
           width: '40px',
           height: '40px',

@@ -89,7 +89,7 @@ export default function ReportFormPage() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!formData.result) {
-      setErrorMsg('入場結果を選択してください。');
+      setErrorMsg(t('report.resultRequired'));
       return;
     }
     setSubmitting(true);

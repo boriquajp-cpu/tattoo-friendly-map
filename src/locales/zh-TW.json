@@ -97,15 +97,21 @@
     "submitSuccess": "感謝您的回報！",
     "submitError": "送出失敗，請再試一次。",
     "loginPrompt": "登入後可隨時編輯或刪除您的回報。",
-    "loginLink": "前往登入"
+    "loginLink": "前往登入",
+    "resultRequired": "請選擇入場結果。"
   },
   "auth": {
     "loginTitle": "登入",
+    "registerTitle": "建立帳號",
     "email": "電子郵件",
     "password": "密碼",
     "loginButton": "登入",
+    "registerButton": "註冊",
     "registerLink": "點此註冊帳號",
-    "logoutButton": "登出"
+    "logoutButton": "登出",
+    "processing": "處理中...",
+    "emailRequired": "請輸入電子郵件與密碼。",
+    "confirmEmailSent": "已寄送確認信，請查收電子郵件。"
   },
   "mypage": {
     "title": "我的頁面",
@@ -123,7 +129,8 @@
   "map": {
     "facilityCount": " 個設施",
     "nearMe": "顯示目前位置",
-    "allAreas": "全部地區"
+    "allAreas": "全部地區",
+    "geoError": "無法取得目前位置。"
   },
   "facilityRequest": {
     "title": "申請新增設施",
