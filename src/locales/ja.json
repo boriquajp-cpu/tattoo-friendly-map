@@ -48,6 +48,11 @@
     "share": "シェアする",
     "shareCopied": "コピーしました！",
     "shareCopyLink": "リンクをコピー",
+    "navigate": "ナビ",
+    "navigateGoogle": "Google マップ",
+    "navigateApple": "Apple マップ",
+    "lastUpdated": "最終更新",
+    "correctInfo": "情報を修正する",
     "bookingLinks": {
       "klook": "Klookで予約",
       "kkday": "KKdayで予約",
@@ -146,6 +151,22 @@
     "submit": "申請する",
     "success": "申請を受け付けました。ありがとうございます！",
     "error": "送信に失敗しました。再度お試しください。"
+  },
+  "correction": {
+    "title": "情報を修正する",
+    "type": "修正の種類",
+    "types": {
+      "closed": "閉店・廃業",
+      "policy_changed": "タトゥー不可になった",
+      "hours_changed": "営業時間が変わった",
+      "condition_changed": "条件が変わった",
+      "wrong_location": "場所・住所が違う",
+      "other": "その他"
+    },
+    "detail": "詳細（任意）",
+    "detailPlaceholder": "変更内容の詳細を教えてください",
+    "submit": "報告を送信する",
+    "success": "報告ありがとうございます。確認後に反映します。"
   },
   "disclaimer": {
     "title": "ご利用にあたって",

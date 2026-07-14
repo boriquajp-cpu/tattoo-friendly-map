@@ -48,6 +48,11 @@
     "share": "分享",
     "shareCopied": "已複製！",
     "shareCopyLink": "複製連結",
+    "navigate": "導航",
+    "navigateGoogle": "Google 地圖",
+    "navigateApple": "Apple 地圖",
+    "lastUpdated": "最後更新",
+    "correctInfo": "回報錯誤資訊",
     "bookingLinks": {
       "klook": "透過 Klook 預訂",
       "kkday": "透過 KKday 預訂",
@@ -146,6 +151,22 @@
     "submit": "送出申請",
     "success": "已收到您的申請，感謝您！",
     "error": "送出失敗，請再試一次。"
+  },
+  "correction": {
+    "title": "回報資訊錯誤",
+    "type": "錯誤類型",
+    "types": {
+      "closed": "已停業／歇業",
+      "policy_changed": "刺青已不被允許",
+      "hours_changed": "營業時間已更改",
+      "condition_changed": "條件已變更",
+      "wrong_location": "地址／位置有誤",
+      "other": "其他"
+    },
+    "detail": "詳細說明（選填）",
+    "detailPlaceholder": "請描述變更的詳細內容",
+    "submit": "送出回報",
+    "success": "感謝您的回報，我們將確認後更新資訊。"
   },
   "disclaimer": {
     "title": "使用須知",

@@ -48,6 +48,11 @@
     "share": "Share",
     "shareCopied": "Copied!",
     "shareCopyLink": "Copy Link",
+    "navigate": "Navigate",
+    "navigateGoogle": "Google Maps",
+    "navigateApple": "Apple Maps",
+    "lastUpdated": "Last Updated",
+    "correctInfo": "Report an Issue",
     "bookingLinks": {
       "klook": "Book on Klook",
       "kkday": "Book on KKday",
@@ -146,6 +151,22 @@
     "submit": "Submit Request",
     "success": "Your request has been received. Thank you!",
     "error": "Submission failed. Please try again."
+  },
+  "correction": {
+    "title": "Report an Issue",
+    "type": "Issue Type",
+    "types": {
+      "closed": "Permanently closed",
+      "policy_changed": "Tattoos are no longer allowed",
+      "hours_changed": "Hours have changed",
+      "condition_changed": "Conditions have changed",
+      "wrong_location": "Wrong location / address",
+      "other": "Other"
+    },
+    "detail": "Details (optional)",
+    "detailPlaceholder": "Please describe what has changed",
+    "submit": "Submit Report",
+    "success": "Thank you for your report. We'll review and update the information."
   },
   "disclaimer": {
     "title": "Please Note",

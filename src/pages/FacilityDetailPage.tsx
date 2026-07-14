@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
+import CorrectionModal from '../components/CorrectionModal/CorrectionModal';
 import type { FacilityWithStats, Report, SummaryLabel } from '../types';
 
 const SHARE_COLORS: Record<string, string> = {
@@ -27,6 +28,7 @@ export default function FacilityDetailPage() {
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [showCorrection, setShowCorrection] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -137,12 +139,44 @@ export default function FacilityDetailPage() {
       </button>
 
       {/* 施設ヘッダー */}
-      <div style={{ marginBottom: '20px' }}>
+      <div style={{ marginBottom: '16px' }}>
         <p style={{ margin: 0, fontSize: '11px', color: '#6b7280', textTransform: 'uppercase' }}>
           {t(`facility.categories.${facility.category}`)}
         </p>
         <h1 style={{ margin: '4px 0', fontSize: '22px', fontWeight: 700 }}>{facility.name}</h1>
-        <p style={{ margin: 0, color: '#6b7280', fontSize: '14px' }}>{facility.address}</p>
+        <p style={{ margin: '0 0 12px', color: '#6b7280', fontSize: '14px' }}>{facility.address}</p>
+
+        {/* ② ナビボタン */}
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          <a
+            href={`https://www.google.com/maps/search/?api=1&query=${facility.latitude},${facility.longitude}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: '6px',
+              padding: '8px 14px', borderRadius: '8px',
+              backgroundColor: '#fff', border: '1px solid #d1d5db',
+              color: '#374151', textDecoration: 'none', fontSize: '13px', fontWeight: 600,
+              boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+            }}
+          >
+            🗺️ {t('facility.navigateGoogle')}
+          </a>
+          <a
+            href={`https://maps.apple.com/?ll=${facility.latitude},${facility.longitude}&q=${encodeURIComponent(facility.name)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: '6px',
+              padding: '8px 14px', borderRadius: '8px',
+              backgroundColor: '#fff', border: '1px solid #d1d5db',
+              color: '#374151', textDecoration: 'none', fontSize: '13px', fontWeight: 600,
+              boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+            }}
+          >
+            🍎 {t('facility.navigateApple')}
+          </a>
+        </div>
       </div>
 
       {/* 集計結果 */}
@@ -164,6 +198,11 @@ export default function FacilityDetailPage() {
           {stats?.confidence && (
             <span style={{ fontSize: '13px', color: '#374151' }}>
               {t(`facility.confidence.${stats.confidence}`)}
+            </span>
+          )}
+          {stats?.last_updated && (
+            <span style={{ fontSize: '12px', color: '#6b7280' }}>
+              {t('facility.lastUpdated')}：{new Date(stats.last_updated).toLocaleDateString()}
             </span>
           )}
         </div>
@@ -212,8 +251,8 @@ export default function FacilityDetailPage() {
         </div>
       )}
 
-      {/* 報告投稿ボタン */}
-      <div style={{ marginBottom: '24px' }}>
+      {/* 報告投稿ボタン＋情報修正ボタン */}
+      <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '24px' }}>
         <Link
           to={`/facility/${facility.id}/report`}
           style={{
@@ -225,6 +264,18 @@ export default function FacilityDetailPage() {
         >
           {t('report.title')}
         </Link>
+        <button
+          type="button"
+          onClick={() => setShowCorrection(true)}
+          style={{
+            padding: '10px 18px',
+            backgroundColor: '#fff', color: '#374151',
+            border: '1px solid #d1d5db', borderRadius: '8px',
+            fontSize: '14px', fontWeight: 600, cursor: 'pointer',
+          }}
+        >
+          ✏️ {t('facility.correctInfo')}
+        </button>
       </div>
 
       {/* ⑩ SNSシェア */}
@@ -254,6 +305,16 @@ export default function FacilityDetailPage() {
           ))}
         </div>
       </div>
+
+      {/* ③ 情報修正モーダル */}
+      {showCorrection && (
+        <CorrectionModal
+          facilityId={facility.id}
+          facilityName={facility.name}
+          facilityCategory={facility.category}
+          onClose={() => setShowCorrection(false)}
+        />
+      )}
 
       {/* 報告一覧 */}
       <h2 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '12px' }}>
