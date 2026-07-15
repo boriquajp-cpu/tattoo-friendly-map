@@ -13,6 +13,7 @@ import FacilityDetailPage from './pages/FacilityDetailPage';
 import ReportFormPage from './pages/ReportFormPage';
 import LoginPage from './pages/LoginPage';
 import MyReportsPage from './pages/MyReportsPage';
+import AdminPage from './pages/AdminPage';
 
 function App() {
   const [showDisclaimer, setShowDisclaimer] = useState(
@@ -36,6 +37,7 @@ function App() {
               <Route path="/facility/:id/report" element={<ReportFormPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/my-reports" element={<MyReportsPage />} />
+              <Route path="/admin" element={<AdminPage />} />
               <Route
                 path="*"
                 element={

@@ -18,7 +18,7 @@ const LANGUAGES: { code: SupportedLang; label: string }[] = [
 export default function Layout({ children }: LayoutProps) {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const { user, signOut } = useAuth();
+  const { user, isAdmin, signOut } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -105,6 +105,7 @@ export default function Layout({ children }: LayoutProps) {
             {user ? (
               <>
                 <NavLink to="/my-reports" style={navLinkStyle}>{t('nav.mypage')}</NavLink>
+                {isAdmin && <NavLink to="/admin" style={navLinkStyle}>{t('nav.admin')}</NavLink>}
                 <button
                   type="button"
                   onClick={() => void handleSignOut()}
@@ -169,6 +170,7 @@ export default function Layout({ children }: LayoutProps) {
               {user ? (
                 <>
                   <NavLink to="/my-reports" style={navLinkStyle} onClick={() => setMenuOpen(false)}>{t('nav.mypage')}</NavLink>
+                  {isAdmin && <NavLink to="/admin" style={navLinkStyle} onClick={() => setMenuOpen(false)}>{t('nav.admin')}</NavLink>}
                   <button
                     type="button"
                     onClick={() => void handleSignOut()}

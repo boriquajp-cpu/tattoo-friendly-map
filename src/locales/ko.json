@@ -20,7 +20,8 @@
     "map": "지도",
     "list": "목록",
     "mypage": "마이페이지",
-    "login": "로그인"
+    "login": "로그인",
+    "admin": "관리"
   },
   "facility": {
     "categories": {
@@ -101,11 +102,16 @@
     "comment": "코멘트 (선택)",
     "commentPlaceholder": "자세한 상황을 설명해 주세요",
     "photo": "사진 (선택・시설 외관 또는 스티커만)",
+    "photoTypeError": "지원하지 않는 이미지 형식입니다 (JPEG/PNG/WebP만 가능).",
+    "photoSizeError": "이미지 크기는 5MB 이하로 해주세요.",
     "submitSuccess": "보고해 주셔서 감사합니다！",
     "submitError": "제출에 실패했습니다. 다시 시도해 주세요.",
     "loginPrompt": "로그인하면 나중에 보고를 수정・삭제할 수 있습니다.",
     "loginLink": "로그인하기",
-    "resultRequired": "입장 결과를 선택해주세요."
+    "resultRequired": "입장 결과를 선택해주세요.",
+    "viewTranslation": "번역 보기",
+    "viewOriginal": "원문 보기",
+    "translating": "번역 중..."
   },
   "auth": {
     "loginTitle": "로그인",
@@ -180,6 +186,22 @@
     "detailPlaceholder": "변경 내용을 설명해 주세요",
     "submit": "보고 제출",
     "success": "보고해 주셔서 감사합니다. 확인 후 반영하겠습니다."
+  },
+  "admin": {
+    "title": "관리자 페이지",
+    "loginRequired": "이 페이지를 보려면 로그인이 필요합니다.",
+    "noPermission": "이 페이지에 접근할 권한이 없습니다.",
+    "facilityRequests": "시설 신청・수정 보고",
+    "noPendingRequests": "대기 중인 요청이 없습니다",
+    "typeCorrection": "수정 보고",
+    "typeNewFacility": "신규 시설",
+    "address": "주소",
+    "category": "카테고리",
+    "approve": "승인",
+    "reject": "반려",
+    "reportsManagement": "보고 관리",
+    "flag": "플래그 설정",
+    "unflag": "플래그 해제"
   },
   "disclaimer": {
     "title": "이용 안내",

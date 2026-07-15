@@ -20,7 +20,8 @@
     "map": "Map",
     "list": "List",
     "mypage": "My Page",
-    "login": "Login"
+    "login": "Login",
+    "admin": "Admin"
   },
   "facility": {
     "categories": {
@@ -101,11 +102,16 @@
     "comment": "Comment (optional)",
     "commentPlaceholder": "Please describe the situation in detail",
     "photo": "Photo (optional — facility exterior or sticker only)",
+    "photoTypeError": "Unsupported image format (JPEG/PNG/WebP only).",
+    "photoSizeError": "Image size must be under 5MB.",
     "submitSuccess": "Thank you for your report!",
     "submitError": "Submission failed. Please try again.",
     "loginPrompt": "Log in to edit or delete your reports later.",
     "loginLink": "Log in",
-    "resultRequired": "Please select an entry result."
+    "resultRequired": "Please select an entry result.",
+    "viewTranslation": "View translation",
+    "viewOriginal": "View original",
+    "translating": "Translating..."
   },
   "auth": {
     "loginTitle": "Login",
@@ -180,6 +186,22 @@
     "detailPlaceholder": "Please describe what has changed",
     "submit": "Submit Report",
     "success": "Thank you for your report. We'll review and update the information."
+  },
+  "admin": {
+    "title": "Admin Panel",
+    "loginRequired": "You must log in to view this page.",
+    "noPermission": "You don't have permission to access this page.",
+    "facilityRequests": "Facility Requests & Corrections",
+    "noPendingRequests": "No pending requests",
+    "typeCorrection": "Correction",
+    "typeNewFacility": "New Facility",
+    "address": "Address",
+    "category": "Category",
+    "approve": "Approve",
+    "reject": "Reject",
+    "reportsManagement": "Report Management",
+    "flag": "Flag",
+    "unflag": "Unflag"
   },
   "disclaimer": {
     "title": "Please Note",

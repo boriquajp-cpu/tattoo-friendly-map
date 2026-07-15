@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
+import { translateComment } from '../lib/claudeApi';
 import CorrectionModal from '../components/CorrectionModal/CorrectionModal';
 import { useFavorites } from '../hooks/useFavorites';
 import { useRecentlyViewed } from '../hooks/useRecentlyViewed';
-import type { FacilityWithStats, Report, SummaryLabel } from '../types';
+import type { FacilityWithStats, Report, SummaryLabel, SupportedLang } from '../types';
 
 const SHARE_COLORS: Record<string, string> = {
   line: '#06C755',
@@ -33,6 +34,27 @@ export default function FacilityDetailPage() {
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
   const [showCorrection, setShowCorrection] = useState(false);
+  const [translations, setTranslations] = useState<Record<string, string>>({});
+  const [translatingIds, setTranslatingIds] = useState<Set<string>>(new Set());
+  const [showTranslated, setShowTranslated] = useState<Record<string, boolean>>({});
+
+  const currentLang = (i18n.language === 'zh-TW' ? 'zh_tw' : i18n.language) as SupportedLang;
+
+  const handleTranslate = async (report: Report) => {
+    if (translations[report.id]) {
+      setShowTranslated((prev) => ({ ...prev, [report.id]: !prev[report.id] }));
+      return;
+    }
+    setTranslatingIds((prev) => new Set(prev).add(report.id));
+    const result = await translateComment(report.id, currentLang, report.comment ?? '');
+    setTranslations((prev) => ({ ...prev, [report.id]: result }));
+    setShowTranslated((prev) => ({ ...prev, [report.id]: true }));
+    setTranslatingIds((prev) => {
+      const next = new Set(prev);
+      next.delete(report.id);
+      return next;
+    });
+  };
 
   useEffect(() => {
     if (!id) return;
@@ -370,7 +392,29 @@ export default function FacilityDetailPage() {
               </div>
 
               {report.comment && (
-                <p style={{ margin: 0, fontSize: '14px', color: '#374151' }}>{report.comment}</p>
+                <>
+                  <p style={{ margin: 0, fontSize: '14px', color: '#374151' }}>
+                    {showTranslated[report.id] ? translations[report.id] : report.comment}
+                  </p>
+                  {report.lang !== currentLang && (
+                    <button
+                      type="button"
+                      onClick={() => { void handleTranslate(report); }}
+                      disabled={translatingIds.has(report.id)}
+                      style={{
+                        marginTop: '6px', background: 'none', border: 'none',
+                        color: '#6366f1', fontSize: '12px', fontWeight: 600,
+                        cursor: translatingIds.has(report.id) ? 'default' : 'pointer', padding: 0,
+                      }}
+                    >
+                      {translatingIds.has(report.id)
+                        ? t('report.translating')
+                        : showTranslated[report.id]
+                          ? t('report.viewOriginal')
+                          : t('report.viewTranslation')}
+                    </button>
+                  )}
+                </>
               )}
 
               <div style={{ marginTop: '8px', display: 'flex', gap: '8px', flexWrap: 'wrap', fontSize: '12px', color: '#6b7280' }}>

@@ -20,7 +20,8 @@
     "map": "地圖",
     "list": "列表",
     "mypage": "我的頁面",
-    "login": "登入"
+    "login": "登入",
+    "admin": "管理"
   },
   "facility": {
     "categories": {
@@ -101,11 +102,16 @@
     "comment": "留言（選填）",
     "commentPlaceholder": "請描述詳細情況",
     "photo": "照片（選填・僅限設施外觀或貼紙）",
+    "photoTypeError": "不支援的圖片格式（僅限 JPEG/PNG/WebP）。",
+    "photoSizeError": "圖片大小請控制在 5MB 以內。",
     "submitSuccess": "感謝您的回報！",
     "submitError": "送出失敗，請再試一次。",
     "loginPrompt": "登入後可隨時編輯或刪除您的回報。",
     "loginLink": "前往登入",
-    "resultRequired": "請選擇入場結果。"
+    "resultRequired": "請選擇入場結果。",
+    "viewTranslation": "查看翻譯",
+    "viewOriginal": "查看原文",
+    "translating": "翻譯中..."
   },
   "auth": {
     "loginTitle": "登入",
@@ -180,6 +186,22 @@
     "detailPlaceholder": "請描述變更的詳細內容",
     "submit": "送出回報",
     "success": "感謝您的回報，我們將確認後更新資訊。"
+  },
+  "admin": {
+    "title": "管理後台",
+    "loginRequired": "請先登入以查看此頁面。",
+    "noPermission": "您沒有權限存取此頁面。",
+    "facilityRequests": "施設申請・修正回報",
+    "noPendingRequests": "目前沒有待處理的申請",
+    "typeCorrection": "修正回報",
+    "typeNewFacility": "新設施",
+    "address": "地址",
+    "category": "分類",
+    "approve": "核准",
+    "reject": "駁回",
+    "reportsManagement": "回報管理",
+    "flag": "標記為問題",
+    "unflag": "取消標記"
   },
   "disclaimer": {
     "title": "使用須知",

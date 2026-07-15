@@ -1,46 +1,42 @@
 /**
  * Claude API を使ったコメント翻訳ユーティリティ
  *
- * NOTE: 本番環境ではブラウザから直接 Anthropic API を呼ぶと API キーが露出します。
- * Supabase Edge Function 等のサーバーサイドプロキシ経由での呼び出しを推奨します。
- * ここでは骨格実装として fetch を使ったシンプルな呼び出し形式を示します。
+ * 実体は Supabase Edge Function (`supabase/functions/translate`) 経由で呼び出す。
+ * Anthropic API キーは Edge Function 側でのみ使用し、ブラウザには露出しない。
+ * 翻訳結果は `report_translations` テーブルにキャッシュされ、同一 report_id +
+ * target_lang の組み合わせでは Claude API を再度呼び出さない。
  */
 
-const CLAUDE_API_ENDPOINT = '/api/translate'; // Edge Function / プロキシのエンドポイント
+import { supabase } from './supabase';
 
 /**
- * テキストを指定言語に翻訳する。
+ * 報告コメントを指定言語に翻訳する（キャッシュ優先）。
  * エラー発生時は元のテキストをそのまま返す（フォールバック）。
  *
- * @param text     - 翻訳するテキスト
- * @param fromLang - 元の言語コード（例: 'ja', 'zh_tw', 'en'）
- * @param toLang   - 翻訳先言語コード
- * @returns        翻訳済みテキスト、またはエラー時は元テキスト
+ * @param reportId    - 翻訳対象の報告 ID
+ * @param targetLang  - 翻訳先言語コード（例: 'ja', 'zh_tw', 'en', 'ko'）
+ * @param fallbackText - エラー時に返すフォールバックテキスト（通常は原文）
+ * @returns           翻訳済みテキスト、またはエラー時はフォールバックテキスト
  */
 export async function translateComment(
-  text: string,
-  fromLang: string,
-  toLang: string
+  reportId: string,
+  targetLang: string,
+  fallbackText: string
 ): Promise<string> {
-  if (!text.trim()) return text;
-  if (fromLang === toLang) return text;
-
   try {
-    const response = await fetch(CLAUDE_API_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, fromLang, toLang }),
-    });
+    const { data, error } = await supabase.functions.invoke<{ translated?: string; error?: string }>(
+      'translate',
+      { body: { reportId, targetLang } }
+    );
 
-    if (!response.ok) {
-      console.error(`Translation API error: ${response.status} ${response.statusText}`);
-      return text;
+    if (error || !data?.translated) {
+      console.error('translateComment failed:', error ?? data?.error);
+      return fallbackText;
     }
 
-    const data = (await response.json()) as { translated?: string };
-    return data.translated ?? text;
+    return data.translated;
   } catch (err) {
     console.error('translateComment failed:', err);
-    return text;
+    return fallbackText;
   }
 }

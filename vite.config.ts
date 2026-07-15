@@ -10,6 +10,6 @@ export default defineConfig({
     conditions: ['module', 'browser', 'import', 'default'],
   },
   optimizeDeps: {
-    include: ['mapbox-gl'],
+    include: ['maplibre-gl'],
   },
 })

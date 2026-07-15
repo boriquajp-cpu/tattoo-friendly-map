@@ -73,6 +73,33 @@ export default function ReportFormPage() {
   });
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+
+  const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
+  const ALLOWED_PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+    if (!file) {
+      setPhotoFile(null);
+      setPhotoPreview(null);
+      return;
+    }
+    if (!ALLOWED_PHOTO_TYPES.includes(file.type)) {
+      setErrorMsg(t('report.photoTypeError'));
+      e.target.value = '';
+      return;
+    }
+    if (file.size > MAX_PHOTO_BYTES) {
+      setErrorMsg(t('report.photoSizeError'));
+      e.target.value = '';
+      return;
+    }
+    setErrorMsg('');
+    setPhotoFile(file);
+    setPhotoPreview(URL.createObjectURL(file));
+  };
 
   const toggleLocation = (loc: TattooLocation) => {
     setFormData((prev) => {
@@ -95,6 +122,20 @@ export default function ReportFormPage() {
     setSubmitting(true);
     setErrorMsg('');
     try {
+      let photoUrl: string | null = null;
+      if (photoFile) {
+        const ext = photoFile.name.split('.').pop() ?? 'jpg';
+        const path = `${formData.facility_id}/${crypto.randomUUID()}.${ext}`;
+        const { error: uploadError } = await supabase.storage
+          .from('report-photos')
+          .upload(path, photoFile, { contentType: photoFile.type });
+        if (uploadError) throw uploadError;
+        const { data: publicUrlData } = supabase.storage
+          .from('report-photos')
+          .getPublicUrl(path);
+        photoUrl = publicUrlData.publicUrl;
+      }
+
       const { error } = await supabase.from('reports').insert({
         facility_id: formData.facility_id,
         visit_date: formData.visit_date ?? new Date().toISOString().slice(0, 10),
@@ -104,6 +145,7 @@ export default function ReportFormPage() {
         facility_response: formData.facility_response ?? 'nothing_asked',
         comment_original: formData.comment ?? null,
         comment_lang: formData.lang ?? 'ja',
+        photo_url: photoUrl,
         user_id: user?.id ?? null,
       });
       if (error) throw error;
@@ -297,10 +339,31 @@ export default function ReportFormPage() {
           <input
             id="photo"
             type="file"
-            accept="image/*"
+            accept="image/jpeg,image/png,image/webp"
             style={{ fontSize: '14px' }}
-            onChange={() => {/* TODO: Supabase Storage upload */}}
+            onChange={handlePhotoChange}
           />
+          {photoPreview && (
+            <div style={{ marginTop: '10px', position: 'relative', display: 'inline-block' }}>
+              <img
+                src={photoPreview}
+                alt=""
+                style={{ maxWidth: '160px', maxHeight: '160px', borderRadius: '8px', display: 'block' }}
+              />
+              <button
+                type="button"
+                onClick={() => { setPhotoFile(null); setPhotoPreview(null); }}
+                style={{
+                  position: 'absolute', top: '-8px', right: '-8px',
+                  width: '24px', height: '24px', borderRadius: '9999px',
+                  border: 'none', backgroundColor: '#374151', color: '#fff',
+                  cursor: 'pointer', fontSize: '14px', lineHeight: 1,
+                }}
+              >
+                ×
+              </button>
+            </div>
+          )}
         </div>
 
         {/* エラーメッセージ */}

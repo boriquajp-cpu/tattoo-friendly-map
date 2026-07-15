@@ -20,7 +20,8 @@
     "map": "マップ",
     "list": "一覧",
     "mypage": "マイページ",
-    "login": "ログイン"
+    "login": "ログイン",
+    "admin": "管理"
   },
   "facility": {
     "categories": {
@@ -101,11 +102,16 @@
     "comment": "コメント（任意）",
     "commentPlaceholder": "詳細な状況を教えてください",
     "photo": "写真（任意・施設外観やシールのみ）",
+    "photoTypeError": "対応していない画像形式です（JPEG/PNG/WebPのみ）。",
+    "photoSizeError": "画像サイズは5MB以下にしてください。",
     "submitSuccess": "報告ありがとうございます！",
     "submitError": "送信に失敗しました。再度お試しください。",
     "loginPrompt": "ログインすると報告を後から編集・削除できます。",
     "loginLink": "ログインする",
-    "resultRequired": "入場結果を選択してください。"
+    "resultRequired": "入場結果を選択してください。",
+    "viewTranslation": "翻訳を見る",
+    "viewOriginal": "原文を見る",
+    "translating": "翻訳中..."
   },
   "auth": {
     "loginTitle": "ログイン",
@@ -180,6 +186,22 @@
     "detailPlaceholder": "変更内容の詳細を教えてください",
     "submit": "報告を送信する",
     "success": "報告ありがとうございます。確認後に反映します。"
+  },
+  "admin": {
+    "title": "管理画面",
+    "loginRequired": "この画面を見るにはログインが必要です。",
+    "noPermission": "この画面にアクセスする権限がありません。",
+    "facilityRequests": "施設リクエスト・修正報告",
+    "noPendingRequests": "未対応のリクエストはありません",
+    "typeCorrection": "修正報告",
+    "typeNewFacility": "新規施設",
+    "address": "住所",
+    "category": "カテゴリ",
+    "approve": "承認",
+    "reject": "却下",
+    "reportsManagement": "報告の管理",
+    "flag": "フラグを立てる",
+    "unflag": "フラグを解除"
   },
   "disclaimer": {
     "title": "ご利用にあたって",
