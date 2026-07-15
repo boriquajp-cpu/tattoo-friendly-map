@@ -42,6 +42,9 @@ export default function MapPage() {
   const [geoError, setGeoError] = useState('');
   const [mapMoved, setMapMoved] = useState(false);
   const [areaBounds, setAreaBounds] = useState<{ n: number; s: number; e: number; w: number } | null>(null);
+  const [locationQuery, setLocationQuery] = useState('');
+  const [locationLoading, setLocationLoading] = useState(false);
+  const [locationError, setLocationError] = useState('');
 
   useEffect(() => {
     const fetchFacilities = async () => {
@@ -92,6 +95,33 @@ export default function MapPage() {
     setAreaBounds({ n: bounds.getNorth(), s: bounds.getSouth(), e: bounds.getEast(), w: bounds.getWest() });
     setMapMoved(false);
   }, []);
+
+  const handleLocationSearch = useCallback(async () => {
+    const q = locationQuery.trim();
+    if (!q) return;
+    setLocationLoading(true);
+    setLocationError('');
+    try {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=1&countrycodes=jp`,
+        { headers: { 'Accept-Language': i18n.language } }
+      );
+      const data = await res.json() as Array<{ lat: string; lon: string; boundingbox: string[] }>;
+      if (data.length === 0) {
+        setLocationError(t('map.locationNotFound'));
+        setTimeout(() => setLocationError(''), 3000);
+        return;
+      }
+      const { boundingbox } = data[0];
+      const [s, n, w, e] = boundingbox.map(parseFloat);
+      mapRef.current?.fitBounds([[w, s], [e, n]], { padding: 60, maxZoom: 14, duration: 800 });
+    } catch {
+      setLocationError(t('map.locationNotFound'));
+      setTimeout(() => setLocationError(''), 3000);
+    } finally {
+      setLocationLoading(false);
+    }
+  }, [locationQuery, i18n.language, t]);
 
   const categoryFiltered = facilities.filter((f) => activeCategories.has(f.category));
   const filteredFacilities = areaBounds
@@ -165,6 +195,45 @@ export default function MapPage() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', position: 'relative' }}>
+      {/* 場所検索バー */}
+      <div style={{ padding: '8px 16px 0', backgroundColor: '#fff', display: 'flex', gap: '8px' }}>
+        <input
+          type="text"
+          value={locationQuery}
+          onChange={(e) => setLocationQuery(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter') { void handleLocationSearch(); } }}
+          placeholder={t('map.locationSearchPlaceholder')}
+          style={{
+            flex: 1, padding: '8px 12px', border: '1px solid #d1d5db',
+            borderRadius: '8px', fontSize: '14px', outline: 'none',
+          }}
+        />
+        <button
+          type="button"
+          onClick={() => { void handleLocationSearch(); }}
+          disabled={locationLoading}
+          style={{
+            padding: '8px 14px', backgroundColor: '#6366f1', color: '#fff',
+            border: 'none', borderRadius: '8px', fontSize: '14px',
+            fontWeight: 600, cursor: locationLoading ? 'not-allowed' : 'pointer',
+            opacity: locationLoading ? 0.7 : 1, flexShrink: 0,
+          }}
+        >
+          {locationLoading ? '...' : '🔍'}
+        </button>
+      </div>
+
+      {/* 場所検索エラートースト */}
+      {locationError && (
+        <div style={{
+          position: 'absolute', top: '110px', left: '50%', transform: 'translateX(-50%)',
+          backgroundColor: '#1f2937', color: '#fff', padding: '8px 18px',
+          borderRadius: '20px', fontSize: '13px', zIndex: 30, whiteSpace: 'nowrap', pointerEvents: 'none',
+        }}>
+          {locationError}
+        </div>
+      )}
+
       {/* カテゴリフィルター */}
       <div style={{ display: 'flex', gap: '8px', padding: '8px 16px', backgroundColor: '#fff', borderBottom: '1px solid #e5e7eb', flexWrap: 'wrap' }}>
         {ALL_CATEGORIES.map((cat) => (

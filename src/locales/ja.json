@@ -139,7 +139,9 @@
     "allAreas": "すべてのエリア",
     "geoError": "現在地の取得に失敗しました。",
     "searchThisArea": "このエリアを検索",
-    "resetArea": "検索をリセット"
+    "resetArea": "検索をリセット",
+    "locationSearchPlaceholder": "エリア・地名で検索（例：渋谷、大阪）",
+    "locationNotFound": "場所が見つかりませんでした"
   },
   "facilityList": {
     "recentlyViewed": "最近見た施設",

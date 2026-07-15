@@ -139,7 +139,9 @@
     "allAreas": "全部地區",
     "geoError": "無法取得目前位置。",
     "searchThisArea": "搜尋此區域",
-    "resetArea": "重置搜尋"
+    "resetArea": "重置搜尋",
+    "locationSearchPlaceholder": "搜尋地區・地名（例：澀谷、大阪）",
+    "locationNotFound": "找不到該地點"
   },
   "facilityList": {
     "recentlyViewed": "最近瀏覽",

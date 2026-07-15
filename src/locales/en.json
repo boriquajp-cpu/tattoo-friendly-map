@@ -139,7 +139,9 @@
     "allAreas": "All Areas",
     "geoError": "Unable to get your current location.",
     "searchThisArea": "Search This Area",
-    "resetArea": "Reset Search"
+    "resetArea": "Reset Search",
+    "locationSearchPlaceholder": "Search by area or place (e.g. Shibuya, Osaka)",
+    "locationNotFound": "Location not found"
   },
   "facilityList": {
     "recentlyViewed": "Recently Viewed",
