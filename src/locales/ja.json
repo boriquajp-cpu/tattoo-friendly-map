@@ -118,7 +118,9 @@
     "logoutButton": "ログアウト",
     "processing": "処理中...",
     "emailRequired": "メールアドレスとパスワードを入力してください。",
-    "confirmEmailSent": "確認メールを送信しました。メールを確認してください。"
+    "confirmEmailSent": "確認メールを送信しました。メールを確認してください。",
+    "googleLogin": "Googleでログイン",
+    "or": "または"
   },
   "mypage": {
     "title": "マイページ",
@@ -145,7 +147,8 @@
   },
   "facilityList": {
     "recentlyViewed": "最近見た施設",
-    "searchPlaceholder": "施設名・住所で検索"
+    "searchPlaceholder": "施設名・住所で検索",
+    "nearMe": "近い順"
   },
   "facilityRequest": {
     "title": "施設の追加を申請する",
@@ -180,7 +183,7 @@
   },
   "disclaimer": {
     "title": "ご利用にあたって",
-    "body": "このアプリの情報はユーザー報告に基づいており、正確性を保証するものではありません。訪問前に施設へ直接ご確認ください。",
+    "body": "掲載情報はユーザー投稿に基づきます。施設訪問前に直接ご確認ください。",
     "confirm": "確認しました"
   }
 }

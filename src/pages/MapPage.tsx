@@ -103,8 +103,8 @@ export default function MapPage() {
     setLocationError('');
     try {
       const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=1&countrycodes=jp`,
-        { headers: { 'Accept-Language': i18n.language } }
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=1`,
+        { headers: { 'Accept-Language': `${i18n.language},ja` } }
       );
       const data = await res.json() as Array<{ lat: string; lon: string; boundingbox: string[] }>;
       if (data.length === 0) {
@@ -428,14 +428,21 @@ export default function MapPage() {
               <p style={{ margin: 0, fontSize: '12px', color: '#6b7280', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {selectedFacility.address}
               </p>
-              <span style={{
-                display: 'inline-block', marginTop: '6px', padding: '2px 10px',
-                borderRadius: '9999px', fontSize: '12px', fontWeight: 600,
-                backgroundColor: SUMMARY_COLORS[selectedFacility.stats?.summary_label ?? 'no_data'],
-                color: '#fff',
-              }}>
-                {t(`facility.summaryLabel.${selectedFacility.stats?.summary_label ?? 'no_data'}`)}
-              </span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px', flexWrap: 'wrap' }}>
+                <span style={{
+                  display: 'inline-block', padding: '2px 10px',
+                  borderRadius: '9999px', fontSize: '12px', fontWeight: 600,
+                  backgroundColor: SUMMARY_COLORS[selectedFacility.stats?.summary_label ?? 'no_data'],
+                  color: '#fff',
+                }}>
+                  {t(`facility.summaryLabel.${selectedFacility.stats?.summary_label ?? 'no_data'}`)}
+                </span>
+                {selectedFacility.stats && selectedFacility.stats.total_reports > 0 && (
+                  <span style={{ fontSize: '11px', color: '#6b7280' }}>
+                    {t('facility.reportCount', { count: selectedFacility.stats.total_reports })}
+                  </span>
+                )}
+              </div>
             </div>
             <button
               type="button"

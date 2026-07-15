@@ -12,6 +12,7 @@ const LANGUAGES: { code: SupportedLang; label: string }[] = [
   { code: 'ja', label: '日本語' },
   { code: 'zh_tw', label: '繁體中文' },
   { code: 'en', label: 'English' },
+  { code: 'ko', label: '한국어' },
 ];
 
 export default function Layout({ children }: LayoutProps) {
@@ -29,12 +30,13 @@ export default function Layout({ children }: LayoutProps) {
   }, []);
 
   const changeLanguage = (lang: SupportedLang) => {
-    const i18nLang = lang === 'zh_tw' ? 'zh-TW' : lang;
+    const i18nLang = lang === 'zh_tw' ? 'zh-TW' : lang as string;
     void i18n.changeLanguage(i18nLang);
     setMenuOpen(false);
   };
 
   const currentLang = (i18n.language === 'zh-TW' ? 'zh_tw' : i18n.language) as SupportedLang;
+
 
   const handleSignOut = async () => {
     await signOut();

@@ -118,7 +118,9 @@
     "logoutButton": "登出",
     "processing": "處理中...",
     "emailRequired": "請輸入電子郵件與密碼。",
-    "confirmEmailSent": "已寄送確認信，請查收電子郵件。"
+    "confirmEmailSent": "已寄送確認信，請查收電子郵件。",
+    "googleLogin": "使用 Google 登入",
+    "or": "或"
   },
   "mypage": {
     "title": "我的頁面",
@@ -145,7 +147,8 @@
   },
   "facilityList": {
     "recentlyViewed": "最近瀏覽",
-    "searchPlaceholder": "搜尋設施名稱或地址"
+    "searchPlaceholder": "搜尋設施名稱或地址",
+    "nearMe": "距離最近"
   },
   "facilityRequest": {
     "title": "申請新增設施",
@@ -180,7 +183,7 @@
   },
   "disclaimer": {
     "title": "使用須知",
-    "body": "本應用程式的資訊來自使用者回報，無法保證其正確性。造訪前請直接向設施確認。",
+    "body": "本資訊來自使用者回報，造訪前請向設施直接確認。",
     "confirm": "我已了解"
   }
 }

@@ -97,7 +97,7 @@ export type ConfidenceLevel = 'high' | 'medium' | 'low';
  * - `zh_tw` : 繁體中文（台湾中国語）
  * - `en`    : English
  */
-export type SupportedLang = 'ja' | 'zh_tw' | 'en';
+export type SupportedLang = 'ja' | 'zh_tw' | 'en' | 'ko';
 
 // ─────────────────────────────────────────
 // DB テーブル対応インターフェース

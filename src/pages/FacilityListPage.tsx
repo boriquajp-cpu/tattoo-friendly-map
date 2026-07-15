@@ -34,6 +34,9 @@ export default function FacilityListPage() {
   });
   const [activePrefecture, setActivePrefecture] = useState(() => sessionStorage.getItem('list_prefecture') ?? '');
   const [favoritesOnly, setFavoritesOnly] = useState(false);
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [sortByDistance, setSortByDistance] = useState(false);
+  const [geoLoading, setGeoLoading] = useState(false);
 
   // フィルター状態をsessionStorageに保持
   useEffect(() => { sessionStorage.setItem('list_search', searchText); }, [searchText]);
@@ -100,6 +103,28 @@ export default function FacilityListPage() {
     return Array.from(set).sort();
   }, [facilities]);
 
+  const haversine = (lat1: number, lng1: number, lat2: number, lng2: number): number => {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLng = (lng2 - lng1) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng / 2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  };
+
+  const handleNearMe = () => {
+    if (!navigator.geolocation) return;
+    setGeoLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        setSortByDistance(true);
+        setGeoLoading(false);
+      },
+      () => setGeoLoading(false),
+      { timeout: 8000 }
+    );
+  };
+
   const toggleCategory = (cat: FacilityCategory) => {
     setActiveCategories((prev) => {
       const next = new Set(prev);
@@ -137,6 +162,10 @@ export default function FacilityListPage() {
     const matchFavorite = !favoritesOnly || isFavorite(f.id);
 
     return matchSearch && matchCategory && matchLabel && matchPrefecture && matchFavorite;
+  }).sort((a, b) => {
+    if (!sortByDistance || !userLocation) return 0;
+    return haversine(userLocation.lat, userLocation.lng, a.latitude, a.longitude)
+         - haversine(userLocation.lat, userLocation.lng, b.latitude, b.longitude);
   });
 
   const chipStyle = (active: boolean): React.CSSProperties => ({
@@ -258,8 +287,8 @@ export default function FacilityListPage() {
         ))}
       </div>
 
-      {/* お気に入りフィルター */}
-      <div style={{ marginBottom: '16px' }}>
+      {/* お気に入り・近い順フィルター */}
+      <div style={{ marginBottom: '16px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
         <button
           type="button"
           onClick={() => setFavoritesOnly((v) => !v)}
@@ -270,6 +299,19 @@ export default function FacilityListPage() {
           }}
         >
           {favoritesOnly ? '❤️' : '🤍'} {t('common.favoriteOnly')}
+        </button>
+        <button
+          type="button"
+          onClick={sortByDistance ? () => { setSortByDistance(false); setUserLocation(null); } : handleNearMe}
+          disabled={geoLoading}
+          style={{
+            ...chipStyle(sortByDistance),
+            borderColor: sortByDistance ? '#f97316' : '#d1d5db',
+            backgroundColor: sortByDistance ? '#f97316' : '#fff',
+            opacity: geoLoading ? 0.6 : 1,
+          }}
+        >
+          📍 {geoLoading ? t('common.loading') : t('facilityList.nearMe')}
         </button>
       </div>
 

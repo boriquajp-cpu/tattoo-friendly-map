@@ -118,7 +118,9 @@
     "logoutButton": "Logout",
     "processing": "Processing...",
     "emailRequired": "Please enter your email and password.",
-    "confirmEmailSent": "Confirmation email sent. Please check your inbox."
+    "confirmEmailSent": "Confirmation email sent. Please check your inbox.",
+    "googleLogin": "Continue with Google",
+    "or": "or"
   },
   "mypage": {
     "title": "My Page",
@@ -145,7 +147,8 @@
   },
   "facilityList": {
     "recentlyViewed": "Recently Viewed",
-    "searchPlaceholder": "Search by name or address"
+    "searchPlaceholder": "Search by name or address",
+    "nearMe": "Nearest First"
   },
   "facilityRequest": {
     "title": "Request a Facility",
@@ -180,7 +183,7 @@
   },
   "disclaimer": {
     "title": "Please Note",
-    "body": "The information in this app is based on user reports and cannot be guaranteed for accuracy. Please confirm directly with the facility before your visit.",
+    "body": "Information is user-reported. Please confirm with facilities before visiting.",
     "confirm": "I understand"
   }
 }

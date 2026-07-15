@@ -1,0 +1,189 @@
+{
+  "common": {
+    "loading": "불러오는 중...",
+    "error": "오류가 발생했습니다",
+    "retry": "다시 시도",
+    "close": "닫기",
+    "back": "돌아가기",
+    "submit": "제출",
+    "cancel": "취소",
+    "search": "검색",
+    "filter": "필터",
+    "noData": "정보가 없습니다",
+    "selectPlaceholder": "선택해주세요",
+    "submitting": "제출 중...",
+    "viewDetail": "자세히 보기",
+    "favorite": "즐겨찾기",
+    "favoriteOnly": "즐겨찾기만"
+  },
+  "nav": {
+    "map": "지도",
+    "list": "목록",
+    "mypage": "마이페이지",
+    "login": "로그인"
+  },
+  "facility": {
+    "categories": {
+      "onsen": "온천・목욕탕",
+      "gym_pool": "헬스장・수영장",
+      "outdoor": "야외 시설"
+    },
+    "summaryLabel": {
+      "high": "거의 확실히 입장 가능",
+      "conditional": "조건부 입장 가능",
+      "mixed": "평가가 엇갈림",
+      "low": "입장 거부 가능성 높음",
+      "no_data": "정보 없음"
+    },
+    "confidence": {
+      "high": "신뢰도: 높음",
+      "medium": "신뢰도: 보통",
+      "low": "신뢰도: 낮음"
+    },
+    "reportCount": "{{count}}건의 보고 (최근 12개월)",
+    "noReports": "아직 보고가 없습니다",
+    "reportList": "사용자 보고",
+    "officialPolicy": "공식 정책",
+    "admittedCount": "입장 가능 {{count}}건",
+    "conditionalCount": "조건부 입장 {{count}}건",
+    "deniedCount": "입장 거부 {{count}}건",
+    "share": "공유",
+    "shareCopied": "복사되었습니다！",
+    "shareCopyLink": "링크 복사",
+    "navigate": "길 안내",
+    "navigateGoogle": "Google 지도",
+    "navigateApple": "Apple 지도",
+    "lastUpdated": "최종 업데이트",
+    "correctInfo": "정보 수정 요청",
+    "bookingLinks": {
+      "klook": "Klook에서 예약",
+      "kkday": "KKday에서 예약",
+      "agoda": "Agoda에서 예약",
+      "tripCom": "Trip.com에서 예약",
+      "official": "공식 사이트"
+    }
+  },
+  "report": {
+    "title": "방문 후기 작성",
+    "visitDate": "방문 날짜",
+    "result": {
+      "label": "입장 결과",
+      "admitted": "문제없이 입장",
+      "admitted_with_sticker": "스티커로 가리면 입장 가능",
+      "admitted_with_cover": "옷으로 가리면 입장 가능",
+      "denied": "입장 거부",
+      "not_asked": "확인하지 않음"
+    },
+    "tattooSize": {
+      "label": "문신 크기",
+      "small": "소 (손바닥보다 작음)",
+      "medium": "중 (손바닥 정도)",
+      "large": "대 (손바닥보다 큼)",
+      "multiple": "여러 곳"
+    },
+    "tattooLocation": {
+      "label": "문신 위치 (복수 선택 가능)",
+      "arm": "팔",
+      "leg": "다리",
+      "back": "등",
+      "chest_stomach": "가슴・배",
+      "neck_face": "목・얼굴",
+      "other": "기타"
+    },
+    "facilityResponse": {
+      "label": "시설 대응",
+      "nothing_asked": "특별히 확인하지 않음",
+      "verbal_check": "구두로 확인",
+      "written_agreement": "서면 동의 요구",
+      "private_bath_offered": "개인 욕실 안내",
+      "other_condition": "기타 조건"
+    },
+    "comment": "코멘트 (선택)",
+    "commentPlaceholder": "자세한 상황을 설명해 주세요",
+    "photo": "사진 (선택・시설 외관 또는 스티커만)",
+    "submitSuccess": "보고해 주셔서 감사합니다！",
+    "submitError": "제출에 실패했습니다. 다시 시도해 주세요.",
+    "loginPrompt": "로그인하면 나중에 보고를 수정・삭제할 수 있습니다.",
+    "loginLink": "로그인하기",
+    "resultRequired": "입장 결과를 선택해주세요."
+  },
+  "auth": {
+    "loginTitle": "로그인",
+    "registerTitle": "회원가입",
+    "email": "이메일 주소",
+    "password": "비밀번호",
+    "loginButton": "로그인",
+    "registerButton": "가입하기",
+    "registerLink": "회원가입",
+    "logoutButton": "로그아웃",
+    "processing": "처리 중...",
+    "emailRequired": "이메일과 비밀번호를 입력해주세요.",
+    "confirmEmailSent": "확인 이메일을 보냈습니다. 이메일을 확인해 주세요.",
+    "googleLogin": "Google로 로그인",
+    "or": "또는"
+  },
+  "mypage": {
+    "title": "마이페이지",
+    "myReports": "내 보고",
+    "noReports": "아직 보고가 없습니다",
+    "edit": "편집",
+    "save": "저장",
+    "delete": "삭제",
+    "deleteConfirm": "이 보고를 삭제하시겠습니까?",
+    "deleteSuccess": "삭제되었습니다",
+    "deleteError": "삭제에 실패했습니다",
+    "editSuccess": "업데이트되었습니다",
+    "editError": "업데이트에 실패했습니다"
+  },
+  "map": {
+    "facilityCount": "개 시설",
+    "nearMe": "현재 위치 표시",
+    "allAreas": "전체 지역",
+    "geoError": "현재 위치를 가져올 수 없습니다.",
+    "searchThisArea": "이 지역 검색",
+    "resetArea": "검색 초기화",
+    "locationSearchPlaceholder": "지역・지명으로 검색 (예: 시부야, 오사카)",
+    "locationNotFound": "장소를 찾을 수 없습니다"
+  },
+  "facilityList": {
+    "recentlyViewed": "최근 본 시설",
+    "searchPlaceholder": "시설명・주소로 검색",
+    "nearMe": "가까운 순"
+  },
+  "facilityRequest": {
+    "title": "시설 추가 신청",
+    "description": "등록되지 않은 시설을 추가 요청할 수 있습니다. 검토 후 순차적으로 처리합니다.",
+    "nameJa": "시설명 (일본어)",
+    "nameJaPlaceholder": "예: ○○온천 시부야점",
+    "addressJa": "주소",
+    "addressJaPlaceholder": "예: 도쿄도 시부야구 ○○1-2-3",
+    "category": "카테고리",
+    "officialUrl": "공식 사이트 URL (선택)",
+    "message": "추가 정보 (선택)",
+    "messagePlaceholder": "문신 관련 정보가 있으면 알려주세요",
+    "submit": "신청하기",
+    "success": "신청이 접수되었습니다. 감사합니다！",
+    "error": "제출에 실패했습니다. 다시 시도해 주세요."
+  },
+  "correction": {
+    "title": "정보 수정 요청",
+    "type": "수정 유형",
+    "types": {
+      "closed": "폐업",
+      "policy_changed": "문신 불가로 변경",
+      "hours_changed": "영업시간 변경",
+      "condition_changed": "조건 변경",
+      "wrong_location": "위치・주소 오류",
+      "other": "기타"
+    },
+    "detail": "상세 내용 (선택)",
+    "detailPlaceholder": "변경 내용을 설명해 주세요",
+    "submit": "보고 제출",
+    "success": "보고해 주셔서 감사합니다. 확인 후 반영하겠습니다."
+  },
+  "disclaimer": {
+    "title": "이용 안내",
+    "body": "이 앱의 정보는 사용자 보고를 기반으로 하며 정확성을 보장하지 않습니다. 방문 전 시설에 직접 확인해 주세요.",
+    "confirm": "확인했습니다"
+  }
+}
