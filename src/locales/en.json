@@ -155,7 +155,18 @@
   "facilityList": {
     "recentlyViewed": "Recently Viewed",
     "searchPlaceholder": "Search by name or address",
-    "nearMe": "Nearest First"
+    "nearMe": "Nearest First",
+    "regions": {
+      "hokkaido": "Hokkaido",
+      "tohoku": "Tohoku",
+      "kanto": "Kanto",
+      "chubu": "Chubu",
+      "kinki": "Kinki",
+      "chugoku": "Chugoku",
+      "shikoku": "Shikoku",
+      "kyushu_okinawa": "Kyushu & Okinawa",
+      "other": "Other"
+    }
   },
   "facilityRequest": {
     "title": "Request a Facility",

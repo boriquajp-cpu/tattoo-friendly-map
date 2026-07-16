@@ -15,6 +15,24 @@ const getPrefecture = (address: string): string => {
   return match ? match[1] : '';
 };
 
+const REGION_ORDER = [
+  'hokkaido', 'tohoku', 'kanto', 'chubu', 'kinki', 'chugoku', 'shikoku', 'kyushu_okinawa', 'other',
+] as const;
+type RegionKey = typeof REGION_ORDER[number];
+
+const PREFECTURE_TO_REGION: Record<string, RegionKey> = {
+  '北海道': 'hokkaido',
+  '青森県': 'tohoku', '岩手県': 'tohoku', '宮城県': 'tohoku', '秋田県': 'tohoku', '山形県': 'tohoku', '福島県': 'tohoku',
+  '茨城県': 'kanto', '栃木県': 'kanto', '群馬県': 'kanto', '埼玉県': 'kanto', '千葉県': 'kanto', '東京都': 'kanto', '神奈川県': 'kanto',
+  '新潟県': 'chubu', '富山県': 'chubu', '石川県': 'chubu', '福井県': 'chubu', '山梨県': 'chubu', '長野県': 'chubu', '岐阜県': 'chubu', '静岡県': 'chubu', '愛知県': 'chubu',
+  '三重県': 'kinki', '滋賀県': 'kinki', '京都府': 'kinki', '大阪府': 'kinki', '兵庫県': 'kinki', '奈良県': 'kinki', '和歌山県': 'kinki',
+  '鳥取県': 'chugoku', '島根県': 'chugoku', '岡山県': 'chugoku', '広島県': 'chugoku', '山口県': 'chugoku',
+  '徳島県': 'shikoku', '香川県': 'shikoku', '愛媛県': 'shikoku', '高知県': 'shikoku',
+  '福岡県': 'kyushu_okinawa', '佐賀県': 'kyushu_okinawa', '長崎県': 'kyushu_okinawa', '熊本県': 'kyushu_okinawa', '大分県': 'kyushu_okinawa', '宮崎県': 'kyushu_okinawa', '鹿児島県': 'kyushu_okinawa', '沖縄県': 'kyushu_okinawa',
+};
+
+const getRegion = (prefecture: string): RegionKey => PREFECTURE_TO_REGION[prefecture] ?? 'other';
+
 export default function FacilityListPage() {
   const { t, i18n } = useTranslation();
 
@@ -167,6 +185,17 @@ export default function FacilityListPage() {
     return haversine(userLocation.lat, userLocation.lng, a.latitude, a.longitude)
          - haversine(userLocation.lat, userLocation.lng, b.latitude, b.longitude);
   });
+
+  // 地域別グルーピング（近い順ソート時は使わずフラット表示にする）
+  const groupedByRegion = useMemo(() => {
+    const map = new Map<RegionKey, FacilityWithStats[]>();
+    for (const f of filtered) {
+      const region = getRegion(getPrefecture(f.address_ja ?? f.address));
+      if (!map.has(region)) map.set(region, []);
+      map.get(region)!.push(f);
+    }
+    return map;
+  }, [filtered]);
 
   const chipStyle = (active: boolean): React.CSSProperties => ({
     padding: '3px 12px',
@@ -329,7 +358,7 @@ export default function FacilityListPage() {
         <p style={{ textAlign: 'center', color: '#9ca3af', padding: '32px 0' }}>
           {t('common.noData')}
         </p>
-      ) : (
+      ) : sortByDistance ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {filtered.map((facility) => (
             <FacilityCard
@@ -338,6 +367,35 @@ export default function FacilityListPage() {
               isFavorite={isFavorite(facility.id)}
               onToggleFavorite={toggle}
             />
+          ))}
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          {REGION_ORDER.filter((region) => groupedByRegion.has(region)).map((region) => (
+            <div key={region}>
+              <h2
+                style={{
+                  fontSize: '15px', fontWeight: 700, color: '#374151',
+                  margin: '0 0 10px', paddingBottom: '4px',
+                  borderBottom: '2px solid #e5e7eb',
+                }}
+              >
+                {t(`facilityList.regions.${region}`)}
+                <span style={{ marginLeft: '8px', fontSize: '12px', fontWeight: 400, color: '#9ca3af' }}>
+                  ({groupedByRegion.get(region)!.length})
+                </span>
+              </h2>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {groupedByRegion.get(region)!.map((facility) => (
+                  <FacilityCard
+                    key={facility.id}
+                    facility={facility}
+                    isFavorite={isFavorite(facility.id)}
+                    onToggleFavorite={toggle}
+                  />
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       )}

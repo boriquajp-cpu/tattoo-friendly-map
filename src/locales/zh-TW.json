@@ -155,7 +155,18 @@
   "facilityList": {
     "recentlyViewed": "最近瀏覽",
     "searchPlaceholder": "搜尋設施名稱或地址",
-    "nearMe": "距離最近"
+    "nearMe": "距離最近",
+    "regions": {
+      "hokkaido": "北海道",
+      "tohoku": "東北",
+      "kanto": "關東",
+      "chubu": "中部",
+      "kinki": "近畿",
+      "chugoku": "中國",
+      "shikoku": "四國",
+      "kyushu_okinawa": "九州・沖繩",
+      "other": "其他"
+    }
   },
   "facilityRequest": {
     "title": "申請新增設施",

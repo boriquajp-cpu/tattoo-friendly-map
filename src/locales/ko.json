@@ -155,7 +155,18 @@
   "facilityList": {
     "recentlyViewed": "최근 본 시설",
     "searchPlaceholder": "시설명・주소로 검색",
-    "nearMe": "가까운 순"
+    "nearMe": "가까운 순",
+    "regions": {
+      "hokkaido": "홋카이도",
+      "tohoku": "도호쿠",
+      "kanto": "간토",
+      "chubu": "주부",
+      "kinki": "긴키",
+      "chugoku": "주고쿠",
+      "shikoku": "시코쿠",
+      "kyushu_okinawa": "규슈・오키나와",
+      "other": "기타"
+    }
   },
   "facilityRequest": {
     "title": "시설 추가 신청",
