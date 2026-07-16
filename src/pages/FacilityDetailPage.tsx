@@ -4,12 +4,14 @@ import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import { translateComment } from '../lib/claudeApi';
 import CorrectionModal from '../components/CorrectionModal/CorrectionModal';
+import ReportFlagModal from '../components/ReportFlagModal/ReportFlagModal';
 import { useFavorites } from '../hooks/useFavorites';
 import { useRecentlyViewed } from '../hooks/useRecentlyViewed';
 import type { FacilityWithStats, Report, SummaryLabel, SupportedLang } from '../types';
 
 const SHARE_COLORS: Record<string, string> = {
   line: '#06C755',
+  facebook: '#1877F2',
   twitter: '#000',
   copy: '#6366f1',
 };
@@ -34,6 +36,7 @@ export default function FacilityDetailPage() {
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
   const [showCorrection, setShowCorrection] = useState(false);
+  const [flaggingReportId, setFlaggingReportId] = useState<string | null>(null);
   const [translations, setTranslations] = useState<Record<string, string>>({});
   const [translatingIds, setTranslatingIds] = useState<Set<string>>(new Set());
   const [showTranslated, setShowTranslated] = useState<Record<string, boolean>>({});
@@ -129,17 +132,31 @@ export default function FacilityDetailPage() {
     );
   }
 
-  const handleShare = async (platform: 'line' | 'twitter' | 'copy') => {
+  const canNativeShare = typeof navigator !== 'undefined' && typeof navigator.share === 'function';
+
+  const handleShare = async (platform: 'line' | 'facebook' | 'twitter' | 'copy') => {
     const url = window.location.href;
     const text = `${facility?.name ?? ''} | Tattoo Map Japan`;
     if (platform === 'line') {
       window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(url)}`, '_blank');
+    } else if (platform === 'facebook') {
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
     } else if (platform === 'twitter') {
       window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`, '_blank');
     } else {
       await navigator.clipboard.writeText(url);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  const handleNativeShare = async () => {
+    const url = window.location.href;
+    const text = `${facility?.name ?? ''} | Tattoo Map Japan`;
+    try {
+      await navigator.share({ title: text, url });
+    } catch {
+      /* ユーザーによるキャンセル等は無視 */
     }
   };
 
@@ -324,7 +341,25 @@ export default function FacilityDetailPage() {
       <div style={{ marginBottom: '28px' }}>
         <p style={{ fontSize: '13px', color: '#6b7280', marginBottom: '8px' }}>{t('facility.share')}</p>
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-          {(['line', 'twitter', 'copy'] as const).map((platform) => (
+          {canNativeShare && (
+            <button
+              type="button"
+              onClick={() => { void handleNativeShare(); }}
+              style={{
+                padding: '7px 16px',
+                backgroundColor: '#374151',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '20px',
+                fontSize: '13px',
+                fontWeight: 600,
+                cursor: 'pointer',
+              }}
+            >
+              📤 {t('facility.shareNative')}
+            </button>
+          )}
+          {(['line', 'facebook', 'twitter', 'copy'] as const).map((platform) => (
             <button
               key={platform}
               type="button"
@@ -341,6 +376,7 @@ export default function FacilityDetailPage() {
               }}
             >
               {platform === 'line' && 'LINE'}
+              {platform === 'facebook' && 'Facebook'}
               {platform === 'twitter' && '𝕏 Twitter'}
               {platform === 'copy' && (copied ? t('facility.shareCopied') : t('facility.shareCopyLink'))}
             </button>
@@ -426,9 +462,24 @@ export default function FacilityDetailPage() {
                   <span>{t(`report.facilityResponse.${report.facility_response}`)}</span>
                 )}
               </div>
+
+              <button
+                type="button"
+                onClick={() => setFlaggingReportId(report.id)}
+                style={{
+                  marginTop: '8px', background: 'none', border: 'none',
+                  color: '#9ca3af', fontSize: '12px', cursor: 'pointer', padding: 0,
+                }}
+              >
+                🚩 {t('reportFlag.reportButton')}
+              </button>
             </div>
           ))}
         </div>
+      )}
+
+      {flaggingReportId && (
+        <ReportFlagModal reportId={flaggingReportId} onClose={() => setFlaggingReportId(null)} />
       )}
     </div>
   );

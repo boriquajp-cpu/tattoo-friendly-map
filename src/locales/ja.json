@@ -49,6 +49,7 @@
     "conditionalCount": "条件付き {{count}}件",
     "deniedCount": "断られた {{count}}件",
     "share": "シェアする",
+    "shareNative": "共有",
     "shareCopied": "コピーしました！",
     "shareCopyLink": "リンクをコピー",
     "navigate": "ナビ",
@@ -200,8 +201,26 @@
     "approve": "承認",
     "reject": "却下",
     "reportsManagement": "報告の管理",
+    "flagCount": "{{count}}件の通報",
     "flag": "フラグを立てる",
     "unflag": "フラグを解除"
+  },
+  "reportFlag": {
+    "reportButton": "通報",
+    "title": "口コミを通報する",
+    "reason": "通報理由",
+    "reasons": {
+      "spam": "スパム・宣伝目的",
+      "false_info": "虚偽の内容・事実と異なる",
+      "inappropriate": "不適切な言葉遣い・誹謗中傷",
+      "privacy": "個人情報が含まれている",
+      "other": "その他"
+    },
+    "detail": "詳細（任意）",
+    "detailPlaceholder": "具体的な内容を教えてください",
+    "submit": "通報する",
+    "success": "ご報告ありがとうございます。確認いたします。",
+    "error": "送信に失敗しました。再度お試しください。"
   },
   "disclaimer": {
     "title": "ご利用にあたって",

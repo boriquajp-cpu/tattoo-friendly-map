@@ -50,11 +50,12 @@ export default function AdminPage() {
 
   const [requests, setRequests] = useState<FacilityRequestRow[]>([]);
   const [reports, setReports] = useState<ReportRow[]>([]);
+  const [flagCounts, setFlagCounts] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
-    const [{ data: reqData }, { data: repData }] = await Promise.all([
+    const [{ data: reqData }, { data: repData }, { data: flagData }] = await Promise.all([
       supabase
         .from('facility_requests')
         .select('id, name_ja, address_ja, category, official_url, message, created_at')
@@ -65,9 +66,15 @@ export default function AdminPage() {
         .select('id, facility_id, result, comment_original, visit_date, flagged, created_at, facilities(name_ja)')
         .order('created_at', { ascending: false })
         .limit(100),
+      supabase.from('report_flags').select('report_id'),
     ]);
     setRequests(reqData ?? []);
     setReports((repData as unknown as ReportRow[]) ?? []);
+    const counts: Record<string, number> = {};
+    for (const row of flagData ?? []) {
+      counts[row.report_id] = (counts[row.report_id] ?? 0) + 1;
+    }
+    setFlagCounts(counts);
     setLoading(false);
   }, []);
 
@@ -170,7 +177,9 @@ export default function AdminPage() {
       {/* 報告管理（フラグ操作） */}
       <h2 style={{ fontSize: '15px', fontWeight: 600, marginBottom: '10px' }}>{t('admin.reportsManagement')}</h2>
       <div>
-        {reports.map((rep) => (
+        {[...reports]
+          .sort((a, b) => (flagCounts[b.id] ?? 0) - (flagCounts[a.id] ?? 0))
+          .map((rep) => (
           <div
             key={rep.id}
             style={{
@@ -185,6 +194,17 @@ export default function AdminPage() {
                 <span style={{ marginLeft: '8px', fontSize: '12px', color: '#6b7280' }}>
                   {t(`report.result.${rep.result}`)}
                 </span>
+                {(flagCounts[rep.id] ?? 0) > 0 && (
+                  <span
+                    style={{
+                      marginLeft: '8px', fontSize: '11px', fontWeight: 700,
+                      padding: '2px 8px', borderRadius: '9999px',
+                      backgroundColor: '#fee2e2', color: '#991b1b',
+                    }}
+                  >
+                    🚩 {t('admin.flagCount', { count: flagCounts[rep.id] })}
+                  </span>
+                )}
               </div>
               <span style={{ fontSize: '12px', color: '#9ca3af' }}>{rep.visit_date}</span>
             </div>

@@ -49,6 +49,7 @@
     "conditionalCount": "條件入場 {{count}} 則",
     "deniedCount": "被拒絕 {{count}} 則",
     "share": "分享",
+    "shareNative": "分享",
     "shareCopied": "已複製！",
     "shareCopyLink": "複製連結",
     "navigate": "導航",
@@ -200,8 +201,26 @@
     "approve": "核准",
     "reject": "駁回",
     "reportsManagement": "回報管理",
+    "flagCount": "{{count}} 件檢舉",
     "flag": "標記為問題",
     "unflag": "取消標記"
+  },
+  "reportFlag": {
+    "reportButton": "檢舉",
+    "title": "檢舉此則回報",
+    "reason": "檢舉原因",
+    "reasons": {
+      "spam": "垃圾訊息・廣告",
+      "false_info": "內容不實・與事實不符",
+      "inappropriate": "言語不當・人身攻擊",
+      "privacy": "包含個人資訊",
+      "other": "其他"
+    },
+    "detail": "詳細說明（選填）",
+    "detailPlaceholder": "請描述具體情況",
+    "submit": "送出檢舉",
+    "success": "感謝您的回報，我們將會確認。",
+    "error": "送出失敗，請再試一次。"
   },
   "disclaimer": {
     "title": "使用須知",

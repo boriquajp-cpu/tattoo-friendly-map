@@ -49,6 +49,7 @@
     "conditionalCount": "조건부 입장 {{count}}건",
     "deniedCount": "입장 거부 {{count}}건",
     "share": "공유",
+    "shareNative": "공유하기",
     "shareCopied": "복사되었습니다！",
     "shareCopyLink": "링크 복사",
     "navigate": "길 안내",
@@ -200,8 +201,26 @@
     "approve": "승인",
     "reject": "반려",
     "reportsManagement": "보고 관리",
+    "flagCount": "신고 {{count}}건",
     "flag": "플래그 설정",
     "unflag": "플래그 해제"
+  },
+  "reportFlag": {
+    "reportButton": "신고",
+    "title": "이 후기 신고하기",
+    "reason": "신고 사유",
+    "reasons": {
+      "spam": "스팸・광고 목적",
+      "false_info": "허위 내용・사실과 다름",
+      "inappropriate": "부적절한 언어・비방",
+      "privacy": "개인정보가 포함됨",
+      "other": "기타"
+    },
+    "detail": "상세 내용 (선택)",
+    "detailPlaceholder": "구체적인 내용을 알려주세요",
+    "submit": "신고하기",
+    "success": "신고해 주셔서 감사합니다. 확인하겠습니다.",
+    "error": "제출에 실패했습니다. 다시 시도해 주세요."
   },
   "disclaimer": {
     "title": "이용 안내",
