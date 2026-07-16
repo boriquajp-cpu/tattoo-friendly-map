@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabase';
 import { translateComment } from '../lib/claudeApi';
 import CorrectionModal from '../components/CorrectionModal/CorrectionModal';
 import ReportFlagModal from '../components/ReportFlagModal/ReportFlagModal';
+import HeartIcon from '../components/HeartIcon/HeartIcon';
 import { useFavorites } from '../hooks/useFavorites';
 import { useRecentlyViewed } from '../hooks/useRecentlyViewed';
 import type { FacilityWithStats, Report, SummaryLabel, SupportedLang } from '../types';
@@ -198,9 +199,9 @@ export default function FacilityDetailPage() {
             type="button"
             onClick={() => toggle(facility.id)}
             title={t('common.favorite')}
-            style={{ background: 'none', border: 'none', fontSize: '26px', cursor: 'pointer', flexShrink: 0, padding: '2px', lineHeight: 1 }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', flexShrink: 0, padding: '2px', display: 'flex' }}
           >
-            {isFavorite(facility.id) ? '❤️' : '🤍'}
+            <HeartIcon filled={isFavorite(facility.id)} color={isFavorite(facility.id) ? '#ef4444' : '#9ca3af'} size={26} />
           </button>
         </div>
         <p style={{ margin: '0 0 12px', color: '#6b7280', fontSize: '14px' }}>{facility.address}</p>

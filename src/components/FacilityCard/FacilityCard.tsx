@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import HeartIcon from '../HeartIcon/HeartIcon';
 import type { FacilityWithStats, SummaryLabel, ConfidenceLevel } from '../../types';
 
 interface FacilityCardProps {
@@ -62,11 +63,11 @@ export default function FacilityCard({ facility, isFavorite = false, onToggleFav
             cursor: 'pointer',
             lineHeight: 1,
             padding: '2px',
-            color: isFavorite ? '#ef4444' : '#d1d5db',
+            display: 'flex',
             transition: 'color 0.15s',
           }}
         >
-          {isFavorite ? '❤️' : '🤍'}
+          <HeartIcon filled={isFavorite} color={isFavorite ? '#ef4444' : '#9ca3af'} size={20} />
         </button>
       )}
 

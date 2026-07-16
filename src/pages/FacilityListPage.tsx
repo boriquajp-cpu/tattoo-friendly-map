@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import FacilityCard from '../components/FacilityCard/FacilityCard';
+import HeartIcon from '../components/HeartIcon/HeartIcon';
 import { useFavorites } from '../hooks/useFavorites';
 import { useRecentlyViewed } from '../hooks/useRecentlyViewed';
 import type { FacilityCategory, FacilityWithStats, SummaryLabel } from '../types';
@@ -323,11 +324,15 @@ export default function FacilityListPage() {
           onClick={() => setFavoritesOnly((v) => !v)}
           style={{
             ...chipStyle(favoritesOnly),
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '6px',
             borderColor: favoritesOnly ? '#ef4444' : '#d1d5db',
             backgroundColor: favoritesOnly ? '#ef4444' : '#fff',
           }}
         >
-          {favoritesOnly ? '❤️' : '🤍'} {t('common.favoriteOnly')}
+          <HeartIcon filled={favoritesOnly} color={favoritesOnly ? '#fff' : '#374151'} size={14} />
+          {t('common.favoriteOnly')}
         </button>
         <button
           type="button"
