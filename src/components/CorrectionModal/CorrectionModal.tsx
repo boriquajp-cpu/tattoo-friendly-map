@@ -19,20 +19,23 @@ export default function CorrectionModal({ facilityId, facilityName, facilityCate
   const [detail, setDetail] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
   const handleSubmit = async () => {
     if (!correctionType) return;
     setSubmitting(true);
+    setErrorMsg('');
     try {
-      await supabase.from('facility_requests').insert({
+      const { error } = await supabase.from('facility_requests').insert({
         name_ja: `[修正報告] ${facilityName}`,
         address_ja: facilityId,
         category: facilityCategory,
         message: `修正の種類: ${correctionType}\n詳細: ${detail}`,
       });
+      if (error) throw error;
       setDone(true);
     } catch {
-      /* ignore */
+      setErrorMsg(t('correction.error'));
     } finally {
       setSubmitting(false);
     }
@@ -59,7 +62,7 @@ export default function CorrectionModal({ facilityId, facilityName, facilityCate
           <h3 style={{ margin: 0, fontSize: '17px', fontWeight: 700 }}>
             {t('correction.title')}
           </h3>
-          <button type="button" onClick={onClose} style={{ background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', color: '#9ca3af' }}>✕</button>
+          <button type="button" onClick={onClose} style={{ background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', color: '#6b7280' }}>✕</button>
         </div>
 
         {done ? (
@@ -120,6 +123,10 @@ export default function CorrectionModal({ facilityId, facilityName, facilityCate
                 style={{ width: '100%', padding: '10px 12px', border: '1px solid #d1d5db', borderRadius: '8px', fontSize: '14px', boxSizing: 'border-box', resize: 'vertical' }}
               />
             </div>
+
+            {errorMsg && (
+              <p style={{ color: '#ef4444', fontSize: '13px', marginBottom: '12px' }}>{errorMsg}</p>
+            )}
 
             <button
               type="button"

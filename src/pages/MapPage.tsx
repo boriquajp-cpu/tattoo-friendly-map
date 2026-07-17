@@ -5,6 +5,7 @@ import type { MapRef } from 'react-map-gl/maplibre';
 import { useTranslation } from 'react-i18next';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { supabase } from '../lib/supabase';
+import { translateFacilities } from '../lib/facilityTranslation';
 import FacilityRequestModal from '../components/FacilityRequestModal/FacilityRequestModal';
 import type { FacilityCategory, FacilityWithStats, SummaryLabel } from '../types';
 
@@ -77,6 +78,17 @@ export default function MapPage() {
       }));
       setFacilities(mapped);
       setLoading(false);
+
+      // 英語・韓国語は facilities テーブルに専用列がないため、Claude 翻訳で補う
+      if (i18n.language === 'en' || i18n.language === 'ko') {
+        const targetLang = i18n.language as 'en' | 'ko';
+        const translations = await translateFacilities(mapped.map((f) => f.id), targetLang);
+        if (Object.keys(translations).length > 0) {
+          setFacilities((prev) => prev.map((f) =>
+            translations[f.id] ? { ...f, name: translations[f.id].name, address: translations[f.id].address } : f
+          ));
+        }
+      }
     };
     void fetchFacilities();
   }, [i18n.language]);
@@ -252,7 +264,7 @@ export default function MapPage() {
             {t(`facility.categories.${cat}`)}
           </button>
         ))}
-        {loading && <span style={{ fontSize: '12px', color: '#9ca3af', alignSelf: 'center' }}>{t('common.loading')}</span>}
+        {loading && <span style={{ fontSize: '12px', color: '#6b7280', alignSelf: 'center' }}>{t('common.loading')}</span>}
         {!loading && <span style={{ fontSize: '12px', color: '#6b7280', alignSelf: 'center' }}>{filteredFacilities.length}{t('map.facilityCount')}</span>}
       </div>
 
@@ -447,7 +459,7 @@ export default function MapPage() {
             <button
               type="button"
               onClick={() => setSelectedFacility(null)}
-              style={{ background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer', color: '#9ca3af', flexShrink: 0, padding: '0 0 0 8px' }}
+              style={{ background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer', color: '#6b7280', flexShrink: 0, padding: '0 0 0 8px' }}
             >
               ✕
             </button>

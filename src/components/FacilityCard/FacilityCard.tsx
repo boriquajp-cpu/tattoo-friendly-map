@@ -55,19 +55,20 @@ export default function FacilityCard({ facility, isFavorite = false, onToggleFav
           title={t('common.favorite')}
           style={{
             position: 'absolute',
-            top: '12px',
-            right: '12px',
+            top: '4px',
+            right: '4px',
+            width: '40px',
+            height: '40px',
             background: 'none',
             border: 'none',
-            fontSize: '20px',
             cursor: 'pointer',
-            lineHeight: 1,
-            padding: '2px',
             display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             transition: 'color 0.15s',
           }}
         >
-          <HeartIcon filled={isFavorite} color={isFavorite ? '#ef4444' : '#9ca3af'} size={20} />
+          <HeartIcon filled={isFavorite} color={isFavorite ? '#ef4444' : '#6b7280'} size={20} />
         </button>
       )}
 

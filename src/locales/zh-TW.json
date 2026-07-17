@@ -133,6 +133,8 @@
     "title": "我的頁面",
     "myReports": "我的回報",
     "noReports": "尚無回報",
+    "exploreFacilities": "尋找設施",
+    "unknownFacility": "未知設施",
     "edit": "編輯",
     "save": "儲存",
     "delete": "刪除",
@@ -197,7 +199,8 @@
     "detail": "詳細說明（選填）",
     "detailPlaceholder": "請描述變更的詳細內容",
     "submit": "送出回報",
-    "success": "感謝您的回報，我們將確認後更新資訊。"
+    "success": "感謝您的回報，我們將確認後更新資訊。",
+    "error": "送出失敗，請再試一次。"
   },
   "admin": {
     "title": "管理後台",
@@ -209,6 +212,8 @@
     "typeNewFacility": "新設施",
     "address": "地址",
     "category": "分類",
+    "searchByName": "依設施名稱篩選",
+    "viewTargetFacility": "開啟對象設施頁面",
     "approve": "核准",
     "reject": "駁回",
     "reportsManagement": "回報管理",

@@ -133,6 +133,8 @@
     "title": "마이페이지",
     "myReports": "내 보고",
     "noReports": "아직 보고가 없습니다",
+    "exploreFacilities": "시설 찾기",
+    "unknownFacility": "알 수 없는 시설",
     "edit": "편집",
     "save": "저장",
     "delete": "삭제",
@@ -197,7 +199,8 @@
     "detail": "상세 내용 (선택)",
     "detailPlaceholder": "변경 내용을 설명해 주세요",
     "submit": "보고 제출",
-    "success": "보고해 주셔서 감사합니다. 확인 후 반영하겠습니다."
+    "success": "보고해 주셔서 감사합니다. 확인 후 반영하겠습니다.",
+    "error": "제출에 실패했습니다. 다시 시도해 주세요."
   },
   "admin": {
     "title": "관리자 페이지",
@@ -209,6 +212,8 @@
     "typeNewFacility": "신규 시설",
     "address": "주소",
     "category": "카테고리",
+    "searchByName": "시설명으로 필터링",
+    "viewTargetFacility": "대상 시설 페이지 열기",
     "approve": "승인",
     "reject": "반려",
     "reportsManagement": "보고 관리",

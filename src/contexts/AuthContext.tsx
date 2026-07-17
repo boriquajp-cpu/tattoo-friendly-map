@@ -7,6 +7,7 @@ interface AuthContextValue {
   user: User | null;
   isAdmin: boolean;
   loading: boolean;
+  roleLoading: boolean;
   signOut: () => Promise<void>;
 }
 
@@ -15,6 +16,7 @@ const AuthContext = createContext<AuthContextValue>({
   user: null,
   isAdmin: false,
   loading: true,
+  roleLoading: false,
   signOut: async () => {},
 });
 
@@ -22,6 +24,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [roleLoading, setRoleLoading] = useState(false);
 
   useEffect(() => {
     void supabase.auth.getSession().then(({ data }) => {
@@ -40,14 +43,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const userId = session?.user?.id;
     if (!userId) {
       setIsAdmin(false);
+      setRoleLoading(false);
       return;
     }
-    void supabase
-      .from('users')
-      .select('role')
-      .eq('id', userId)
-      .single()
-      .then(({ data }) => setIsAdmin(data?.role === 'admin'));
+    // isAdmin が確定するまで roleLoading を true に保つ。これがないと、
+    // AdminPage が「role未取得＝false」を「権限なし」と誤って一瞬（あるいは
+    // 通信エラー時は恒久的に）表示してしまう競合状態になる。
+    setRoleLoading(true);
+    void (async () => {
+      try {
+        const { data } = await supabase.from('users').select('role').eq('id', userId).single();
+        setIsAdmin(data?.role === 'admin');
+      } catch {
+        setIsAdmin(false);
+      } finally {
+        setRoleLoading(false);
+      }
+    })();
   }, [session?.user?.id]);
 
   const signOut = async () => {
@@ -55,7 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ session, user: session?.user ?? null, isAdmin, loading, signOut }}>
+    <AuthContext.Provider value={{ session, user: session?.user ?? null, isAdmin, loading, roleLoading, signOut }}>
       {children}
     </AuthContext.Provider>
   );

@@ -46,30 +46,43 @@ const buttonStyle = (color: string): React.CSSProperties => ({
 
 export default function AdminPage() {
   const { t } = useTranslation();
-  const { user, isAdmin, loading: authLoading } = useAuth();
+  const { user, isAdmin, loading: authLoading, roleLoading } = useAuth();
 
   const [requests, setRequests] = useState<FacilityRequestRow[]>([]);
   const [reports, setReports] = useState<ReportRow[]>([]);
   const [flagCounts, setFlagCounts] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
+  const [requestSearch, setRequestSearch] = useState('');
+  const [reportSearch, setReportSearch] = useState('');
 
   const fetchData = useCallback(async () => {
     setLoading(true);
-    const [{ data: reqData }, { data: repData }, { data: flagData }] = await Promise.all([
+    const reportColumns = 'id, facility_id, result, comment_original, visit_date, flagged, created_at, facilities(name_ja)';
+    const [{ data: reqData }, { data: flaggedRepData }, { data: recentRepData }, { data: flagData }] = await Promise.all([
       supabase
         .from('facility_requests')
         .select('id, name_ja, address_ja, category, official_url, message, created_at')
         .eq('status', 'pending')
-        .order('created_at', { ascending: true }),
+        .order('created_at', { ascending: true })
+        .limit(200),
+      // フラグ済みは古いものが一覧から取りこぼされないよう、上限なしで全件取得
       supabase
         .from('reports')
-        .select('id, facility_id, result, comment_original, visit_date, flagged, created_at, facilities(name_ja)')
+        .select(reportColumns)
+        .eq('flagged', true)
+        .order('created_at', { ascending: false }),
+      // 未フラグは直近100件のみ（新規の通報候補をブラウズする用途）
+      supabase
+        .from('reports')
+        .select(reportColumns)
+        .eq('flagged', false)
         .order('created_at', { ascending: false })
         .limit(100),
       supabase.from('report_flags').select('report_id'),
     ]);
     setRequests(reqData ?? []);
-    setReports((repData as unknown as ReportRow[]) ?? []);
+    const merged = [...(flaggedRepData ?? []), ...(recentRepData ?? [])] as unknown as ReportRow[];
+    setReports(merged);
     const counts: Record<string, number> = {};
     for (const row of flagData ?? []) {
       counts[row.report_id] = (counts[row.report_id] ?? 0) + 1;
@@ -93,7 +106,7 @@ export default function AdminPage() {
     setReports((prev) => prev.map((r) => (r.id === report.id ? { ...r, flagged: nextFlagged } : r)));
   };
 
-  if (authLoading || (isAdmin && loading)) {
+  if (authLoading || roleLoading || (isAdmin && loading)) {
     return <p style={{ padding: '32px', textAlign: 'center' }}>{t('common.loading')}</p>;
   }
 
@@ -110,19 +123,40 @@ export default function AdminPage() {
     return <p style={{ padding: '32px', textAlign: 'center' }}>{t('admin.noPermission')}</p>;
   }
 
+  const searchInputStyle: React.CSSProperties = {
+    width: '100%', padding: '8px 12px', border: '1px solid #d1d5db',
+    borderRadius: '8px', fontSize: '13px', marginBottom: '10px', boxSizing: 'border-box',
+  };
+
+  const filteredRequests = requests.filter((req) =>
+    requestSearch === '' || req.name_ja.toLowerCase().includes(requestSearch.toLowerCase())
+  );
+  const filteredReports = reports.filter((rep) =>
+    reportSearch === '' || (rep.facilities?.name_ja ?? '').toLowerCase().includes(reportSearch.toLowerCase())
+  );
+
   return (
     <div style={{ maxWidth: '860px', margin: '0 auto', padding: '16px' }}>
       <h1 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '20px' }}>{t('admin.title')}</h1>
 
       {/* 施設リクエスト・修正報告 */}
       <h2 style={{ fontSize: '15px', fontWeight: 600, marginBottom: '10px' }}>
-        {t('admin.facilityRequests')} ({requests.length})
+        {t('admin.facilityRequests')} ({filteredRequests.length}{requestSearch ? ` / ${requests.length}` : ''})
       </h2>
+      {requests.length > 0 && (
+        <input
+          type="text"
+          value={requestSearch}
+          onChange={(e) => setRequestSearch(e.target.value)}
+          placeholder={t('admin.searchByName')}
+          style={searchInputStyle}
+        />
+      )}
       {requests.length === 0 ? (
-        <p style={{ color: '#9ca3af', fontSize: '13px', marginBottom: '24px' }}>{t('admin.noPendingRequests')}</p>
+        <p style={{ color: '#6b7280', fontSize: '13px', marginBottom: '24px' }}>{t('admin.noPendingRequests')}</p>
       ) : (
         <div style={{ marginBottom: '24px' }}>
-          {requests.map((req) => {
+          {filteredRequests.map((req) => {
             const isCorrection = req.name_ja.startsWith('[修正報告]');
             return (
               <div key={req.id} style={sectionStyle}>
@@ -140,11 +174,19 @@ export default function AdminPage() {
                     </span>
                     <strong style={{ fontSize: '14px' }}>{req.name_ja}</strong>
                   </div>
-                  <span style={{ fontSize: '12px', color: '#9ca3af' }}>{req.created_at.slice(0, 10)}</span>
+                  <span style={{ fontSize: '12px', color: '#6b7280' }}>{req.created_at.slice(0, 10)}</span>
                 </div>
-                <p style={{ margin: '8px 0 4px', fontSize: '13px', color: '#374151' }}>
-                  {t('admin.address')}: {req.address_ja}
-                </p>
+                {isCorrection ? (
+                  <p style={{ margin: '8px 0 4px', fontSize: '13px' }}>
+                    <Link to={`/facility/${req.address_ja}`} target="_blank" style={{ color: '#6366f1' }}>
+                      {t('admin.viewTargetFacility')} →
+                    </Link>
+                  </p>
+                ) : (
+                  <p style={{ margin: '8px 0 4px', fontSize: '13px', color: '#374151' }}>
+                    {t('admin.address')}: {req.address_ja}
+                  </p>
+                )}
                 <p style={{ margin: '0 0 4px', fontSize: '13px', color: '#374151' }}>
                   {t('admin.category')}: {t(`facility.categories.${req.category}`)}
                 </p>
@@ -175,9 +217,18 @@ export default function AdminPage() {
       )}
 
       {/* 報告管理（フラグ操作） */}
-      <h2 style={{ fontSize: '15px', fontWeight: 600, marginBottom: '10px' }}>{t('admin.reportsManagement')}</h2>
+      <h2 style={{ fontSize: '15px', fontWeight: 600, marginBottom: '10px' }}>
+        {t('admin.reportsManagement')} ({filteredReports.length}{reportSearch ? ` / ${reports.length}` : ''})
+      </h2>
+      <input
+        type="text"
+        value={reportSearch}
+        onChange={(e) => setReportSearch(e.target.value)}
+        placeholder={t('admin.searchByName')}
+        style={searchInputStyle}
+      />
       <div>
-        {[...reports]
+        {[...filteredReports]
           .sort((a, b) => (flagCounts[b.id] ?? 0) - (flagCounts[a.id] ?? 0))
           .map((rep) => (
           <div
@@ -206,7 +257,7 @@ export default function AdminPage() {
                   </span>
                 )}
               </div>
-              <span style={{ fontSize: '12px', color: '#9ca3af' }}>{rep.visit_date}</span>
+              <span style={{ fontSize: '12px', color: '#6b7280' }}>{rep.visit_date}</span>
             </div>
             {rep.comment_original && (
               <p style={{ margin: '8px 0', fontSize: '13px', color: '#374151' }}>{rep.comment_original}</p>

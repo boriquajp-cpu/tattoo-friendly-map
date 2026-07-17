@@ -33,8 +33,11 @@ void i18n.use(initReactI18next).init({
   interpolation: { escapeValue: false },
 });
 
+document.documentElement.lang = i18n.language;
+
 i18n.on('languageChanged', (lng: string) => {
   localStorage.setItem(STORAGE_KEY, lng);
+  document.documentElement.lang = lng;
 });
 
 export default i18n;

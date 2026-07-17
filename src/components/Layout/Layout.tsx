@@ -56,7 +56,7 @@ export default function Layout({ children }: LayoutProps) {
   });
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: '#f9fafb' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100svh', backgroundColor: '#f9fafb' }}>
       {/* ヘッダー */}
       <header
         style={{

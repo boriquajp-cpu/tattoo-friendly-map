@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
+import { translateFacilities } from '../lib/facilityTranslation';
 import FacilityCard from '../components/FacilityCard/FacilityCard';
 import HeartIcon from '../components/HeartIcon/HeartIcon';
 import { useFavorites } from '../hooks/useFavorites';
@@ -107,6 +108,16 @@ export default function FacilityListPage() {
 
       setFacilities(mapped);
       setLoading(false);
+
+      if (i18n.language === 'en' || i18n.language === 'ko') {
+        const targetLang = i18n.language as 'en' | 'ko';
+        const translations = await translateFacilities(mapped.map((f) => f.id), targetLang);
+        if (Object.keys(translations).length > 0) {
+          setFacilities((prev) => prev.map((f) =>
+            translations[f.id] ? { ...f, name: translations[f.id].name, address: translations[f.id].address } : f
+          ));
+        }
+      }
     };
 
     void fetchFacilities();
@@ -356,11 +367,11 @@ export default function FacilityListPage() {
 
       {/* 施設一覧 */}
       {loading ? (
-        <p style={{ textAlign: 'center', color: '#9ca3af', padding: '32px 0' }}>
+        <p style={{ textAlign: 'center', color: '#6b7280', padding: '32px 0' }}>
           {t('common.loading')}
         </p>
       ) : filtered.length === 0 ? (
-        <p style={{ textAlign: 'center', color: '#9ca3af', padding: '32px 0' }}>
+        <p style={{ textAlign: 'center', color: '#6b7280', padding: '32px 0' }}>
           {t('common.noData')}
         </p>
       ) : sortByDistance ? (
@@ -386,7 +397,7 @@ export default function FacilityListPage() {
                 }}
               >
                 {t(`facilityList.regions.${region}`)}
-                <span style={{ marginLeft: '8px', fontSize: '12px', fontWeight: 400, color: '#9ca3af' }}>
+                <span style={{ marginLeft: '8px', fontSize: '12px', fontWeight: 400, color: '#6b7280' }}>
                   ({groupedByRegion.get(region)!.length})
                 </span>
               </h2>

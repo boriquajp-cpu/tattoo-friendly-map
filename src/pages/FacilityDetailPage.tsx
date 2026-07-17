@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import { translateComment } from '../lib/claudeApi';
+import { translateFacilities } from '../lib/facilityTranslation';
 import CorrectionModal from '../components/CorrectionModal/CorrectionModal';
 import ReportFlagModal from '../components/ReportFlagModal/ReportFlagModal';
 import HeartIcon from '../components/HeartIcon/HeartIcon';
@@ -15,6 +16,14 @@ const SHARE_COLORS: Record<string, string> = {
   facebook: '#1877F2',
   twitter: '#000',
   copy: '#6366f1',
+};
+
+// WCAG AA(4.5:1)を満たすため、明るい背景色のボタンは濃色テキストにする
+const SHARE_TEXT_COLORS: Record<string, string> = {
+  line: '#111827',
+  facebook: '#111827',
+  twitter: '#fff',
+  copy: '#fff',
 };
 
 const SUMMARY_BADGE_STYLE: Record<SummaryLabel, { bg: string; color: string }> = {
@@ -90,14 +99,23 @@ export default function FacilityDetailPage() {
           stats: f.facility_stats ? {
             facility_id: f.facility_stats.facility_id,
             total_reports: f.facility_stats.report_count_12mo,
-            admitted_count: 0,
-            conditional_count: 0,
-            denied_count: 0,
+            admitted_count: f.facility_stats.admitted_count ?? 0,
+            conditional_count: f.facility_stats.conditional_count ?? 0,
+            denied_count: f.facility_stats.denied_count ?? 0,
             summary_label: f.facility_stats.summary_label as SummaryLabel,
             confidence: f.facility_stats.confidence_level ?? 'low',
             last_updated: f.facility_stats.last_updated,
           } : null,
         });
+
+        // 英語・韓国語は facilities テーブルに専用列がないため、Claude 翻訳で補う
+        if (i18n.language === 'en' || i18n.language === 'ko') {
+          const targetLang = i18n.language as 'en' | 'ko';
+          const translations = await translateFacilities([f.id], targetLang);
+          if (translations[f.id]) {
+            setFacility((prev) => prev ? { ...prev, name: translations[f.id].name, address: translations[f.id].address } : prev);
+          }
+        }
       }
       if (r) {
         setReports(r.map((rep) => ({
@@ -161,14 +179,12 @@ export default function FacilityDetailPage() {
     }
   };
 
-  // レポートから件数を計算
-  const admittedCount = reports.filter((r) =>
-    ['admitted', 'admitted_with_sticker', 'admitted_with_cover'].includes(r.result)
-  ).length;
-  const conditionalCount = reports.filter((r) =>
-    ['admitted_with_sticker', 'admitted_with_cover'].includes(r.result)
-  ).length;
-  const deniedCount = reports.filter((r) => r.result === 'denied').length;
+  // 内訳件数はサーバー側の12ヶ月集計（facility_stats）を使用する。
+  // reports は直近50件までしか取得しないため、件数の多い施設ではクライアント集計が
+  // 「N件の報告」バッジと食い違ってしまうのを避けるため。
+  const admittedCount = facility.stats?.admitted_count ?? 0;
+  const conditionalCount = facility.stats?.conditional_count ?? 0;
+  const deniedCount = facility.stats?.denied_count ?? 0;
 
   const stats = facility.stats;
   const summaryLabel: SummaryLabel = stats?.summary_label ?? 'no_data';
@@ -199,9 +215,12 @@ export default function FacilityDetailPage() {
             type="button"
             onClick={() => toggle(facility.id)}
             title={t('common.favorite')}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', flexShrink: 0, padding: '2px', display: 'flex' }}
+            style={{
+              background: 'none', border: 'none', cursor: 'pointer', flexShrink: 0,
+              width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}
           >
-            <HeartIcon filled={isFavorite(facility.id)} color={isFavorite(facility.id) ? '#ef4444' : '#9ca3af'} size={26} />
+            <HeartIcon filled={isFavorite(facility.id)} color={isFavorite(facility.id) ? '#ef4444' : '#6b7280'} size={26} />
           </button>
         </div>
         <p style={{ margin: '0 0 12px', color: '#6b7280', fontSize: '14px' }}>{facility.address}</p>
@@ -317,7 +336,7 @@ export default function FacilityDetailPage() {
           to={`/facility/${facility.id}/report`}
           style={{
             display: 'inline-block', padding: '10px 20px',
-            backgroundColor: '#f97316', color: '#fff',
+            backgroundColor: '#f97316', color: '#111827',
             borderRadius: '8px', textDecoration: 'none',
             fontSize: '14px', fontWeight: 600,
           }}
@@ -368,7 +387,7 @@ export default function FacilityDetailPage() {
               style={{
                 padding: '7px 16px',
                 backgroundColor: SHARE_COLORS[platform],
-                color: '#fff',
+                color: SHARE_TEXT_COLORS[platform],
                 border: 'none',
                 borderRadius: '20px',
                 fontSize: '13px',
@@ -400,7 +419,7 @@ export default function FacilityDetailPage() {
         {t('facility.reportList')}
       </h2>
       {reports.length === 0 ? (
-        <p style={{ color: '#9ca3af', textAlign: 'center', padding: '24px 0' }}>
+        <p style={{ color: '#6b7280', textAlign: 'center', padding: '24px 0' }}>
           {t('facility.noReports')}
         </p>
       ) : (
@@ -423,7 +442,7 @@ export default function FacilityDetailPage() {
                 >
                   {t(`report.result.${report.result}`)}
                 </span>
-                <span style={{ fontSize: '12px', color: '#9ca3af' }}>
+                <span style={{ fontSize: '12px', color: '#6b7280' }}>
                   {report.visit_date ?? report.created_at.slice(0, 10)}
                 </span>
               </div>
@@ -469,7 +488,7 @@ export default function FacilityDetailPage() {
                 onClick={() => setFlaggingReportId(report.id)}
                 style={{
                   marginTop: '8px', background: 'none', border: 'none',
-                  color: '#9ca3af', fontSize: '12px', cursor: 'pointer', padding: 0,
+                  color: '#6b7280', fontSize: '12px', cursor: 'pointer', padding: 0,
                 }}
               >
                 🚩 {t('reportFlag.reportButton')}

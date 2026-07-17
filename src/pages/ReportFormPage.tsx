@@ -63,12 +63,15 @@ const selectStyle: React.CSSProperties = {
 export default function ReportFormPage() {
   const { id: facilityId } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user } = useAuth();
+
+  // 現在のUI表示言語を報告のコメント言語として記録する（DBは ja/zh_tw/en/ko を許容）
+  const currentLang = i18n.language === 'zh-TW' ? 'zh_tw' : (i18n.language as 'ja' | 'en' | 'ko');
 
   const [formData, setFormData] = useState<Partial<ReportFormData>>({
     facility_id: facilityId ?? '',
-    lang: 'ja',
+    lang: currentLang,
     tattoo_locations: [],
   });
   const [submitting, setSubmitting] = useState(false);

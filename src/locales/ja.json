@@ -133,6 +133,8 @@
     "title": "マイページ",
     "myReports": "私の報告",
     "noReports": "まだ報告がありません",
+    "exploreFacilities": "施設を探す",
+    "unknownFacility": "不明な施設",
     "edit": "編集",
     "save": "保存",
     "delete": "削除",
@@ -197,7 +199,8 @@
     "detail": "詳細（任意）",
     "detailPlaceholder": "変更内容の詳細を教えてください",
     "submit": "報告を送信する",
-    "success": "報告ありがとうございます。確認後に反映します。"
+    "success": "報告ありがとうございます。確認後に反映します。",
+    "error": "送信に失敗しました。再度お試しください。"
   },
   "admin": {
     "title": "管理画面",
@@ -209,6 +212,8 @@
     "typeNewFacility": "新規施設",
     "address": "住所",
     "category": "カテゴリ",
+    "searchByName": "施設名で絞り込み",
+    "viewTargetFacility": "対象施設ページを開く",
     "approve": "承認",
     "reject": "却下",
     "reportsManagement": "報告の管理",

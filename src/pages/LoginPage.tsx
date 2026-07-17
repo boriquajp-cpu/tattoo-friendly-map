@@ -121,7 +121,7 @@ export default function LoginPage() {
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
             <div style={{ flex: 1, height: '1px', backgroundColor: '#e5e7eb' }} />
-            <span style={{ fontSize: '12px', color: '#9ca3af' }}>{t('auth.or')}</span>
+            <span style={{ fontSize: '12px', color: '#6b7280' }}>{t('auth.or')}</span>
             <div style={{ flex: 1, height: '1px', backgroundColor: '#e5e7eb' }} />
           </div>
 

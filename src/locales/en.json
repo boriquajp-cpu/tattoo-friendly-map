@@ -133,6 +133,8 @@
     "title": "My Page",
     "myReports": "My Reports",
     "noReports": "No reports yet",
+    "exploreFacilities": "Explore Facilities",
+    "unknownFacility": "Unknown Facility",
     "edit": "Edit",
     "save": "Save",
     "delete": "Delete",
@@ -161,7 +163,7 @@
       "tohoku": "Tohoku",
       "kanto": "Kanto",
       "chubu": "Chubu",
-      "kinki": "Kinki",
+      "kinki": "Kansai",
       "chugoku": "Chugoku",
       "shikoku": "Shikoku",
       "kyushu_okinawa": "Kyushu & Okinawa",
@@ -197,7 +199,8 @@
     "detail": "Details (optional)",
     "detailPlaceholder": "Please describe what has changed",
     "submit": "Submit Report",
-    "success": "Thank you for your report. We'll review and update the information."
+    "success": "Thank you for your report. We'll review and update the information.",
+    "error": "Submission failed. Please try again."
   },
   "admin": {
     "title": "Admin Panel",
@@ -209,6 +212,8 @@
     "typeNewFacility": "New Facility",
     "address": "Address",
     "category": "Category",
+    "searchByName": "Filter by facility name",
+    "viewTargetFacility": "Open target facility page",
     "approve": "Approve",
     "reject": "Reject",
     "reportsManagement": "Report Management",

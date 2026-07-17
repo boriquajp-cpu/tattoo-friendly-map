@@ -74,7 +74,7 @@ export default function MyReportsPage() {
         lang: r.comment_lang ?? 'ja',
         helpful_count: 0,
         created_at: r.created_at,
-        facilityName: (r.facilities as { name_ja: string } | null)?.name_ja ?? '不明な施設',
+        facilityName: (r.facilities as { name_ja: string } | null)?.name_ja ?? t('mypage.unknownFacility'),
         facilityId: r.facility_id,
       }))
     );
@@ -159,10 +159,10 @@ export default function MyReportsPage() {
       <h2 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '12px' }}>{t('mypage.myReports')}（{reports.length}件）</h2>
 
       {reports.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '48px 0', color: '#9ca3af' }}>
+        <div style={{ textAlign: 'center', padding: '48px 0', color: '#6b7280' }}>
           <p style={{ marginBottom: '16px' }}>{t('mypage.noReports')}</p>
           <Link to="/" style={{ color: '#6366f1', fontSize: '14px' }}>
-            施設を探す
+            {t('mypage.exploreFacilities')}
           </Link>
         </div>
       ) : (
@@ -235,7 +235,7 @@ export default function MyReportsPage() {
                         onClick={() => void saveEdit(report.id)}
                         style={{ padding: '7px 18px', backgroundColor: saving ? '#a5b4fc' : '#6366f1', color: '#fff', border: 'none', borderRadius: '6px', fontSize: '13px', fontWeight: 600, cursor: saving ? 'not-allowed' : 'pointer' }}
                       >
-                        {saving ? '保存中...' : t('mypage.save')}
+                        {saving ? t('common.submitting') : t('mypage.save')}
                       </button>
                       <button
                         type="button"
@@ -258,7 +258,7 @@ export default function MyReportsPage() {
                       >
                         {t(`report.result.${report.result}`)}
                       </span>
-                      <span style={{ fontSize: '12px', color: '#9ca3af' }}>
+                      <span style={{ fontSize: '12px', color: '#6b7280' }}>
                         {report.visit_date ?? report.created_at.slice(0, 10)}
                       </span>
                     </div>
