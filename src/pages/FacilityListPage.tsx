@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabase';
 import { translateFacilities } from '../lib/facilityTranslation';
 import FacilityCard from '../components/FacilityCard/FacilityCard';
 import HeartIcon from '../components/HeartIcon/HeartIcon';
+import FacilityRequestModal from '../components/FacilityRequestModal/FacilityRequestModal';
 import { useFavorites } from '../hooks/useFavorites';
 import { useRecentlyViewed } from '../hooks/useRecentlyViewed';
 import type { FacilityCategory, FacilityWithStats, SummaryLabel } from '../types';
@@ -54,6 +55,7 @@ export default function FacilityListPage() {
   });
   const [activePrefecture, setActivePrefecture] = useState(() => sessionStorage.getItem('list_prefecture') ?? '');
   const [favoritesOnly, setFavoritesOnly] = useState(false);
+  const [showRequestModal, setShowRequestModal] = useState(false);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [sortByDistance, setSortByDistance] = useState(false);
   const [geoLoading, setGeoLoading] = useState(false);
@@ -371,9 +373,22 @@ export default function FacilityListPage() {
           {t('common.loading')}
         </p>
       ) : filtered.length === 0 ? (
-        <p style={{ textAlign: 'center', color: '#6b7280', padding: '32px 0' }}>
-          {t('common.noData')}
-        </p>
+        <div style={{ textAlign: 'center', padding: '32px 16px' }}>
+          <p style={{ color: '#6b7280', marginBottom: '8px' }}>{t('common.noData')}</p>
+          <p style={{ color: '#9ca3af', fontSize: '13px', marginBottom: '16px', lineHeight: 1.6 }}>
+            {t('facilityList.noResultsHint')}
+          </p>
+          <button
+            type="button"
+            onClick={() => setShowRequestModal(true)}
+            style={{
+              padding: '10px 20px', backgroundColor: '#6366f1', color: '#fff',
+              border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: 600, cursor: 'pointer',
+            }}
+          >
+            ＋ {t('facilityRequest.title')}
+          </button>
+        </div>
       ) : sortByDistance ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {filtered.map((facility) => (
@@ -415,6 +430,8 @@ export default function FacilityListPage() {
           ))}
         </div>
       )}
+
+      {showRequestModal && <FacilityRequestModal onClose={() => setShowRequestModal(false)} />}
     </div>
   );
 }
