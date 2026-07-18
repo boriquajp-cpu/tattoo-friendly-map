@@ -44,7 +44,6 @@
     "reportCount": "{{count}}건의 보고 (최근 12개월)",
     "noReports": "아직 보고가 없습니다",
     "reportList": "사용자 보고",
-    "officialPolicy": "공식 정책",
     "admittedCount": "입장 가능 {{count}}건",
     "conditionalCount": "조건부 입장 {{count}}건",
     "deniedCount": "입장 거부 {{count}}건",

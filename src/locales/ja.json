@@ -44,7 +44,6 @@
     "reportCount": "{{count}}件の報告（直近12ヶ月）",
     "noReports": "まだ報告がありません",
     "reportList": "報告一覧",
-    "officialPolicy": "公式ポリシー",
     "admittedCount": "入場可 {{count}}件",
     "conditionalCount": "条件付き {{count}}件",
     "deniedCount": "断られた {{count}}件",

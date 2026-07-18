@@ -44,7 +44,6 @@
     "reportCount": "{{count}} report(s) (last 12 months)",
     "noReports": "No reports yet",
     "reportList": "User Reports",
-    "officialPolicy": "Official Policy",
     "admittedCount": "Admitted: {{count}}",
     "conditionalCount": "Conditional: {{count}}",
     "deniedCount": "Denied: {{count}}",

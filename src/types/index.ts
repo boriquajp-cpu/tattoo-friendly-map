@@ -135,9 +135,6 @@ export interface Facility {
   /** 施設の電話番号 */
   readonly phone?: string;
 
-  /** 施設の公式タトゥーポリシーテキスト（原語） */
-  readonly official_policy?: string;
-
   /** 施設が所在する国コード（ISO 3166-1 alpha-2） */
   readonly country_code: string;
 

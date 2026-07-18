@@ -44,7 +44,6 @@
     "reportCount": "{{count}} 則回報（近12個月）",
     "noReports": "尚無回報",
     "reportList": "使用者回報",
-    "officialPolicy": "官方政策",
     "admittedCount": "可入場 {{count}} 則",
     "conditionalCount": "條件入場 {{count}} 則",
     "deniedCount": "被拒絕 {{count}} 則",

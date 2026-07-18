@@ -296,21 +296,6 @@ export default function FacilityDetailPage() {
         )}
       </div>
 
-      {/* 公式ポリシー */}
-      {facility.official_policy && (
-        <div
-          style={{
-            border: '1px solid #e5e7eb', borderRadius: '8px',
-            padding: '12px 16px', marginBottom: '20px', backgroundColor: '#f9fafb',
-          }}
-        >
-          <p style={{ margin: '0 0 4px', fontSize: '12px', fontWeight: 600, color: '#374151' }}>
-            {t('facility.officialPolicy')}
-          </p>
-          <p style={{ margin: 0, fontSize: '14px', color: '#4b5563' }}>{facility.official_policy}</p>
-        </div>
-      )}
-
       {/* 公式サイト */}
       {facility.website_url && (
         <div style={{ marginBottom: '20px' }}>
