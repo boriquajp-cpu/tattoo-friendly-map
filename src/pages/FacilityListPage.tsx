@@ -13,11 +13,6 @@ import type { FacilityCategory, FacilityWithStats, SummaryLabel } from '../types
 const ALL_CATEGORIES: FacilityCategory[] = ['onsen', 'gym_pool', 'outdoor'];
 const ALL_LABELS: SummaryLabel[] = ['high', 'conditional', 'mixed', 'low', 'no_data'];
 
-const getPrefecture = (address: string): string => {
-  const match = address.match(/^(.{2,4}[都道府県])/);
-  return match ? match[1] : '';
-};
-
 const REGION_ORDER = [
   'hokkaido', 'tohoku', 'kanto', 'chubu', 'kinki', 'chugoku', 'shikoku', 'kyushu_okinawa', 'other',
 ] as const;
@@ -32,6 +27,23 @@ const PREFECTURE_TO_REGION: Record<string, RegionKey> = {
   '鳥取県': 'chugoku', '島根県': 'chugoku', '岡山県': 'chugoku', '広島県': 'chugoku', '山口県': 'chugoku',
   '徳島県': 'shikoku', '香川県': 'shikoku', '愛媛県': 'shikoku', '高知県': 'shikoku',
   '福岡県': 'kyushu_okinawa', '佐賀県': 'kyushu_okinawa', '長崎県': 'kyushu_okinawa', '熊本県': 'kyushu_okinawa', '大分県': 'kyushu_okinawa', '宮崎県': 'kyushu_okinawa', '鹿児島県': 'kyushu_okinawa', '沖縄県': 'kyushu_okinawa',
+};
+
+// 「県」「都」「府」等の1文字が地名の一部（大分県別府市の「府」、京都府京都市の「都」など）に
+// 現れることがあり、正規表現での抽出では誤爆するため、既知の47都道府県との完全一致でのみ判定する
+const getPrefecture = (address: string): string =>
+  Object.keys(PREFECTURE_TO_REGION).find((pref) => address.startsWith(pref)) ?? '';
+
+// 一覧のフィルターチップを多言語表示するための都道府県→キー変換
+// （フィルタリング自体は日本語の都道府県名を値として使い続ける）
+const PREFECTURE_KEY: Record<string, string> = {
+  '北海道': 'hokkaido', '青森県': 'aomori', '岩手県': 'iwate', '宮城県': 'miyagi', '秋田県': 'akita', '山形県': 'yamagata', '福島県': 'fukushima',
+  '茨城県': 'ibaraki', '栃木県': 'tochigi', '群馬県': 'gunma', '埼玉県': 'saitama', '千葉県': 'chiba', '東京都': 'tokyo', '神奈川県': 'kanagawa',
+  '新潟県': 'niigata', '富山県': 'toyama', '石川県': 'ishikawa', '福井県': 'fukui', '山梨県': 'yamanashi', '長野県': 'nagano', '岐阜県': 'gifu', '静岡県': 'shizuoka', '愛知県': 'aichi',
+  '三重県': 'mie', '滋賀県': 'shiga', '京都府': 'kyoto', '大阪府': 'osaka', '兵庫県': 'hyogo', '奈良県': 'nara', '和歌山県': 'wakayama',
+  '鳥取県': 'tottori', '島根県': 'shimane', '岡山県': 'okayama', '広島県': 'hiroshima', '山口県': 'yamaguchi',
+  '徳島県': 'tokushima', '香川県': 'kagawa', '愛媛県': 'ehime', '高知県': 'kochi',
+  '福岡県': 'fukuoka', '佐賀県': 'saga', '長崎県': 'nagasaki', '熊本県': 'kumamoto', '大分県': 'oita', '宮崎県': 'miyazaki', '鹿児島県': 'kagoshima', '沖縄県': 'okinawa',
 };
 
 const getRegion = (prefecture: string): RegionKey => PREFECTURE_TO_REGION[prefecture] ?? 'other';
@@ -296,7 +308,7 @@ export default function FacilityListPage() {
               onClick={() => setActivePrefecture(activePrefecture === pref ? '' : pref)}
               style={chipStyle(activePrefecture === pref)}
             >
-              {pref}
+              {PREFECTURE_KEY[pref] ? t(`facilityList.prefectures.${PREFECTURE_KEY[pref]}`) : pref}
             </button>
           ))}
         </div>
@@ -375,7 +387,7 @@ export default function FacilityListPage() {
       ) : filtered.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '32px 16px' }}>
           <p style={{ color: '#6b7280', marginBottom: '8px' }}>{t('common.noData')}</p>
-          <p style={{ color: '#9ca3af', fontSize: '13px', marginBottom: '16px', lineHeight: 1.6 }}>
+          <p style={{ color: '#6b7280', fontSize: '13px', marginBottom: '16px', lineHeight: 1.6 }}>
             {t('facilityList.noResultsHint')}
           </p>
           <button

@@ -169,6 +169,15 @@
       "shikoku": "시코쿠",
       "kyushu_okinawa": "규슈・오키나와",
       "other": "기타"
+    },
+    "prefectures": {
+      "hokkaido": "홋카이도", "aomori": "아오모리", "iwate": "이와테", "miyagi": "미야기", "akita": "아키타", "yamagata": "야마가타", "fukushima": "후쿠시마",
+      "ibaraki": "이바라키", "tochigi": "도치기", "gunma": "군마", "saitama": "사이타마", "chiba": "지바", "tokyo": "도쿄", "kanagawa": "가나가와",
+      "niigata": "니가타", "toyama": "도야마", "ishikawa": "이시카와", "fukui": "후쿠이", "yamanashi": "야마나시", "nagano": "나가노", "gifu": "기후", "shizuoka": "시즈오카", "aichi": "아이치",
+      "mie": "미에", "shiga": "시가", "kyoto": "교토", "osaka": "오사카", "hyogo": "효고", "nara": "나라", "wakayama": "와카야마",
+      "tottori": "돗토리", "shimane": "시마네", "okayama": "오카야마", "hiroshima": "히로시마", "yamaguchi": "야마구치",
+      "tokushima": "도쿠시마", "kagawa": "가가와", "ehime": "에히메", "kochi": "고치",
+      "fukuoka": "후쿠오카", "saga": "사가", "nagasaki": "나가사키", "kumamoto": "구마모토", "oita": "오이타", "miyazaki": "미야자키", "kagoshima": "가고시마", "okinawa": "오키나와"
     }
   },
   "facilityRequest": {
@@ -208,6 +217,7 @@
     "loginRequired": "이 페이지를 보려면 로그인이 필요합니다.",
     "noPermission": "이 페이지에 접근할 권한이 없습니다.",
     "facilityRequests": "시설 신청・수정 보고",
+    "facilityRequestsHint": "'승인'은 요청을 처리 완료로 표시할 뿐이며, 지도에 실제로 게재하려면 별도로 데이터를 수동 등록해야 합니다.",
     "noPendingRequests": "대기 중인 요청이 없습니다",
     "typeCorrection": "수정 보고",
     "typeNewFacility": "신규 시설",
@@ -220,7 +230,8 @@
     "reportsManagement": "보고 관리",
     "flagCount": "신고 {{count}}건",
     "flag": "플래그 설정",
-    "unflag": "플래그 해제"
+    "unflag": "플래그 해제",
+    "showMore": "더 보기"
   },
   "reportFlag": {
     "reportButton": "신고",
@@ -241,7 +252,7 @@
   },
   "disclaimer": {
     "title": "이용 안내",
-    "body": "이 앱의 정보는 사용자 제보를 기반으로 하며 정확성을 보장하지 않습니다. 방문 전 반드시 시설에 직접 확인해 주세요. 게재 시설은 사용자 여러분의 제보로 계속 늘어나고 있습니다. 찾으시는 시설이 없다면 'ㅡ 시설 추가'를 통해 알려주세요.",
+    "body": "이 앱의 정보는 사용자 제보를 기반으로 하며 정확성을 보장하지 않습니다. 방문 전 반드시 시설에 직접 확인해 주세요. 게재 시설은 사용자 여러분의 제보로 계속 늘어나고 있습니다. 찾으시는 시설이 없다면 '＋ 시설 추가'를 통해 알려주세요.",
     "confirm": "확인했습니다"
   }
 }

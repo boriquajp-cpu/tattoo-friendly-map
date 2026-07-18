@@ -169,6 +169,15 @@
       "shikoku": "Shikoku",
       "kyushu_okinawa": "Kyushu & Okinawa",
       "other": "Other"
+    },
+    "prefectures": {
+      "hokkaido": "Hokkaido", "aomori": "Aomori", "iwate": "Iwate", "miyagi": "Miyagi", "akita": "Akita", "yamagata": "Yamagata", "fukushima": "Fukushima",
+      "ibaraki": "Ibaraki", "tochigi": "Tochigi", "gunma": "Gunma", "saitama": "Saitama", "chiba": "Chiba", "tokyo": "Tokyo", "kanagawa": "Kanagawa",
+      "niigata": "Niigata", "toyama": "Toyama", "ishikawa": "Ishikawa", "fukui": "Fukui", "yamanashi": "Yamanashi", "nagano": "Nagano", "gifu": "Gifu", "shizuoka": "Shizuoka", "aichi": "Aichi",
+      "mie": "Mie", "shiga": "Shiga", "kyoto": "Kyoto", "osaka": "Osaka", "hyogo": "Hyogo", "nara": "Nara", "wakayama": "Wakayama",
+      "tottori": "Tottori", "shimane": "Shimane", "okayama": "Okayama", "hiroshima": "Hiroshima", "yamaguchi": "Yamaguchi",
+      "tokushima": "Tokushima", "kagawa": "Kagawa", "ehime": "Ehime", "kochi": "Kochi",
+      "fukuoka": "Fukuoka", "saga": "Saga", "nagasaki": "Nagasaki", "kumamoto": "Kumamoto", "oita": "Oita", "miyazaki": "Miyazaki", "kagoshima": "Kagoshima", "okinawa": "Okinawa"
     }
   },
   "facilityRequest": {
@@ -208,6 +217,7 @@
     "loginRequired": "You must log in to view this page.",
     "noPermission": "You don't have permission to access this page.",
     "facilityRequests": "Facility Requests & Corrections",
+    "facilityRequestsHint": "\"Approve\" only marks the request as handled — publishing it to the map still requires manually adding the data separately.",
     "noPendingRequests": "No pending requests",
     "typeCorrection": "Correction",
     "typeNewFacility": "New Facility",
@@ -220,7 +230,8 @@
     "reportsManagement": "Report Management",
     "flagCount": "{{count}} report(s)",
     "flag": "Flag",
-    "unflag": "Unflag"
+    "unflag": "Unflag",
+    "showMore": "Show more"
   },
   "reportFlag": {
     "reportButton": "Report",

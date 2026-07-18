@@ -54,17 +54,20 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [requestSearch, setRequestSearch] = useState('');
   const [reportSearch, setReportSearch] = useState('');
+  const PAGE_SIZE = 30;
+  const [visibleRequestCount, setVisibleRequestCount] = useState(PAGE_SIZE);
+  const [visibleReportCount, setVisibleReportCount] = useState(PAGE_SIZE);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
     const reportColumns = 'id, facility_id, result, comment_original, visit_date, flagged, created_at, facilities(name_ja)';
     const [{ data: reqData }, { data: flaggedRepData }, { data: recentRepData }, { data: flagData }] = await Promise.all([
+      // 上限を設けると、超過分が管理者から見えないまま埋もれてしまうため無制限に取得する
       supabase
         .from('facility_requests')
         .select('id, name_ja, address_ja, category, official_url, message, created_at')
         .eq('status', 'pending')
-        .order('created_at', { ascending: true })
-        .limit(200),
+        .order('created_at', { ascending: true }),
       // フラグ済みは古いものが一覧から取りこぼされないよう、上限なしで全件取得
       supabase
         .from('reports')
@@ -134,20 +137,26 @@ export default function AdminPage() {
   const filteredReports = reports.filter((rep) =>
     reportSearch === '' || (rep.facilities?.name_ja ?? '').toLowerCase().includes(reportSearch.toLowerCase())
   );
+  const visibleRequests = filteredRequests.slice(0, visibleRequestCount);
+  const sortedReports = [...filteredReports].sort((a, b) => (flagCounts[b.id] ?? 0) - (flagCounts[a.id] ?? 0));
+  const visibleReports = sortedReports.slice(0, visibleReportCount);
 
   return (
     <div style={{ maxWidth: '860px', margin: '0 auto', padding: '16px' }}>
       <h1 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '20px' }}>{t('admin.title')}</h1>
 
       {/* 施設リクエスト・修正報告 */}
-      <h2 style={{ fontSize: '15px', fontWeight: 600, marginBottom: '10px' }}>
+      <h2 style={{ fontSize: '15px', fontWeight: 600, marginBottom: '4px' }}>
         {t('admin.facilityRequests')} ({filteredRequests.length}{requestSearch ? ` / ${requests.length}` : ''})
       </h2>
+      <p style={{ fontSize: '12px', color: '#6b7280', marginBottom: '10px' }}>
+        {t('admin.facilityRequestsHint')}
+      </p>
       {requests.length > 0 && (
         <input
           type="text"
           value={requestSearch}
-          onChange={(e) => setRequestSearch(e.target.value)}
+          onChange={(e) => { setRequestSearch(e.target.value); setVisibleRequestCount(PAGE_SIZE); }}
           placeholder={t('admin.searchByName')}
           style={searchInputStyle}
         />
@@ -156,7 +165,7 @@ export default function AdminPage() {
         <p style={{ color: '#6b7280', fontSize: '13px', marginBottom: '24px' }}>{t('admin.noPendingRequests')}</p>
       ) : (
         <div style={{ marginBottom: '24px' }}>
-          {filteredRequests.map((req) => {
+          {visibleRequests.map((req) => {
             const isCorrection = req.name_ja.startsWith('[修正報告]');
             return (
               <div key={req.id} style={sectionStyle}>
@@ -213,6 +222,18 @@ export default function AdminPage() {
               </div>
             );
           })}
+          {filteredRequests.length > visibleRequestCount && (
+            <button
+              type="button"
+              onClick={() => setVisibleRequestCount((c) => c + PAGE_SIZE)}
+              style={{
+                width: '100%', padding: '10px', backgroundColor: '#fff', color: '#374151',
+                border: '1px solid #d1d5db', borderRadius: '8px', fontSize: '13px', fontWeight: 600, cursor: 'pointer',
+              }}
+            >
+              {t('admin.showMore')}
+            </button>
+          )}
         </div>
       )}
 
@@ -223,14 +244,12 @@ export default function AdminPage() {
       <input
         type="text"
         value={reportSearch}
-        onChange={(e) => setReportSearch(e.target.value)}
+        onChange={(e) => { setReportSearch(e.target.value); setVisibleReportCount(PAGE_SIZE); }}
         placeholder={t('admin.searchByName')}
         style={searchInputStyle}
       />
       <div>
-        {[...filteredReports]
-          .sort((a, b) => (flagCounts[b.id] ?? 0) - (flagCounts[a.id] ?? 0))
-          .map((rep) => (
+        {visibleReports.map((rep) => (
           <div
             key={rep.id}
             style={{
@@ -271,6 +290,18 @@ export default function AdminPage() {
             </button>
           </div>
         ))}
+        {filteredReports.length > visibleReportCount && (
+          <button
+            type="button"
+            onClick={() => setVisibleReportCount((c) => c + PAGE_SIZE)}
+            style={{
+              width: '100%', padding: '10px', backgroundColor: '#fff', color: '#374151',
+              border: '1px solid #d1d5db', borderRadius: '8px', fontSize: '13px', fontWeight: 600, cursor: 'pointer',
+            }}
+          >
+            {t('admin.showMore')}
+          </button>
+        )}
       </div>
     </div>
   );
