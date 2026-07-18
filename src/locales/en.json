@@ -158,7 +158,7 @@
     "recentlyViewed": "Recently Viewed",
     "searchPlaceholder": "Search by name or address",
     "nearMe": "Nearest First",
-    "noResultsHint": "If a real facility isn't showing up, that's not a mistake on our part — it just hasn't been added yet. Please request it below.",
+    "noResultsHint": "If you can't find a facility, it may just not be registered yet. Please use \"+ Add a Facility\" below.",
     "regions": {
       "hokkaido": "Hokkaido",
       "tohoku": "Tohoku",
@@ -241,7 +241,7 @@
   },
   "disclaimer": {
     "title": "Please Note",
-    "body": "This app is a community map built together with users like you. Listings are based on user submissions, so please confirm directly with the facility before visiting. If a real facility isn't listed, that's not a mistake on our part — it just hasn't been added yet. Please use \"+ Add a Facility\" to let us know.",
+    "body": "This app's listings are based on user submissions. Accuracy isn't guaranteed, so please confirm directly with the facility before visiting. Coverage grows every day thanks to submissions from users like you — if you can't find a facility, please use \"+ Add a Facility\" to let us know.",
     "confirm": "I understand"
   }
 }
