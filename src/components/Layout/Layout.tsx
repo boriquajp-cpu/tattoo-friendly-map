@@ -55,6 +55,20 @@ export default function Layout({ children }: LayoutProps) {
     display: 'block',
   });
 
+  const tabBarLinkStyle = ({ isActive }: { isActive: boolean }): React.CSSProperties => ({
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '2px',
+    padding: '6px 0',
+    textDecoration: 'none',
+    fontSize: '11px',
+    fontWeight: isActive ? 600 : 400,
+    color: isActive ? '#6366f1' : '#6b7280',
+  });
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100svh', backgroundColor: '#f9fafb' }}>
       {/* ヘッダー */}
@@ -164,13 +178,12 @@ export default function Layout({ children }: LayoutProps) {
               zIndex: 160, padding: '8px 16px 16px',
             }}
           >
-            <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '12px' }}>
-              <NavLink to="/" end style={navLinkStyle} onClick={() => setMenuOpen(false)}>{t('nav.map')}</NavLink>
-              <NavLink to="/list" style={navLinkStyle} onClick={() => setMenuOpen(false)}>{t('nav.list')}</NavLink>
-              {user ? (
-                <>
-                  <NavLink to="/my-reports" style={navLinkStyle} onClick={() => setMenuOpen(false)}>{t('nav.mypage')}</NavLink>
-                  {isAdmin && <NavLink to="/admin" style={navLinkStyle} onClick={() => setMenuOpen(false)}>{t('nav.admin')}</NavLink>}
+            {/* マップ・一覧・マイページ／ログインは下部タブバーに集約したため、
+                ここには頻度の低い項目（管理・ログアウト）のみ残す */}
+            {(isAdmin || user) && (
+              <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '12px' }}>
+                {isAdmin && <NavLink to="/admin" style={navLinkStyle} onClick={() => setMenuOpen(false)}>{t('nav.admin')}</NavLink>}
+                {user && (
                   <button
                     type="button"
                     onClick={() => void handleSignOut()}
@@ -182,11 +195,9 @@ export default function Layout({ children }: LayoutProps) {
                   >
                     {t('auth.logoutButton')}
                   </button>
-                </>
-              ) : (
-                <NavLink to="/login" style={navLinkStyle} onClick={() => setMenuOpen(false)}>{t('nav.login')}</NavLink>
-              )}
-            </nav>
+                )}
+              </nav>
+            )}
 
             {/* 言語切り替え */}
             <div style={{ display: 'flex', gap: '6px' }}>
@@ -215,9 +226,39 @@ export default function Layout({ children }: LayoutProps) {
       )}
 
       {/* メインコンテンツ */}
-      <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <main
+        style={{
+          flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0,
+          paddingBottom: isMobile ? 'calc(56px + env(safe-area-inset-bottom))' : 0,
+        }}
+      >
         {children}
       </main>
+
+      {/* モバイル: 下部タブバー（主要ナビゲーション） */}
+      {isMobile && (
+        <nav
+          style={{
+            position: 'fixed', left: 0, right: 0, bottom: 0,
+            display: 'flex', backgroundColor: '#fff',
+            borderTop: '1px solid #e5e7eb', zIndex: 200,
+            paddingBottom: 'env(safe-area-inset-bottom)',
+          }}
+        >
+          <NavLink to="/" end style={tabBarLinkStyle}>
+            <span style={{ fontSize: '20px', lineHeight: 1 }}>🗺️</span>
+            {t('nav.map')}
+          </NavLink>
+          <NavLink to="/list" style={tabBarLinkStyle}>
+            <span style={{ fontSize: '20px', lineHeight: 1 }}>📋</span>
+            {t('nav.list')}
+          </NavLink>
+          <NavLink to={user ? '/my-reports' : '/login'} style={tabBarLinkStyle}>
+            <span style={{ fontSize: '20px', lineHeight: 1 }}>👤</span>
+            {user ? t('nav.mypage') : t('nav.login')}
+          </NavLink>
+        </nav>
+      )}
     </div>
   );
 }
