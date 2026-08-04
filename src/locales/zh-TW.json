@@ -62,6 +62,15 @@
       "agoda": "透過 Agoda 預訂",
       "tripCom": "透過 Trip.com 預訂",
       "official": "官方網站"
+    },
+    "officialResponse": {
+      "badge": "設施官方回覆",
+      "policy": {
+        "allowed": "不受限制，歡迎使用",
+        "conditional": "符合條件即可使用",
+        "private_only": "僅限包場浴池・客房浴池・個人房",
+        "not_allowed": "謝絕使用"
+      }
     }
   },
   "report": {
@@ -230,7 +239,16 @@
     "flagCount": "{{count}} 件檢舉",
     "flag": "標記為問題",
     "unflag": "取消標記",
-    "showMore": "顯示更多"
+    "showMore": "顯示更多",
+    "officialResponses": "設施官方回覆（問卷）",
+    "officialResponsesHint": "設施透過問卷提交的回覆。請與現有設施核對並連結後再核准，核准後會以「設施官方回覆」標籤顯示於設施頁面。",
+    "noPendingOfficialResponses": "目前沒有待審查的官方回覆",
+    "wantsDelistBadge": "希望不予刊登",
+    "officialUrl": "官方網址",
+    "linkToFacility": "選擇要連結的設施",
+    "searchFacilityPlaceholder": "以設施名稱搜尋",
+    "noFacilitySelected": "尚未選擇設施",
+    "approveAndReflect": "核准並套用"
   },
   "reportFlag": {
     "reportButton": "檢舉",

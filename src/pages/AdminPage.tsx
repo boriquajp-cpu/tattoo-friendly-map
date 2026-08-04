@@ -25,6 +25,25 @@ interface ReportRow {
   facilities: { name_ja: string } | null;
 }
 
+interface OfficialResponseRow {
+  id: string;
+  submitted_name_ja: string;
+  submitted_address_ja: string;
+  category: string;
+  policy: string;
+  conditions: string[];
+  guidance_text: string | null;
+  official_url: string | null;
+  wants_listed: boolean;
+  created_at: string;
+}
+
+interface FacilityOption {
+  id: string;
+  name_ja: string;
+  address_ja: string;
+}
+
 const sectionStyle: React.CSSProperties = {
   border: '1px solid #e5e7eb',
   borderRadius: '10px',
@@ -51,6 +70,10 @@ export default function AdminPage() {
   const [requests, setRequests] = useState<FacilityRequestRow[]>([]);
   const [reports, setReports] = useState<ReportRow[]>([]);
   const [flagCounts, setFlagCounts] = useState<Record<string, number>>({});
+  const [officialResponses, setOfficialResponses] = useState<OfficialResponseRow[]>([]);
+  const [facilityOptions, setFacilityOptions] = useState<FacilityOption[]>([]);
+  const [facilityMatchQuery, setFacilityMatchQuery] = useState<Record<string, string>>({});
+  const [selectedFacilityId, setSelectedFacilityId] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [requestSearch, setRequestSearch] = useState('');
   const [reportSearch, setReportSearch] = useState('');
@@ -61,7 +84,7 @@ export default function AdminPage() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     const reportColumns = 'id, facility_id, result, comment_original, visit_date, flagged, created_at, facilities(name_ja)';
-    const [{ data: reqData }, { data: flaggedRepData }, { data: recentRepData }, { data: flagData }] = await Promise.all([
+    const [{ data: reqData }, { data: flaggedRepData }, { data: recentRepData }, { data: flagData }, { data: officialData }, { data: facilityData }] = await Promise.all([
       // 上限を設けると、超過分が管理者から見えないまま埋もれてしまうため無制限に取得する
       supabase
         .from('facility_requests')
@@ -82,6 +105,12 @@ export default function AdminPage() {
         .order('created_at', { ascending: false })
         .limit(100),
       supabase.from('report_flags').select('report_id'),
+      supabase
+        .from('official_facility_responses')
+        .select('id, submitted_name_ja, submitted_address_ja, category, policy, conditions, guidance_text, official_url, wants_listed, created_at')
+        .eq('review_status', 'pending')
+        .order('created_at', { ascending: true }),
+      supabase.from('facilities').select('id, name_ja, address_ja'),
     ]);
     setRequests(reqData ?? []);
     const merged = [...(flaggedRepData ?? []), ...(recentRepData ?? [])] as unknown as ReportRow[];
@@ -91,6 +120,8 @@ export default function AdminPage() {
       counts[row.report_id] = (counts[row.report_id] ?? 0) + 1;
     }
     setFlagCounts(counts);
+    setOfficialResponses(officialData ?? []);
+    setFacilityOptions(facilityData ?? []);
     setLoading(false);
   }, []);
 
@@ -107,6 +138,35 @@ export default function AdminPage() {
     const nextFlagged = !report.flagged;
     await supabase.from('reports').update({ flagged: nextFlagged }).eq('id', report.id);
     setReports((prev) => prev.map((r) => (r.id === report.id ? { ...r, flagged: nextFlagged } : r)));
+  };
+
+  const handleApproveOfficialResponse = async (resp: OfficialResponseRow) => {
+    const facilityId = selectedFacilityId[resp.id];
+    if (!facilityId) return;
+    const reviewedAt = new Date().toISOString();
+    const { error } = await supabase
+      .from('official_facility_responses')
+      .update({ facility_id: facilityId, review_status: 'approved', reviewed_at: reviewedAt })
+      .eq('id', resp.id);
+    if (error) return;
+    await supabase
+      .from('facilities')
+      .update({
+        official_tattoo_policy: resp.policy,
+        official_conditions: resp.conditions,
+        official_guidance_text: resp.guidance_text,
+        official_response_verified_at: reviewedAt,
+      })
+      .eq('id', facilityId);
+    setOfficialResponses((prev) => prev.filter((r) => r.id !== resp.id));
+  };
+
+  const handleRejectOfficialResponse = async (id: string) => {
+    await supabase
+      .from('official_facility_responses')
+      .update({ review_status: 'rejected', reviewed_at: new Date().toISOString() })
+      .eq('id', id);
+    setOfficialResponses((prev) => prev.filter((r) => r.id !== id));
   };
 
   if (authLoading || roleLoading || (isAdmin && loading)) {
@@ -234,6 +294,142 @@ export default function AdminPage() {
               {t('admin.showMore')}
             </button>
           )}
+        </div>
+      )}
+
+      {/* 施設からの公式回答（アンケート）審査 */}
+      <h2 style={{ fontSize: '15px', fontWeight: 600, marginBottom: '4px' }}>
+        {t('admin.officialResponses')} ({officialResponses.length})
+      </h2>
+      <p style={{ fontSize: '12px', color: '#6b7280', marginBottom: '10px' }}>
+        {t('admin.officialResponsesHint')}
+      </p>
+      {officialResponses.length === 0 ? (
+        <p style={{ color: '#6b7280', fontSize: '13px', marginBottom: '24px' }}>{t('admin.noPendingOfficialResponses')}</p>
+      ) : (
+        <div style={{ marginBottom: '24px' }}>
+          {officialResponses.map((resp) => {
+            const query = facilityMatchQuery[resp.id] ?? '';
+            const matches = query.trim() === ''
+              ? []
+              : facilityOptions.filter((f) => f.name_ja.toLowerCase().includes(query.toLowerCase())).slice(0, 5);
+            const selectedId = selectedFacilityId[resp.id];
+            const selectedFacility = facilityOptions.find((f) => f.id === selectedId);
+            return (
+              <div key={resp.id} style={sectionStyle}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px', flexWrap: 'wrap' }}>
+                  <div>
+                    {!resp.wants_listed && (
+                      <span
+                        style={{
+                          fontSize: '11px', fontWeight: 700, padding: '2px 8px', borderRadius: '4px',
+                          backgroundColor: '#fee2e2', color: '#991b1b', marginRight: '8px',
+                        }}
+                      >
+                        {t('admin.wantsDelistBadge')}
+                      </span>
+                    )}
+                    <strong style={{ fontSize: '14px' }}>{resp.submitted_name_ja}</strong>
+                  </div>
+                  <span style={{ fontSize: '12px', color: '#6b7280' }}>{resp.created_at.slice(0, 10)}</span>
+                </div>
+                <p style={{ margin: '8px 0 4px', fontSize: '13px', color: '#374151' }}>
+                  {t('admin.address')}: {resp.submitted_address_ja}
+                </p>
+                <p style={{ margin: '0 0 4px', fontSize: '13px', color: '#374151' }}>
+                  {t('admin.category')}: {t(`facility.categories.${resp.category}`)}
+                </p>
+                <p style={{ margin: '0 0 4px', fontSize: '13px', fontWeight: 600, color: '#1e3a8a' }}>
+                  {t(`facility.officialResponse.policy.${resp.policy}`)}
+                </p>
+                {resp.conditions.length > 0 && (
+                  <ul style={{ margin: '0 0 4px', paddingLeft: '20px', fontSize: '13px', color: '#374151' }}>
+                    {resp.conditions.map((c) => <li key={c}>{c}</li>)}
+                  </ul>
+                )}
+                {resp.guidance_text && (
+                  <p style={{ margin: '4px 0', fontSize: '13px', color: '#4b5563', whiteSpace: 'pre-wrap' }}>
+                    {resp.guidance_text}
+                  </p>
+                )}
+                {resp.official_url && (
+                  <p style={{ margin: '0 0 4px', fontSize: '13px' }}>
+                    {t('admin.officialUrl')}: <a href={resp.official_url} target="_blank" rel="noopener noreferrer" style={{ color: '#6366f1' }}>{resp.official_url}</a>
+                  </p>
+                )}
+
+                <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: '1px dashed #e5e7eb' }}>
+                  <p style={{ margin: '0 0 6px', fontSize: '12px', fontWeight: 600, color: '#374151' }}>
+                    {t('admin.linkToFacility')}
+                  </p>
+                  {selectedFacility ? (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                      <span
+                        style={{
+                          fontSize: '13px', padding: '4px 10px', borderRadius: '6px',
+                          backgroundColor: '#e0e7ff', color: '#3730a3',
+                        }}
+                      >
+                        {selectedFacility.name_ja}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedFacilityId((prev) => { const next = { ...prev }; delete next[resp.id]; return next; })}
+                        style={{ background: 'none', border: 'none', color: '#6b7280', cursor: 'pointer', fontSize: '12px' }}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <input
+                        type="text"
+                        value={query}
+                        onChange={(e) => setFacilityMatchQuery((prev) => ({ ...prev, [resp.id]: e.target.value }))}
+                        placeholder={t('admin.searchFacilityPlaceholder')}
+                        style={{ ...searchInputStyle, marginBottom: matches.length > 0 ? '4px' : '10px' }}
+                      />
+                      {matches.length > 0 && (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', marginBottom: '10px' }}>
+                          {matches.map((f) => (
+                            <button
+                              key={f.id}
+                              type="button"
+                              onClick={() => setSelectedFacilityId((prev) => ({ ...prev, [resp.id]: f.id }))}
+                              style={{
+                                textAlign: 'left', padding: '6px 10px', fontSize: '13px',
+                                border: '1px solid #e5e7eb', borderRadius: '6px',
+                                backgroundColor: '#fff', cursor: 'pointer',
+                              }}
+                            >
+                              {f.name_ja} <span style={{ color: '#9ca3af', fontSize: '12px' }}>{f.address_ja}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <button
+                      type="button"
+                      onClick={() => { void handleApproveOfficialResponse(resp); }}
+                      disabled={!selectedFacility}
+                      style={{ ...buttonStyle(selectedFacility ? '#16a34a' : '#9ca3af'), cursor: selectedFacility ? 'pointer' : 'not-allowed' }}
+                    >
+                      {t('admin.approveAndReflect')}
+                    </button>
+                    <button type="button" onClick={() => { void handleRejectOfficialResponse(resp.id); }} style={buttonStyle('#dc2626')}>
+                      {t('admin.reject')}
+                    </button>
+                    {!selectedFacility && (
+                      <span style={{ fontSize: '12px', color: '#9ca3af' }}>{t('admin.noFacilitySelected')}</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
 

@@ -62,6 +62,15 @@
       "agoda": "Agodaで予約",
       "tripCom": "Trip.comで予約",
       "official": "公式サイト"
+    },
+    "officialResponse": {
+      "badge": "施設からの公式回答",
+      "policy": {
+        "allowed": "制限なくご利用いただけます",
+        "conditional": "条件付きでご利用いただけます",
+        "private_only": "貸切風呂・客室風呂・個室のみご利用いただけます",
+        "not_allowed": "ご利用をお断りしています"
+      }
     }
   },
   "report": {
@@ -230,7 +239,16 @@
     "flagCount": "{{count}}件の通報",
     "flag": "フラグを立てる",
     "unflag": "フラグを解除",
-    "showMore": "もっと見る"
+    "showMore": "もっと見る",
+    "officialResponses": "施設からの公式回答（アンケート）",
+    "officialResponsesHint": "施設から届いたアンケート回答です。既存施設と突き合わせて紐付けたうえで承認すると、施設ページに「施設公式回答」バッジとして反映されます。",
+    "noPendingOfficialResponses": "未審査の公式回答はありません",
+    "wantsDelistBadge": "掲載を希望しない",
+    "officialUrl": "公式URL",
+    "linkToFacility": "紐付ける施設を選択",
+    "searchFacilityPlaceholder": "施設名で検索",
+    "noFacilitySelected": "施設が未選択です",
+    "approveAndReflect": "承認して反映"
   },
   "reportFlag": {
     "reportButton": "通報",

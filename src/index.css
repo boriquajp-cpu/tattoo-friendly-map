@@ -31,15 +31,15 @@
 }
 
 #root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
+  width: 100%;
   min-height: 100svh;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  /* 横スクロール可能な行（都道府県フィルター等）が nowrap + overflow-x:auto の
+     flex 子要素として存在すると、flex アイテムの既定 min-width:auto によって
+     ページ全体が横に押し広げられてしまうため、ここで確実に食い止める */
+  overflow-x: hidden;
 }
 
 body {

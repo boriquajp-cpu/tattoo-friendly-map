@@ -94,6 +94,9 @@ export default function FacilityDetailPage() {
           website_url: f.official_url ?? undefined,
           phone: f.phone ?? undefined,
           country_code: 'JP',
+          official_tattoo_policy: f.official_tattoo_policy ?? undefined,
+          official_conditions: f.official_conditions ?? undefined,
+          official_guidance_text: f.official_guidance_text ?? undefined,
           created_at: f.created_at,
           updated_at: f.updated_at,
           stats: f.facility_stats ? {
@@ -258,6 +261,41 @@ export default function FacilityDetailPage() {
         </div>
       </div>
 
+      {/* 施設公式回答（アンケートで施設本人が回答し、管理者が承認した一次情報） */}
+      {facility.official_tattoo_policy && (
+        <div
+          style={{
+            backgroundColor: '#eff6ff', border: '1px solid #bfdbfe',
+            borderRadius: '12px', padding: '16px', marginBottom: '16px',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+            <span
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: '4px',
+                fontSize: '11px', fontWeight: 700, color: '#1d4ed8',
+                backgroundColor: '#dbeafe', padding: '2px 10px', borderRadius: '9999px',
+              }}
+            >
+              ✓ {t('facility.officialResponse.badge')}
+            </span>
+          </div>
+          <p style={{ margin: '0 0 4px', fontSize: '15px', fontWeight: 700, color: '#1e3a8a' }}>
+            {t(`facility.officialResponse.policy.${facility.official_tattoo_policy}`)}
+          </p>
+          {facility.official_conditions && facility.official_conditions.length > 0 && (
+            <ul style={{ margin: '6px 0 0', paddingLeft: '20px', fontSize: '13px', color: '#1e40af' }}>
+              {facility.official_conditions.map((c) => <li key={c}>{c}</li>)}
+            </ul>
+          )}
+          {facility.official_guidance_text && (
+            <p style={{ margin: '8px 0 0', fontSize: '13px', color: '#374151', whiteSpace: 'pre-wrap' }}>
+              {facility.official_guidance_text}
+            </p>
+          )}
+        </div>
+      )}
+
       {/* 集計結果 */}
       <div style={{ backgroundColor: bg, borderRadius: '12px', padding: '16px', marginBottom: '20px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
@@ -316,11 +354,12 @@ export default function FacilityDetailPage() {
       )}
 
       {/* 報告投稿ボタン＋情報修正ボタン */}
-      <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '24px' }}>
+      <div style={{ display: 'flex', gap: '10px', marginBottom: '24px' }}>
         <Link
           to={`/facility/${facility.id}/report`}
           style={{
-            display: 'inline-block', padding: '10px 20px',
+            flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
+            padding: '10px 16px', textAlign: 'center',
             backgroundColor: '#f97316', color: '#111827',
             borderRadius: '8px', textDecoration: 'none',
             fontSize: '14px', fontWeight: 600,
@@ -332,7 +371,8 @@ export default function FacilityDetailPage() {
           type="button"
           onClick={() => setShowCorrection(true)}
           style={{
-            padding: '10px 18px',
+            flex: 1,
+            padding: '10px 16px',
             backgroundColor: '#fff', color: '#374151',
             border: '1px solid #d1d5db', borderRadius: '8px',
             fontSize: '14px', fontWeight: 600, cursor: 'pointer',

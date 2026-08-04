@@ -99,6 +99,12 @@ export type ConfidenceLevel = 'high' | 'medium' | 'low';
  */
 export type SupportedLang = 'ja' | 'zh_tw' | 'en' | 'ko';
 
+/**
+ * 施設が自己申告したタトゥー利用可否（アンケート回答・管理者承認済みのもの）。
+ * ユーザー投稿の集計（SummaryLabel）とは別枠の一次情報。
+ */
+export type OfficialTattooPolicy = 'allowed' | 'conditional' | 'private_only' | 'not_allowed';
+
 // ─────────────────────────────────────────
 // DB テーブル対応インターフェース
 // ─────────────────────────────────────────
@@ -137,6 +143,15 @@ export interface Facility {
 
   /** 施設が所在する国コード（ISO 3166-1 alpha-2） */
   readonly country_code: string;
+
+  /** 施設が自己申告したタトゥー利用可否（管理者承認済みのみ） */
+  readonly official_tattoo_policy?: OfficialTattooPolicy;
+
+  /** 自己申告の利用条件（policy が conditional の場合） */
+  readonly official_conditions?: readonly string[];
+
+  /** 施設からの案内文（自己申告・任意記述） */
+  readonly official_guidance_text?: string;
 
   /** レコード作成日時（ISO 8601） */
   readonly created_at: string;

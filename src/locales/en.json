@@ -62,6 +62,15 @@
       "agoda": "Book on Agoda",
       "tripCom": "Book on Trip.com",
       "official": "Official Website"
+    },
+    "officialResponse": {
+      "badge": "Official Response from Facility",
+      "policy": {
+        "allowed": "Welcomed without restriction",
+        "conditional": "Allowed under certain conditions",
+        "private_only": "Private/family baths or rooms only",
+        "not_allowed": "Not permitted"
+      }
     }
   },
   "report": {
@@ -230,7 +239,16 @@
     "flagCount": "{{count}} report(s)",
     "flag": "Flag",
     "unflag": "Unflag",
-    "showMore": "Show more"
+    "showMore": "Show more",
+    "officialResponses": "Official Responses from Facilities (Survey)",
+    "officialResponsesHint": "Survey responses submitted by facilities. Match each one to an existing facility and approve to reflect it as an \"Official Response\" badge on the facility page.",
+    "noPendingOfficialResponses": "No official responses awaiting review",
+    "wantsDelistBadge": "Requested not to be listed",
+    "officialUrl": "Official URL",
+    "linkToFacility": "Select facility to link",
+    "searchFacilityPlaceholder": "Search by facility name",
+    "noFacilitySelected": "No facility selected",
+    "approveAndReflect": "Approve & Reflect"
   },
   "reportFlag": {
     "reportButton": "Report",
