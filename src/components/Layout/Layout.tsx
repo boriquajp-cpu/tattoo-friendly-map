@@ -2,6 +2,7 @@ import { useState, useEffect, type ReactNode } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
+import { usePushNotifications } from '../../hooks/usePushNotifications';
 import type { SupportedLang } from '../../types';
 
 interface LayoutProps {
@@ -21,6 +22,7 @@ export default function Layout({ children }: LayoutProps) {
   const { user, isAdmin, signOut } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  usePushNotifications();
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 680);

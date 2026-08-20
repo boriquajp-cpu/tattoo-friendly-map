@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
+import { sendPushNotification } from '../lib/push';
 
 interface FacilityRequestRow {
   id: string;
@@ -11,6 +12,7 @@ interface FacilityRequestRow {
   category: string;
   official_url: string | null;
   message: string | null;
+  user_id: string | null;
   created_at: string;
 }
 
@@ -88,7 +90,7 @@ export default function AdminPage() {
       // 上限を設けると、超過分が管理者から見えないまま埋もれてしまうため無制限に取得する
       supabase
         .from('facility_requests')
-        .select('id, name_ja, address_ja, category, official_url, message, created_at')
+        .select('id, name_ja, address_ja, category, official_url, message, user_id, created_at')
         .eq('status', 'pending')
         .order('created_at', { ascending: true }),
       // フラグ済みは古いものが一覧から取りこぼされないよう、上限なしで全件取得
@@ -131,6 +133,16 @@ export default function AdminPage() {
 
   const handleRequestStatus = async (id: string, status: 'approved' | 'rejected') => {
     await supabase.from('facility_requests').update({ status }).eq('id', id);
+    const target = requests.find((r) => r.id === id);
+    if (target?.user_id) {
+      sendPushNotification(
+        [target.user_id],
+        'Tattoo Map Japan',
+        status === 'approved'
+          ? `「${target.name_ja}」の報告が承認されました`
+          : `「${target.name_ja}」の報告は今回反映されませんでした`
+      );
+    }
     setRequests((prev) => prev.filter((r) => r.id !== id));
   };
 
@@ -158,6 +170,21 @@ export default function AdminPage() {
         official_response_verified_at: reviewedAt,
       })
       .eq('id', facilityId);
+
+    const facility = facilityOptions.find((f) => f.id === facilityId);
+    const { data: favoriteRows } = await supabase
+      .from('favorites')
+      .select('user_id')
+      .eq('facility_id', facilityId);
+    const favoriteUserIds = (favoriteRows ?? []).map((r) => r.user_id as string);
+    if (favoriteUserIds.length > 0) {
+      sendPushNotification(
+        favoriteUserIds,
+        'Tattoo Map Japan',
+        `お気に入りの「${facility?.name_ja ?? '施設'}」に公式回答が届きました`
+      );
+    }
+
     setOfficialResponses((prev) => prev.filter((r) => r.id !== resp.id));
   };
 
