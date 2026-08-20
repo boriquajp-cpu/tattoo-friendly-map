@@ -9,6 +9,8 @@ import ReportFlagModal from '../components/ReportFlagModal/ReportFlagModal';
 import HeartIcon from '../components/HeartIcon/HeartIcon';
 import { useFavorites } from '../hooks/useFavorites';
 import { useRecentlyViewed } from '../hooks/useRecentlyViewed';
+import { useBlockedUsers } from '../hooks/useBlockedUsers';
+import { useAuth } from '../contexts/AuthContext';
 import type { FacilityWithStats, Report, SummaryLabel, SupportedLang } from '../types';
 
 const SHARE_COLORS: Record<string, string> = {
@@ -41,12 +43,15 @@ export default function FacilityDetailPage() {
 
   const { isFavorite, toggle } = useFavorites();
   const { addItem } = useRecentlyViewed();
+  const { user } = useAuth();
+  const { isBlocked, toggle: toggleBlock } = useBlockedUsers();
   const [facility, setFacility] = useState<FacilityWithStats | null>(null);
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
   const [showCorrection, setShowCorrection] = useState(false);
   const [flaggingReportId, setFlaggingReportId] = useState<string | null>(null);
+  const [blockConfirmId, setBlockConfirmId] = useState<string | null>(null);
   const [translations, setTranslations] = useState<Record<string, string>>({});
   const [translatingIds, setTranslatingIds] = useState<Set<string>>(new Set());
   const [showTranslated, setShowTranslated] = useState<Record<string, boolean>>({});
@@ -192,6 +197,8 @@ export default function FacilityDetailPage() {
   const stats = facility.stats;
   const summaryLabel: SummaryLabel = stats?.summary_label ?? 'no_data';
   const { bg, color } = SUMMARY_BADGE_STYLE[summaryLabel];
+
+  const visibleReports = reports.filter((r) => !r.user_id || !isBlocked(r.user_id));
 
   return (
     <div style={{ maxWidth: '720px', margin: '0 auto', padding: '16px' }}>
@@ -439,17 +446,17 @@ export default function FacilityDetailPage() {
         />
       )}
 
-      {/* 報告一覧 */}
+      {/* 報告一覧（ブロックした投稿者の報告は除外） */}
       <h2 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '12px' }}>
         {t('facility.reportList')}
       </h2>
-      {reports.length === 0 ? (
+      {visibleReports.length === 0 ? (
         <p style={{ color: '#6b7280', textAlign: 'center', padding: '24px 0' }}>
           {t('facility.noReports')}
         </p>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          {reports.map((report) => (
+          {visibleReports.map((report) => (
             <div
               key={report.id}
               style={{
@@ -508,16 +515,51 @@ export default function FacilityDetailPage() {
                 )}
               </div>
 
-              <button
-                type="button"
-                onClick={() => setFlaggingReportId(report.id)}
-                style={{
-                  marginTop: '8px', background: 'none', border: 'none',
-                  color: '#6b7280', fontSize: '12px', cursor: 'pointer', padding: 0,
-                }}
-              >
-                🚩 {t('reportFlag.reportButton')}
-              </button>
+              <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '14px' }}>
+                <button
+                  type="button"
+                  onClick={() => setFlaggingReportId(report.id)}
+                  style={{
+                    background: 'none', border: 'none',
+                    color: '#6b7280', fontSize: '12px', cursor: 'pointer', padding: 0,
+                  }}
+                >
+                  🚩 {t('reportFlag.reportButton')}
+                </button>
+
+                {user && report.user_id && report.user_id !== user.id && (
+                  blockConfirmId === report.id ? (
+                    <span style={{ fontSize: '12px', color: '#6b7280', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                      {t('report.blockConfirm')}
+                      <button
+                        type="button"
+                        onClick={() => { toggleBlock(report.user_id!); setBlockConfirmId(null); }}
+                        style={{ background: 'none', border: 'none', color: '#dc2626', fontWeight: 600, cursor: 'pointer', padding: 0, fontSize: '12px' }}
+                      >
+                        {t('report.blockConfirmYes')}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setBlockConfirmId(null)}
+                        style={{ background: 'none', border: 'none', color: '#6b7280', cursor: 'pointer', padding: 0, fontSize: '12px' }}
+                      >
+                        {t('report.blockConfirmNo')}
+                      </button>
+                    </span>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setBlockConfirmId(report.id)}
+                      style={{
+                        background: 'none', border: 'none',
+                        color: '#6b7280', fontSize: '12px', cursor: 'pointer', padding: 0,
+                      }}
+                    >
+                      🚫 {t('report.blockUser')}
+                    </button>
+                  )
+                )}
+              </div>
             </div>
           ))}
         </div>

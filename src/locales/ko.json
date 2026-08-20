@@ -121,7 +121,11 @@
     "resultRequired": "입장 결과를 선택해주세요.",
     "viewTranslation": "번역 보기",
     "viewOriginal": "원문 보기",
-    "translating": "번역 중..."
+    "translating": "번역 중...",
+    "blockUser": "사용자 차단",
+    "blockConfirm": "이 사용자의 보고를 앞으로 표시하지 않습니다. 계속하시겠습니까?",
+    "blockConfirmYes": "예",
+    "blockConfirmNo": "아니오"
   },
   "auth": {
     "loginTitle": "로그인",
@@ -151,7 +155,10 @@
     "deleteSuccess": "삭제되었습니다",
     "deleteError": "삭제에 실패했습니다",
     "editSuccess": "업데이트되었습니다",
-    "editError": "업데이트에 실패했습니다"
+    "editError": "업데이트에 실패했습니다",
+    "blockedUsers": "차단한 사용자",
+    "noBlockedUsers": "차단한 사용자가 없습니다",
+    "unblock": "차단 해제"
   },
   "map": {
     "facilityCount": "개 시설",

@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
+import { useBlockedUsers } from '../hooks/useBlockedUsers';
 import type { Report, ReportResult } from '../types';
 
 const RESULT_COLORS: Record<ReportResult, { bg: string; color: string }> = {
@@ -28,6 +29,7 @@ export default function MyReportsPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
+  const { rows: blockedRows, toggle: toggleBlock } = useBlockedUsers();
 
   const [reports, setReports] = useState<ReportWithFacility[]>([]);
   const [loading, setLoading] = useState(true);
@@ -288,6 +290,37 @@ export default function MyReportsPage() {
               </div>
             );
           })}
+        </div>
+      )}
+
+      {/* ブロック中のユーザー */}
+      <h2 style={{ fontSize: '16px', fontWeight: 600, margin: '32px 0 12px' }}>
+        {t('mypage.blockedUsers')}（{blockedRows.length}件）
+      </h2>
+      {blockedRows.length === 0 ? (
+        <p style={{ color: '#6b7280', fontSize: '13px' }}>{t('mypage.noBlockedUsers')}</p>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          {blockedRows.map((row) => (
+            <div
+              key={row.blocked_user_id}
+              style={{
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                border: '1px solid #e5e7eb', borderRadius: '8px', padding: '10px 14px',
+              }}
+            >
+              <span style={{ fontSize: '13px', color: '#6b7280' }}>
+                {new Date(row.created_at).toLocaleDateString()}
+              </span>
+              <button
+                type="button"
+                onClick={() => toggleBlock(row.blocked_user_id)}
+                style={{ padding: '5px 14px', backgroundColor: '#fff', color: '#374151', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '12px', cursor: 'pointer' }}
+              >
+                {t('mypage.unblock')}
+              </button>
+            </div>
+          ))}
         </div>
       )}
     </div>

@@ -121,7 +121,11 @@
     "resultRequired": "Please select an entry result.",
     "viewTranslation": "View translation",
     "viewOriginal": "View original",
-    "translating": "Translating..."
+    "translating": "Translating...",
+    "blockUser": "Block user",
+    "blockConfirm": "You won't see reports from this user anymore. Continue?",
+    "blockConfirmYes": "Yes",
+    "blockConfirmNo": "No"
   },
   "auth": {
     "loginTitle": "Login",
@@ -151,7 +155,10 @@
     "deleteSuccess": "Deleted successfully",
     "deleteError": "Failed to delete",
     "editSuccess": "Updated successfully",
-    "editError": "Failed to update"
+    "editError": "Failed to update",
+    "blockedUsers": "Blocked Users",
+    "noBlockedUsers": "You haven't blocked anyone",
+    "unblock": "Unblock"
   },
   "map": {
     "facilityCount": " facilities",

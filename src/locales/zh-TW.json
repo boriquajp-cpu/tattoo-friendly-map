@@ -121,7 +121,11 @@
     "resultRequired": "請選擇入場結果。",
     "viewTranslation": "查看翻譯",
     "viewOriginal": "查看原文",
-    "translating": "翻譯中..."
+    "translating": "翻譯中...",
+    "blockUser": "封鎖使用者",
+    "blockConfirm": "封鎖後將不再顯示這位使用者的回報，確定要封鎖嗎？",
+    "blockConfirmYes": "是",
+    "blockConfirmNo": "否"
   },
   "auth": {
     "loginTitle": "登入",
@@ -151,7 +155,10 @@
     "deleteSuccess": "已刪除",
     "deleteError": "刪除失敗",
     "editSuccess": "已更新",
-    "editError": "更新失敗"
+    "editError": "更新失敗",
+    "blockedUsers": "封鎖中的使用者",
+    "noBlockedUsers": "目前沒有封鎖任何使用者",
+    "unblock": "解除封鎖"
   },
   "map": {
     "facilityCount": " 個設施",
