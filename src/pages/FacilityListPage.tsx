@@ -236,7 +236,7 @@ export default function FacilityListPage() {
   });
 
   return (
-    <div style={{ maxWidth: '720px', margin: '0 auto', padding: '16px' }}>
+    <div style={{ maxWidth: '720px', width: '100%', margin: '0 auto', padding: '16px', minWidth: 0, boxSizing: 'border-box', overflowX: 'hidden' }}>
 
       {/* 最近見た施設 */}
       {recentItems.length > 0 && (
