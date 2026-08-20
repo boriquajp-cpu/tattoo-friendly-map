@@ -1,0 +1,42 @@
+[
+  {
+    "category": "onsen",
+    "name_ja": "TOTOPA 都立明治公園店",
+    "address_ja": "東京都新宿区霞ヶ丘町5-7 都立明治公園内A棟2階3階",
+    "official_url": "https://totopa.jp/",
+    "email": "totopa01_contact@tt-resort.co.jp",
+    "source_url": "https://totopa.jp/"
+  },
+  {
+    "category": "onsen",
+    "name_ja": "高輪SAUNAS",
+    "address_ja": "東京都港区高輪二丁目21番1号 ニュウマン高輪 North 5F",
+    "official_url": "https://saunas-saunas.com/takanawa/",
+    "email": "takanawa.saunas@toyoke.jp",
+    "source_url": "https://saunas-saunas.com/takanawa/faq/"
+  },
+  {
+    "category": "onsen",
+    "name_ja": "渋谷SAUNAS",
+    "address_ja": "東京都渋谷区桜丘町18-9",
+    "official_url": "https://saunas-saunas.com/shibuya/",
+    "email": "saunas@toyoke.jp",
+    "source_url": "https://saunas-saunas.com/shibuya/faq/"
+  },
+  {
+    "category": "onsen",
+    "name_ja": "松本湯",
+    "address_ja": "東京都中野区東中野5-29-12",
+    "official_url": "https://www.matsumoto-yu.com/",
+    "email": "info@matsumoto-yu.com",
+    "source_url": "https://www.matsumoto-yu.com/"
+  },
+  {
+    "category": "onsen",
+    "name_ja": "サウナランド浅草",
+    "address_ja": "東京都台東区浅草1丁目34-2",
+    "official_url": "https://saunaland-asakusa.jp/",
+    "email": "saunaland@playandco.jp",
+    "source_url": "https://saunaland-asakusa.jp/faq/"
+  }
+]

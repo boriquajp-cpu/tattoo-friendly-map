@@ -70,7 +70,6 @@ function buildForm() {
   const form = FormApp.create(CONFIG.formTitle)
     .setDescription(CONFIG.formDescription)
     .setCollectEmail(false)
-    .setRequireLogin(false)
     .setLimitOneResponsePerUser(false)
     .setProgressBar(true);
 
@@ -130,31 +129,37 @@ function buildForm() {
   conditionsPage.setGoToPage(finalPage);
   void policyPageBreak;
 
+  PropertiesService.getScriptProperties().setProperty('FORM_ID', form.getId());
+
   Logger.log('Form edit URL: %s', form.getEditUrl());
   Logger.log('Form publish URL: %s', form.getPublishedUrl());
-  Logger.log('Linked spreadsheet: %s', form.getDestinationId() || '(未リンク。実行後にGoogle側で自動作成されます)');
   return form;
+}
+
+// ─────────────────────────────────────────
+// 復旧用: 既に一度 buildForm() でフォームが作成済みの場合、二重に作らずそのフォームに
+// FORM_ID を紐付けるための一回限りの関数（一度実行したらもう使わない）
+// ─────────────────────────────────────────
+function linkExistingFormOnce() {
+  const EXISTING_FORM_ID = '1L99XcxXpSUGbywvhLE2U4jzvPcAo61tgIJLLzEpJCuw';
+  PropertiesService.getScriptProperties().setProperty('FORM_ID', EXISTING_FORM_ID);
+  Logger.log('Linked existing form: %s', EXISTING_FORM_ID);
 }
 
 // ─────────────────────────────────────────
 // 送信トリガー登録（buildForm実行後に一度だけ実行する）
 // ─────────────────────────────────────────
 function installTrigger() {
-  const form = FormApp.getActiveForm ? FormApp.getActiveForm() : null;
-  const targetForm = form || getFormBySearchingRecent_();
+  const formId = PropertiesService.getScriptProperties().getProperty('FORM_ID');
+  if (!formId) {
+    throw new Error('FORM_ID が見つかりません。先に buildForm() を一度だけ実行してください。');
+  }
+  const targetForm = FormApp.openById(formId);
   ScriptApp.newTrigger('onFormSubmit')
     .forForm(targetForm)
     .onFormSubmit()
     .create();
   Logger.log('Trigger installed for form: %s', targetForm.getId());
-}
-
-function getFormBySearchingRecent_() {
-  const files = DriveApp.getFilesByType(MimeType.GOOGLE_FORMS);
-  if (files.hasNext()) {
-    return FormApp.openById(files.next().getId());
-  }
-  throw new Error('フォームが見つかりません。先に buildForm() を実行してください。');
 }
 
 // ─────────────────────────────────────────
