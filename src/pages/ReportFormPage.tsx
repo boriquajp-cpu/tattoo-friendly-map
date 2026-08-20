@@ -1,8 +1,10 @@
 import { useState, type FormEvent } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Capacitor } from '@capacitor/core';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
+import { pickPhoto } from '../lib/nativePhoto';
 import type {
   ReportFormData,
   ReportResult,
@@ -82,26 +84,41 @@ export default function ReportFormPage() {
   const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
   const ALLOWED_PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
-  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] ?? null;
+  const applyPhotoFile = (file: File | null): boolean => {
     if (!file) {
       setPhotoFile(null);
       setPhotoPreview(null);
-      return;
+      return true;
     }
     if (!ALLOWED_PHOTO_TYPES.includes(file.type)) {
       setErrorMsg(t('report.photoTypeError'));
-      e.target.value = '';
-      return;
+      return false;
     }
     if (file.size > MAX_PHOTO_BYTES) {
       setErrorMsg(t('report.photoSizeError'));
-      e.target.value = '';
-      return;
+      return false;
     }
     setErrorMsg('');
     setPhotoFile(file);
     setPhotoPreview(URL.createObjectURL(file));
+    return true;
+  };
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+    if (!applyPhotoFile(file)) {
+      e.target.value = '';
+    }
+  };
+
+  const handleNativePhotoPick = async () => {
+    try {
+      const file = await pickPhoto();
+      if (file) applyPhotoFile(file);
+    } catch (err) {
+      // ユーザーによるキャンセルもここに来るため、エラー表示はしない
+      console.error('pickPhoto failed:', err);
+    }
   };
 
   const toggleLocation = (loc: TattooLocation) => {
@@ -339,13 +356,27 @@ export default function ReportFormPage() {
         {/* 写真 */}
         <div>
           <label htmlFor="photo" style={labelStyle}>{t('report.photo')}</label>
-          <input
-            id="photo"
-            type="file"
-            accept="image/jpeg,image/png,image/webp"
-            style={{ fontSize: '14px' }}
-            onChange={handlePhotoChange}
-          />
+          {Capacitor.isNativePlatform() ? (
+            <button
+              type="button"
+              onClick={() => { void handleNativePhotoPick(); }}
+              style={{
+                padding: '10px 16px', backgroundColor: '#fff', color: '#374151',
+                border: '1px solid #d1d5db', borderRadius: '8px',
+                fontSize: '14px', fontWeight: 600, cursor: 'pointer',
+              }}
+            >
+              📷 {t('report.photoSelect')}
+            </button>
+          ) : (
+            <input
+              id="photo"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              style={{ fontSize: '14px' }}
+              onChange={handlePhotoChange}
+            />
+          )}
           {photoPreview && (
             <div style={{ marginTop: '10px', position: 'relative', display: 'inline-block' }}>
               <img

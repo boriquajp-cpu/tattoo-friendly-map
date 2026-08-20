@@ -111,6 +111,7 @@
     "comment": "留言（選填）",
     "commentPlaceholder": "請描述詳細情況",
     "photo": "照片（選填・僅限設施外觀或貼紙）",
+    "photoSelect": "選擇照片",
     "photoTypeError": "不支援的圖片格式（僅限 JPEG/PNG/WebP）。",
     "photoSizeError": "圖片大小請控制在 5MB 以內。",
     "submitSuccess": "感謝您的回報！",

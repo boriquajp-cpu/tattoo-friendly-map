@@ -111,6 +111,7 @@
     "comment": "Comment (optional)",
     "commentPlaceholder": "Please describe the situation in detail",
     "photo": "Photo (optional — facility exterior or sticker only)",
+    "photoSelect": "Choose Photo",
     "photoTypeError": "Unsupported image format (JPEG/PNG/WebP only).",
     "photoSizeError": "Image size must be under 5MB.",
     "submitSuccess": "Thank you for your report!",

@@ -111,6 +111,7 @@
     "comment": "코멘트 (선택)",
     "commentPlaceholder": "자세한 상황을 설명해 주세요",
     "photo": "사진 (선택・시설 외관 또는 스티커만)",
+    "photoSelect": "사진 선택",
     "photoTypeError": "지원하지 않는 이미지 형식입니다 (JPEG/PNG/WebP만 가능).",
     "photoSizeError": "이미지 크기는 5MB 이하로 해주세요.",
     "submitSuccess": "보고해 주셔서 감사합니다！",

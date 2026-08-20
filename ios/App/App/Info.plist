@@ -66,5 +66,11 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>施設の外観やタトゥーOKシールを撮影して報告に添付するために使用します。</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>報告に添付する写真をアルバムから選ぶために使用します。</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>撮影した写真をアルバムに保存するために使用します。</string>
 </dict>
 </plist>

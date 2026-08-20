@@ -111,6 +111,7 @@
     "comment": "コメント（任意）",
     "commentPlaceholder": "詳細な状況を教えてください",
     "photo": "写真（任意・施設外観やシールのみ）",
+    "photoSelect": "写真を選択",
     "photoTypeError": "対応していない画像形式です（JPEG/PNG/WebPのみ）。",
     "photoSizeError": "画像サイズは5MB以下にしてください。",
     "submitSuccess": "報告ありがとうございます！",
