@@ -217,7 +217,7 @@ export default function MapPage() {
           placeholder={t('map.locationSearchPlaceholder')}
           style={{
             flex: 1, padding: '8px 12px', border: '1px solid #d1d5db',
-            borderRadius: '8px', fontSize: '14px', outline: 'none',
+            borderRadius: '8px', fontSize: '16px', outline: 'none',
           }}
         />
         <button

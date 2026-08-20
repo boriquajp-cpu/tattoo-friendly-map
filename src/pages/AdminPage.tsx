@@ -188,7 +188,7 @@ export default function AdminPage() {
 
   const searchInputStyle: React.CSSProperties = {
     width: '100%', padding: '8px 12px', border: '1px solid #d1d5db',
-    borderRadius: '8px', fontSize: '13px', marginBottom: '10px', boxSizing: 'border-box',
+    borderRadius: '8px', fontSize: '16px', marginBottom: '10px', boxSizing: 'border-box',
   };
 
   const filteredRequests = requests.filter((req) =>

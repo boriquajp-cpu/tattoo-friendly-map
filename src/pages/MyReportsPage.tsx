@@ -199,7 +199,7 @@ export default function MyReportsPage() {
                       <select
                         value={editState.result}
                         onChange={(e) => setEditState((p) => ({ ...p, result: e.target.value as ReportResult }))}
-                        style={{ width: '100%', padding: '7px 10px', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '14px' }}
+                        style={{ width: '100%', padding: '7px 10px', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '16px' }}
                       >
                         {RESULTS.map((r) => (
                           <option key={r} value={r}>{t(`report.result.${r}`)}</option>
@@ -214,7 +214,7 @@ export default function MyReportsPage() {
                         type="date"
                         value={editState.visit_date}
                         onChange={(e) => setEditState((p) => ({ ...p, visit_date: e.target.value }))}
-                        style={{ width: '100%', padding: '7px 10px', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '14px', boxSizing: 'border-box' }}
+                        style={{ width: '100%', padding: '7px 10px', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '16px', boxSizing: 'border-box' }}
                       />
                     </div>
                     <div>
@@ -225,7 +225,7 @@ export default function MyReportsPage() {
                         rows={3}
                         value={editState.comment}
                         onChange={(e) => setEditState((p) => ({ ...p, comment: e.target.value }))}
-                        style={{ width: '100%', padding: '7px 10px', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '14px', boxSizing: 'border-box', resize: 'vertical' }}
+                        style={{ width: '100%', padding: '7px 10px', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '16px', boxSizing: 'border-box', resize: 'vertical' }}
                       />
                     </div>
                     <div style={{ display: 'flex', gap: '8px' }}>

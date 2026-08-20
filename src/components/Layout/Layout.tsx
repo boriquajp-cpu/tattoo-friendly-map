@@ -77,10 +77,12 @@ export default function Layout({ children }: LayoutProps) {
           backgroundColor: '#fff',
           borderBottom: '1px solid #e5e7eb',
           padding: '0 16px',
+          paddingTop: 'env(safe-area-inset-top)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          height: '56px',
+          height: 'calc(56px + env(safe-area-inset-top))',
+          boxSizing: 'border-box',
           position: 'sticky',
           top: 0,
           zIndex: 200,
@@ -165,14 +167,14 @@ export default function Layout({ children }: LayoutProps) {
           <div
             onClick={() => setMenuOpen(false)}
             style={{
-              position: 'fixed', inset: '56px 0 0 0',
+              position: 'fixed', inset: 'calc(56px + env(safe-area-inset-top)) 0 0 0',
               backgroundColor: 'rgba(0,0,0,0.3)', zIndex: 150,
             }}
           />
           {/* メニュー本体 */}
           <div
             style={{
-              position: 'fixed', top: '56px', left: 0, right: 0,
+              position: 'fixed', top: 'calc(56px + env(safe-area-inset-top))', left: 0, right: 0,
               backgroundColor: '#fff',
               borderBottom: '1px solid #e5e7eb',
               zIndex: 160, padding: '8px 16px 16px',

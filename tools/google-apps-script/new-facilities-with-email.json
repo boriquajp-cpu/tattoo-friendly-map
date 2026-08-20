@@ -38,5 +38,61 @@
     "official_url": "https://saunaland-asakusa.jp/",
     "email": "saunaland@playandco.jp",
     "source_url": "https://saunaland-asakusa.jp/faq/"
+  },
+  {
+    "category": "onsen",
+    "name_ja": "辰巳温泉",
+    "address_ja": "大阪府大阪市住吉区大領5-10-11",
+    "official_url": "https://nagaitatsumionsen.com/",
+    "email": "tatsumionsen@gmail.com",
+    "source_url": "https://nagaitatsumionsen.com/qa/"
+  },
+  {
+    "category": "onsen",
+    "name_ja": "サウナ東京",
+    "address_ja": "東京都港区赤坂3-13-4",
+    "official_url": "https://sauna-tokyo.jp/",
+    "email": "info@sauna-tokyo.jp",
+    "source_url": "https://sauna-tokyo.jp/%E3%83%88%E3%83%83%E3%83%97%E3%83%9A%E3%83%BC%E3%82%B8/%E7%89%B9%E5%AE%9A%E5%95%86%E5%8F%96%E5%BC%95%E6%B3%95"
+  },
+  {
+    "category": "onsen",
+    "name_ja": "sauna KOHAKU",
+    "address_ja": "千葉県柏市中央1丁目2-27-2 Claro 1階",
+    "official_url": "https://sauna-kohaku.com/",
+    "email": "contact@torwa.jp",
+    "source_url": "https://www.sauna-kohaku.com/tokusho.html"
+  },
+  {
+    "category": "onsen",
+    "name_ja": "SAUNA&co",
+    "address_ja": "東京都台東区蔵前4丁目21-2",
+    "official_url": "https://saunaandco.jp/",
+    "email": "info@playandco.jp",
+    "source_url": "https://saunaandco.jp/law/"
+  },
+  {
+    "category": "onsen",
+    "name_ja": "Re: PRIVATE SAUNA",
+    "address_ja": "千葉県船橋市本町1-7-6 ドリーム船橋ビル7F",
+    "official_url": "https://re-sauna.com/",
+    "email": "info@re-sauna.com",
+    "source_url": "https://www.re-sauna.com/notation-based-on-the-act-on-specified-commercial-transactions/index.html"
+  },
+  {
+    "category": "onsen",
+    "name_ja": "IE:SAUNA AICHI",
+    "address_ja": "愛知県一宮市野口1-10-8",
+    "official_url": "https://resauna.jp/aichi/",
+    "email": "iesauna.aichi@gmail.com",
+    "source_url": "https://resauna.jp/commercial-law/"
+  },
+  {
+    "category": "onsen",
+    "name_ja": "MACHI:SAUNA HIROSHIMA",
+    "address_ja": "広島県広島市中区鉄砲町6-1",
+    "official_url": "https://resauna.jp/hiroshima/",
+    "email": "machisauna.hiroshima@gmail.com",
+    "source_url": "https://resauna.jp/commercial-law/"
   }
 ]

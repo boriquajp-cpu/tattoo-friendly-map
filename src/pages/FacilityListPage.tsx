@@ -285,7 +285,7 @@ export default function FacilityListPage() {
           padding: '10px 14px',
           border: '1px solid #d1d5db',
           borderRadius: '8px',
-          fontSize: '14px',
+          fontSize: '16px',
           marginBottom: '12px',
           boxSizing: 'border-box',
         }}

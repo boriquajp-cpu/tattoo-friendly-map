@@ -117,7 +117,7 @@ export default function ReportFlagModal({ reportId, onClose }: Props) {
                 placeholder={t('reportFlag.detailPlaceholder')}
                 value={detail}
                 onChange={(e) => setDetail(e.target.value)}
-                style={{ width: '100%', padding: '10px 12px', border: '1px solid #d1d5db', borderRadius: '8px', fontSize: '14px', boxSizing: 'border-box', resize: 'vertical' }}
+                style={{ width: '100%', padding: '10px 12px', border: '1px solid #d1d5db', borderRadius: '8px', fontSize: '16px', boxSizing: 'border-box', resize: 'vertical' }}
               />
             </div>
 
