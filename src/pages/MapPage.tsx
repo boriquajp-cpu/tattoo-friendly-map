@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { supabase } from '../lib/supabase';
 import { translateFacilities } from '../lib/facilityTranslation';
+import { saveFacilitiesCache, loadFacilitiesCache } from '../lib/offlineCache';
 import FacilityRequestModal from '../components/FacilityRequestModal/FacilityRequestModal';
 import type { FacilityCategory, FacilityWithStats, SummaryLabel } from '../types';
 
@@ -46,11 +47,34 @@ export default function MapPage() {
   const [locationQuery, setLocationQuery] = useState('');
   const [locationLoading, setLocationLoading] = useState(false);
   const [locationError, setLocationError] = useState('');
+  const [isOffline, setIsOffline] = useState(false);
+  const [offlineSavedAt, setOfflineSavedAt] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchFacilities = async () => {
-      const { data, error } = await supabase.from('facilities').select('*, facility_stats(*)');
-      if (error) { setLoading(false); return; }
+      const useOfflineCache = () => {
+        const cached = loadFacilitiesCache();
+        if (cached) {
+          setFacilities(cached.data);
+          setIsOffline(true);
+          setOfflineSavedAt(cached.savedAt);
+        }
+        setLoading(false);
+      };
+
+      let result;
+      try {
+        result = await supabase.from('facilities').select('*, facility_stats(*)');
+      } catch {
+        useOfflineCache();
+        return;
+      }
+      const { data, error } = result;
+      if (error || !data) {
+        useOfflineCache();
+        return;
+      }
+      setIsOffline(false);
 
       const lang = i18n.language === 'zh-TW' ? 'zh_tw' : 'ja';
       const mapped: FacilityWithStats[] = (data ?? []).map((f) => ({
@@ -77,6 +101,7 @@ export default function MapPage() {
         } : null,
       }));
       setFacilities(mapped);
+      saveFacilitiesCache(mapped);
       setLoading(false);
 
       // 英語・韓国語は facilities テーブルに専用列がないため、Claude 翻訳で補う
@@ -243,6 +268,18 @@ export default function MapPage() {
           borderRadius: '20px', fontSize: '13px', zIndex: 30, whiteSpace: 'nowrap', pointerEvents: 'none',
         }}>
           {locationError}
+        </div>
+      )}
+
+      {/* オフラインバナー */}
+      {isOffline && (
+        <div style={{
+          backgroundColor: '#1f2937', color: '#fff', padding: '6px 16px',
+          fontSize: '12px', textAlign: 'center',
+        }}>
+          {offlineSavedAt
+            ? t('map.offlineWithTime', { time: new Date(offlineSavedAt).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }) })
+            : t('map.offline')}
         </div>
       )}
 

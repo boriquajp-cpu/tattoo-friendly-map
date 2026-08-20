@@ -160,7 +160,9 @@
     "searchThisArea": "이 지역 검색",
     "resetArea": "검색 초기화",
     "locationSearchPlaceholder": "지역・지명으로 검색 (예: 시부야, 오사카)",
-    "locationNotFound": "장소를 찾을 수 없습니다"
+    "locationNotFound": "장소를 찾을 수 없습니다",
+    "offline": "오프라인 상태입니다. 저장된 데이터를 표시하고 있습니다.",
+    "offlineWithTime": "오프라인 상태입니다. 마지막 업데이트: {{time}}"
   },
   "facilityList": {
     "recentlyViewed": "최근 본 시설",

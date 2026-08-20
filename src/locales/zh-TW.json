@@ -160,7 +160,9 @@
     "searchThisArea": "搜尋此區域",
     "resetArea": "重置搜尋",
     "locationSearchPlaceholder": "搜尋地區・地名（例：澀谷、大阪）",
-    "locationNotFound": "找不到該地點"
+    "locationNotFound": "找不到該地點",
+    "offline": "目前離線中，顯示的是已儲存的資料。",
+    "offlineWithTime": "目前離線中。最後更新: {{time}}"
   },
   "facilityList": {
     "recentlyViewed": "最近瀏覽",

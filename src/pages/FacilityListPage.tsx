@@ -8,6 +8,7 @@ import HeartIcon from '../components/HeartIcon/HeartIcon';
 import FacilityRequestModal from '../components/FacilityRequestModal/FacilityRequestModal';
 import { useFavorites } from '../hooks/useFavorites';
 import { useRecentlyViewed } from '../hooks/useRecentlyViewed';
+import { saveFacilitiesCache, loadFacilitiesCache } from '../lib/offlineCache';
 import type { FacilityCategory, FacilityWithStats, SummaryLabel } from '../types';
 
 const ALL_CATEGORIES: FacilityCategory[] = ['onsen', 'gym_pool', 'outdoor'];
@@ -71,6 +72,8 @@ export default function FacilityListPage() {
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [sortByDistance, setSortByDistance] = useState(false);
   const [geoLoading, setGeoLoading] = useState(false);
+  const [isOffline, setIsOffline] = useState(false);
+  const [offlineSavedAt, setOfflineSavedAt] = useState<number | null>(null);
 
   // フィルター状態をsessionStorageに保持
   useEffect(() => { sessionStorage.setItem('list_search', searchText); }, [searchText]);
@@ -81,16 +84,34 @@ export default function FacilityListPage() {
   useEffect(() => {
     const fetchFacilities = async () => {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('facilities')
-        .select('*, facility_stats(*)')
-        .order('name_ja', { ascending: true });
-
-      if (error) {
-        console.error('施設データ取得エラー:', error);
+      const useOfflineCache = () => {
+        const cached = loadFacilitiesCache();
+        if (cached) {
+          setFacilities(cached.data);
+          setIsOffline(true);
+          setOfflineSavedAt(cached.savedAt);
+        }
         setLoading(false);
+      };
+
+      let result;
+      try {
+        result = await supabase
+          .from('facilities')
+          .select('*, facility_stats(*)')
+          .order('name_ja', { ascending: true });
+      } catch {
+        useOfflineCache();
         return;
       }
+
+      const { data, error } = result;
+      if (error) {
+        console.error('施設データ取得エラー:', error);
+        useOfflineCache();
+        return;
+      }
+      setIsOffline(false);
 
       const lang = i18n.language === 'zh-TW' ? 'zh_tw' : 'ja';
       const mapped: FacilityWithStats[] = (data ?? []).map((f) => ({
@@ -121,6 +142,7 @@ export default function FacilityListPage() {
       }));
 
       setFacilities(mapped);
+      saveFacilitiesCache(mapped);
       setLoading(false);
 
       if (i18n.language === 'en' || i18n.language === 'ko') {
@@ -237,6 +259,18 @@ export default function FacilityListPage() {
 
   return (
     <div style={{ maxWidth: '720px', width: '100%', margin: '0 auto', padding: '16px', minWidth: 0, boxSizing: 'border-box', overflowX: 'hidden' }}>
+
+      {/* オフラインバナー */}
+      {isOffline && (
+        <div style={{
+          backgroundColor: '#1f2937', color: '#fff', padding: '6px 12px',
+          borderRadius: '8px', fontSize: '12px', textAlign: 'center', marginBottom: '12px',
+        }}>
+          {offlineSavedAt
+            ? t('map.offlineWithTime', { time: new Date(offlineSavedAt).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }) })
+            : t('map.offline')}
+        </div>
+      )}
 
       {/* 最近見た施設 */}
       {recentItems.length > 0 && (

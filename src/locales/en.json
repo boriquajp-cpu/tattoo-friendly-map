@@ -160,7 +160,9 @@
     "searchThisArea": "Search This Area",
     "resetArea": "Reset Search",
     "locationSearchPlaceholder": "Search by area or place (e.g. Shibuya, Osaka)",
-    "locationNotFound": "Location not found"
+    "locationNotFound": "Location not found",
+    "offline": "You're offline. Showing saved data.",
+    "offlineWithTime": "You're offline. Last updated: {{time}}"
   },
   "facilityList": {
     "recentlyViewed": "Recently Viewed",

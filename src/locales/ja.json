@@ -160,7 +160,9 @@
     "searchThisArea": "このエリアを検索",
     "resetArea": "検索をリセット",
     "locationSearchPlaceholder": "エリア・地名で検索（例：渋谷、大阪）",
-    "locationNotFound": "場所が見つかりませんでした"
+    "locationNotFound": "場所が見つかりませんでした",
+    "offline": "オフラインです。保存済みのデータを表示しています。",
+    "offlineWithTime": "オフラインです。最終更新: {{time}}"
   },
   "facilityList": {
     "recentlyViewed": "最近見た施設",
