@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { usePushNotifications } from '../../hooks/usePushNotifications';
+import { c } from '../../theme';
 import type { SupportedLang } from '../../types';
 
 interface LayoutProps {
@@ -52,8 +53,8 @@ export default function Layout({ children }: LayoutProps) {
     borderRadius: '6px',
     fontSize: isMobile ? '15px' : '14px',
     fontWeight: isActive ? 600 : 400,
-    color: isActive ? '#6366f1' : '#374151',
-    backgroundColor: isActive ? '#e0e7ff' : 'transparent',
+    color: isActive ? c.ink : c.inkSoft,
+    backgroundColor: isActive ? c.accentSoft : 'transparent',
     display: 'block',
   });
 
@@ -68,16 +69,27 @@ export default function Layout({ children }: LayoutProps) {
     textDecoration: 'none',
     fontSize: '11px',
     fontWeight: isActive ? 600 : 400,
-    color: isActive ? '#6366f1' : '#6b7280',
+    color: isActive ? c.ink : c.muted,
+  });
+
+  const langButtonStyle = (active: boolean, mobile: boolean): React.CSSProperties => ({
+    ...(mobile ? { flex: 1, padding: '8px 4px', fontSize: '13px' } : { padding: '4px 8px', fontSize: '11px' }),
+    border: '1px solid',
+    borderColor: active ? c.ink : c.edge,
+    borderRadius: mobile ? '8px' : '6px',
+    backgroundColor: active ? c.accentSoft : c.surface,
+    color: active ? c.ink : c.inkSoft,
+    cursor: 'pointer',
+    fontWeight: active ? 600 : 400,
   });
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100svh', backgroundColor: '#f9fafb' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100svh', backgroundColor: c.bg }}>
       {/* ヘッダー */}
       <header
         style={{
-          backgroundColor: '#fff',
-          borderBottom: '1px solid #e5e7eb',
+          backgroundColor: c.surface,
+          borderBottom: `1px solid ${c.edge}`,
           padding: '0 16px',
           paddingTop: 'env(safe-area-inset-top)',
           display: 'flex',
@@ -96,7 +108,8 @@ export default function Layout({ children }: LayoutProps) {
           onClick={() => { navigate('/'); setMenuOpen(false); }}
           style={{
             background: 'none', border: 'none', cursor: 'pointer',
-            fontWeight: 700, fontSize: '16px', color: '#111827', padding: 0,
+            fontWeight: 700, fontSize: '16px', color: c.ink, padding: 0,
+            letterSpacing: '-0.01em',
           }}
         >
           🗺️ Tattoo Map
@@ -109,7 +122,7 @@ export default function Layout({ children }: LayoutProps) {
             onClick={() => setMenuOpen((v) => !v)}
             style={{
               background: 'none', border: 'none', cursor: 'pointer',
-              fontSize: '22px', color: '#374151', padding: '4px 8px',
+              fontSize: '22px', color: c.inkSoft, padding: '4px 8px',
               lineHeight: 1,
             }}
           >
@@ -129,7 +142,7 @@ export default function Layout({ children }: LayoutProps) {
                   onClick={() => void handleSignOut()}
                   style={{
                     padding: '6px 12px', borderRadius: '6px', fontSize: '14px',
-                    color: '#6b7280', background: 'none', border: 'none', cursor: 'pointer',
+                    color: c.muted, background: 'none', border: 'none', cursor: 'pointer',
                   }}
                 >
                   {t('auth.logoutButton')}
@@ -144,15 +157,7 @@ export default function Layout({ children }: LayoutProps) {
                   key={code}
                   type="button"
                   onClick={() => changeLanguage(code)}
-                  style={{
-                    padding: '4px 8px', border: '1px solid',
-                    borderColor: currentLang === code ? '#6366f1' : '#d1d5db',
-                    borderRadius: '6px',
-                    backgroundColor: currentLang === code ? '#e0e7ff' : '#fff',
-                    color: currentLang === code ? '#3730a3' : '#374151',
-                    cursor: 'pointer', fontSize: '11px',
-                    fontWeight: currentLang === code ? 600 : 400,
-                  }}
+                  style={langButtonStyle(currentLang === code, false)}
                 >
                   {label}
                 </button>
@@ -177,8 +182,8 @@ export default function Layout({ children }: LayoutProps) {
           <div
             style={{
               position: 'fixed', top: 'calc(56px + env(safe-area-inset-top))', left: 0, right: 0,
-              backgroundColor: '#fff',
-              borderBottom: '1px solid #e5e7eb',
+              backgroundColor: c.surface,
+              borderBottom: `1px solid ${c.edge}`,
               zIndex: 160, padding: '8px 16px 16px',
             }}
           >
@@ -193,7 +198,7 @@ export default function Layout({ children }: LayoutProps) {
                     onClick={() => void handleSignOut()}
                     style={{
                       padding: '10px 16px', borderRadius: '6px', fontSize: '15px',
-                      color: '#6b7280', background: 'none', border: 'none',
+                      color: c.muted, background: 'none', border: 'none',
                       cursor: 'pointer', textAlign: 'left',
                     }}
                   >
@@ -210,16 +215,7 @@ export default function Layout({ children }: LayoutProps) {
                   key={code}
                   type="button"
                   onClick={() => changeLanguage(code)}
-                  style={{
-                    flex: 1, padding: '8px 4px',
-                    border: '1px solid',
-                    borderColor: currentLang === code ? '#6366f1' : '#d1d5db',
-                    borderRadius: '8px',
-                    backgroundColor: currentLang === code ? '#e0e7ff' : '#fff',
-                    color: currentLang === code ? '#3730a3' : '#374151',
-                    cursor: 'pointer', fontSize: '13px',
-                    fontWeight: currentLang === code ? 600 : 400,
-                  }}
+                  style={langButtonStyle(currentLang === code, true)}
                 >
                   {label}
                 </button>
@@ -244,8 +240,8 @@ export default function Layout({ children }: LayoutProps) {
         <nav
           style={{
             position: 'fixed', left: 0, right: 0, bottom: 0,
-            display: 'flex', backgroundColor: '#fff',
-            borderTop: '1px solid #e5e7eb', zIndex: 200,
+            display: 'flex', backgroundColor: c.surface,
+            borderTop: `1px solid ${c.edge}`, zIndex: 200,
             paddingBottom: 'env(safe-area-inset-bottom)',
           }}
         >

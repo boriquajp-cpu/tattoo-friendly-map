@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { c } from '../../theme';
 
 interface Props {
   onConfirm: () => void;
@@ -43,10 +44,10 @@ export default function DisclaimerModal({ onConfirm }: Props) {
           style={{
             width: '100%',
             padding: '13px',
-            backgroundColor: '#6366f1',
-            color: '#fff',
+            backgroundColor: c.accent,
+            color: c.accentInk,
             border: 'none',
-            borderRadius: '10px',
+            borderRadius: c.radius,
             fontSize: '15px',
             fontWeight: 700,
             cursor: 'pointer',

@@ -5,6 +5,7 @@ import { Capacitor } from '@capacitor/core';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { pickPhoto } from '../lib/nativePhoto';
+import { c } from '../theme';
 import type {
   ReportFormData,
   ReportResult,
@@ -44,14 +45,14 @@ const labelStyle: React.CSSProperties = {
   display: 'block',
   fontSize: '13px',
   fontWeight: 600,
-  color: '#374151',
+  color: c.inkSoft,
   marginBottom: '6px',
 };
 
 const inputStyle: React.CSSProperties = {
   width: '100%',
   padding: '8px 12px',
-  border: '1px solid #d1d5db',
+  border: `1px solid ${c.edge}`,
   borderRadius: '8px',
   fontSize: '16px',
   boxSizing: 'border-box',
@@ -185,7 +186,7 @@ export default function ReportFormPage() {
       <button
         type="button"
         onClick={() => navigate(-1)}
-        style={{ background: 'none', border: 'none', color: '#6366f1', cursor: 'pointer', fontSize: '14px', marginBottom: '12px', padding: 0 }}
+        style={{ background: 'none', border: 'none', color: c.accent, cursor: 'pointer', fontSize: '14px', marginBottom: '12px', padding: 0 }}
       >
         ← {t('common.back')}
       </button>
@@ -294,12 +295,12 @@ export default function ReportFormPage() {
                     gap: '4px',
                     padding: '4px 12px',
                     border: '1px solid',
-                    borderColor: checked ? '#6366f1' : '#d1d5db',
+                    borderColor: checked ? c.accent : c.edge,
                     borderRadius: '9999px',
                     cursor: 'pointer',
                     fontSize: '13px',
-                    backgroundColor: checked ? '#e0e7ff' : '#fff',
-                    color: checked ? '#3730a3' : '#374151',
+                    backgroundColor: checked ? c.accentSoft : '#fff',
+                    color: checked ? c.ink : c.inkSoft,
                   }}
                 >
                   <input
@@ -361,8 +362,8 @@ export default function ReportFormPage() {
               type="button"
               onClick={() => { void handleNativePhotoPick(); }}
               style={{
-                padding: '10px 16px', backgroundColor: '#fff', color: '#374151',
-                border: '1px solid #d1d5db', borderRadius: '8px',
+                padding: '10px 16px', backgroundColor: '#fff', color: c.inkSoft,
+                border: `1px solid ${c.edge}`, borderRadius: '8px',
                 fontSize: '14px', fontWeight: 600, cursor: 'pointer',
               }}
             >
@@ -390,7 +391,7 @@ export default function ReportFormPage() {
                 style={{
                   position: 'absolute', top: '-8px', right: '-8px',
                   width: '24px', height: '24px', borderRadius: '9999px',
-                  border: 'none', backgroundColor: '#374151', color: '#fff',
+                  border: 'none', backgroundColor: c.inkSoft, color: '#fff',
                   cursor: 'pointer', fontSize: '14px', lineHeight: 1,
                 }}
               >
@@ -413,7 +414,7 @@ export default function ReportFormPage() {
             style={{
               flex: 1,
               padding: '10px',
-              backgroundColor: submitting ? '#a5b4fc' : '#6366f1',
+              backgroundColor: submitting ? c.muted : c.accent,
               color: '#fff',
               border: 'none',
               borderRadius: '8px',
@@ -430,8 +431,8 @@ export default function ReportFormPage() {
             style={{
               padding: '10px 20px',
               backgroundColor: '#fff',
-              color: '#374151',
-              border: '1px solid #d1d5db',
+              color: c.inkSoft,
+              border: `1px solid ${c.edge}`,
               borderRadius: '8px',
               fontSize: '14px',
               cursor: 'pointer',

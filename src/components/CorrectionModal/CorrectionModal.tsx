@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../../lib/supabase';
 import type { FacilityCategory } from '../../types';
+import { c } from '../../theme';
 
 interface Props {
   facilityId: string;
@@ -62,17 +63,17 @@ export default function CorrectionModal({ facilityId, facilityName, facilityCate
           <h3 style={{ margin: 0, fontSize: '17px', fontWeight: 700 }}>
             {t('correction.title')}
           </h3>
-          <button type="button" onClick={onClose} style={{ background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', color: '#6b7280' }}>✕</button>
+          <button type="button" onClick={onClose} style={{ background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', color: c.muted }}>✕</button>
         </div>
 
         {done ? (
           <div style={{ textAlign: 'center', padding: '24px 0' }}>
             <div style={{ fontSize: '36px', marginBottom: '12px' }}>✅</div>
-            <p style={{ fontSize: '15px', color: '#374151', margin: '0 0 20px' }}>{t('correction.success')}</p>
+            <p style={{ fontSize: '15px', color: c.inkSoft, margin: '0 0 20px' }}>{t('correction.success')}</p>
             <button
               type="button"
               onClick={onClose}
-              style={{ padding: '10px 28px', backgroundColor: '#6366f1', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}
+              style={{ padding: '10px 28px', backgroundColor: c.accent, color: '#fff', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}
             >
               {t('common.close')}
             </button>
@@ -80,7 +81,7 @@ export default function CorrectionModal({ facilityId, facilityName, facilityCate
         ) : (
           <>
             <div style={{ marginBottom: '16px' }}>
-              <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: c.inkSoft, marginBottom: '8px' }}>
                 {t('correction.type')} <span style={{ color: '#ef4444' }}>*</span>
               </label>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -91,7 +92,7 @@ export default function CorrectionModal({ facilityId, facilityName, facilityCate
                       display: 'flex', alignItems: 'center', gap: '10px',
                       padding: '10px 14px', borderRadius: '8px', cursor: 'pointer',
                       border: '1px solid',
-                      borderColor: correctionType === type ? '#6366f1' : '#e5e7eb',
+                      borderColor: correctionType === type ? c.accent : c.edge,
                       backgroundColor: correctionType === type ? '#eef2ff' : '#fff',
                     }}
                   >
@@ -101,9 +102,9 @@ export default function CorrectionModal({ facilityId, facilityName, facilityCate
                       value={type}
                       checked={correctionType === type}
                       onChange={() => setCorrectionType(type)}
-                      style={{ accentColor: '#6366f1' }}
+                      style={{ accentColor: c.accent }}
                     />
-                    <span style={{ fontSize: '14px', color: correctionType === type ? '#3730a3' : '#374151', fontWeight: correctionType === type ? 600 : 400 }}>
+                    <span style={{ fontSize: '14px', color: correctionType === type ? c.ink : c.inkSoft, fontWeight: correctionType === type ? 600 : 400 }}>
                       {t(`correction.types.${type}`)}
                     </span>
                   </label>
@@ -112,7 +113,7 @@ export default function CorrectionModal({ facilityId, facilityName, facilityCate
             </div>
 
             <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#374151', marginBottom: '6px' }}>
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: c.inkSoft, marginBottom: '6px' }}>
                 {t('correction.detail')}
               </label>
               <textarea
@@ -120,7 +121,7 @@ export default function CorrectionModal({ facilityId, facilityName, facilityCate
                 placeholder={t('correction.detailPlaceholder')}
                 value={detail}
                 onChange={(e) => setDetail(e.target.value)}
-                style={{ width: '100%', padding: '10px 12px', border: '1px solid #d1d5db', borderRadius: '8px', fontSize: '16px', boxSizing: 'border-box', resize: 'vertical' }}
+                style={{ width: '100%', padding: '10px 12px', border: `1px solid ${c.edge}`, borderRadius: '8px', fontSize: '16px', boxSizing: 'border-box', resize: 'vertical' }}
               />
             </div>
 
@@ -134,7 +135,7 @@ export default function CorrectionModal({ facilityId, facilityName, facilityCate
               onClick={() => { void handleSubmit(); }}
               style={{
                 width: '100%', padding: '12px',
-                backgroundColor: !correctionType || submitting ? '#a5b4fc' : '#6366f1',
+                backgroundColor: !correctionType || submitting ? c.muted : c.accent,
                 color: '#fff', border: 'none', borderRadius: '10px',
                 fontSize: '15px', fontWeight: 700,
                 cursor: !correctionType || submitting ? 'not-allowed' : 'pointer',

@@ -8,15 +8,8 @@ import { supabase } from '../lib/supabase';
 import { translateFacilities } from '../lib/facilityTranslation';
 import { saveFacilitiesCache, loadFacilitiesCache } from '../lib/offlineCache';
 import FacilityRequestModal from '../components/FacilityRequestModal/FacilityRequestModal';
+import { c, summaryColor as SUMMARY_COLORS } from '../theme';
 import type { FacilityCategory, FacilityWithStats, SummaryLabel } from '../types';
-
-const SUMMARY_COLORS: Record<SummaryLabel, string> = {
-  high: '#22c55e',
-  conditional: '#eab308',
-  mixed: '#f97316',
-  low: '#ef4444',
-  no_data: '#9ca3af',
-};
 
 const ALL_CATEGORIES: FacilityCategory[] = ['onsen', 'gym_pool', 'outdoor'];
 
@@ -233,7 +226,7 @@ export default function MapPage() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', position: 'relative' }}>
       {/* 場所検索バー */}
-      <div style={{ padding: '8px 16px 0', backgroundColor: '#fff', display: 'flex', gap: '8px' }}>
+      <div style={{ padding: '8px 16px 0', backgroundColor: c.surface, display: 'flex', gap: '8px' }}>
         <input
           type="text"
           value={locationQuery}
@@ -241,8 +234,8 @@ export default function MapPage() {
           onKeyDown={(e) => { if (e.key === 'Enter') { void handleLocationSearch(); } }}
           placeholder={t('map.locationSearchPlaceholder')}
           style={{
-            flex: 1, padding: '8px 12px', border: '1px solid #d1d5db',
-            borderRadius: '8px', fontSize: '16px', outline: 'none',
+            flex: 1, padding: '8px 12px', border: `1px solid ${c.edge}`,
+            borderRadius: c.radius, fontSize: '16px', outline: 'none',
           }}
         />
         <button
@@ -250,8 +243,8 @@ export default function MapPage() {
           onClick={() => { void handleLocationSearch(); }}
           disabled={locationLoading}
           style={{
-            padding: '8px 14px', backgroundColor: '#6366f1', color: '#fff',
-            border: 'none', borderRadius: '8px', fontSize: '14px',
+            padding: '8px 14px', backgroundColor: c.accent, color: c.accentInk,
+            border: 'none', borderRadius: c.radius, fontSize: '14px',
             fontWeight: 600, cursor: locationLoading ? 'not-allowed' : 'pointer',
             opacity: locationLoading ? 0.7 : 1, flexShrink: 0,
           }}
@@ -264,7 +257,7 @@ export default function MapPage() {
       {locationError && (
         <div style={{
           position: 'absolute', top: '110px', left: '50%', transform: 'translateX(-50%)',
-          backgroundColor: '#1f2937', color: '#fff', padding: '8px 18px',
+          backgroundColor: c.ink, color: c.accentInk, padding: '8px 18px',
           borderRadius: '20px', fontSize: '13px', zIndex: 30, whiteSpace: 'nowrap', pointerEvents: 'none',
         }}>
           {locationError}
@@ -274,7 +267,7 @@ export default function MapPage() {
       {/* オフラインバナー */}
       {isOffline && (
         <div style={{
-          backgroundColor: '#1f2937', color: '#fff', padding: '6px 16px',
+          backgroundColor: c.ink, color: c.accentInk, padding: '6px 16px',
           fontSize: '12px', textAlign: 'center',
         }}>
           {offlineSavedAt
@@ -284,32 +277,36 @@ export default function MapPage() {
       )}
 
       {/* カテゴリフィルター */}
-      <div style={{ display: 'flex', gap: '8px', padding: '8px 16px', backgroundColor: '#fff', borderBottom: '1px solid #e5e7eb', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: '8px', padding: '8px 16px', backgroundColor: c.surface, borderBottom: `1px solid ${c.edge}`, flexWrap: 'wrap' }}>
         {ALL_CATEGORIES.map((cat) => (
           <button
             key={cat}
             type="button"
             onClick={() => toggleCategory(cat)}
             style={{
+              display: 'inline-flex', alignItems: 'center', gap: '6px',
               padding: '4px 14px', borderRadius: '9999px', border: '1px solid',
-              borderColor: activeCategories.has(cat) ? '#6366f1' : '#d1d5db',
-              backgroundColor: activeCategories.has(cat) ? '#6366f1' : '#fff',
-              color: activeCategories.has(cat) ? '#fff' : '#374151',
-              cursor: 'pointer', fontSize: '13px', fontWeight: 500,
+              borderColor: activeCategories.has(cat) ? c.ink : c.edge,
+              backgroundColor: c.surface,
+              color: activeCategories.has(cat) ? c.ink : c.muted,
+              cursor: 'pointer', fontSize: '13px', fontWeight: activeCategories.has(cat) ? 600 : 500,
             }}
           >
+            {activeCategories.has(cat) && (
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'currentColor', flexShrink: 0 }} />
+            )}
             {t(`facility.categories.${cat}`)}
           </button>
         ))}
-        {loading && <span style={{ fontSize: '12px', color: '#6b7280', alignSelf: 'center' }}>{t('common.loading')}</span>}
-        {!loading && <span style={{ fontSize: '12px', color: '#6b7280', alignSelf: 'center' }}>{filteredFacilities.length}{t('map.facilityCount')}</span>}
+        {loading && <span style={{ fontSize: '12px', color: c.muted, alignSelf: 'center' }}>{t('common.loading')}</span>}
+        {!loading && <span style={{ fontSize: '12px', color: c.muted, alignSelf: 'center' }}>{filteredFacilities.length}{t('map.facilityCount')}</span>}
       </div>
 
       {/* ジオエラートースト */}
       {geoError && (
         <div style={{
           position: 'absolute', top: '52px', left: '50%', transform: 'translateX(-50%)',
-          backgroundColor: '#1f2937', color: '#fff', padding: '8px 18px',
+          backgroundColor: c.ink, color: c.accentInk, padding: '8px 18px',
           borderRadius: '20px', fontSize: '13px', zIndex: 30, whiteSpace: 'nowrap', pointerEvents: 'none',
         }}>
           {geoError}
@@ -348,7 +345,7 @@ export default function MapPage() {
               type="circle"
               filter={['has', 'point_count']}
               paint={{
-                'circle-color': '#6366f1',
+                'circle-color': c.accent,
                 'circle-radius': ['step', ['get', 'point_count'], 22, 10, 30, 50, 38],
                 'circle-opacity': 0.9,
               }}
@@ -402,7 +399,7 @@ export default function MapPage() {
                 ],
                 'circle-radius': 17,
                 'circle-stroke-width': 3,
-                'circle-stroke-color': '#6366f1',
+                'circle-stroke-color': c.accent,
               }}
             />
           </Source>
@@ -416,9 +413,9 @@ export default function MapPage() {
               onClick={handleSearchArea}
               style={{
                 padding: '8px 16px', borderRadius: '20px',
-                backgroundColor: '#fff', border: '1px solid #d1d5db',
+                backgroundColor: c.surface, border: `1px solid ${c.edge}`,
                 fontSize: '13px', fontWeight: 600, cursor: 'pointer',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.15)', color: '#374151',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.15)', color: c.inkSoft,
               }}
             >
               🔍 {t('map.searchThisArea')}
@@ -430,9 +427,9 @@ export default function MapPage() {
               onClick={() => { setAreaBounds(null); setMapMoved(false); }}
               style={{
                 padding: '8px 16px', borderRadius: '20px',
-                backgroundColor: '#6366f1', border: 'none',
+                backgroundColor: c.accent, border: 'none',
                 fontSize: '13px', fontWeight: 600, cursor: 'pointer',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.15)', color: '#fff',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.15)', color: c.accentInk,
               }}
             >
               ✕ {t('map.resetArea')}
@@ -462,19 +459,20 @@ export default function MapPage() {
           onClick={(e) => e.stopPropagation()}
           style={{
             position: 'absolute', bottom: '52px', left: '12px', right: '12px',
-            backgroundColor: '#fff', borderRadius: '14px', padding: '14px 16px',
+            backgroundColor: c.surface, border: `1px solid ${c.edge}`,
+            borderRadius: '14px', padding: '14px 16px',
             boxShadow: '0 4px 24px rgba(0,0,0,0.18)', zIndex: 20,
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <p style={{ margin: 0, fontSize: '11px', color: '#6b7280', textTransform: 'uppercase' }}>
+              <p style={{ margin: 0, fontSize: '11px', color: c.muted, textTransform: 'uppercase' }}>
                 {t(`facility.categories.${selectedFacility.category}`)}
               </p>
               <h3 style={{ margin: '2px 0 4px', fontSize: '16px', fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {selectedFacility.name}
               </h3>
-              <p style={{ margin: 0, fontSize: '12px', color: '#6b7280', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <p style={{ margin: 0, fontSize: '12px', color: c.muted, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {selectedFacility.address}
               </p>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px', flexWrap: 'wrap' }}>
@@ -487,7 +485,7 @@ export default function MapPage() {
                   {t(`facility.summaryLabel.${selectedFacility.stats?.summary_label ?? 'no_data'}`)}
                 </span>
                 {selectedFacility.stats && selectedFacility.stats.total_reports > 0 && (
-                  <span style={{ fontSize: '11px', color: '#6b7280' }}>
+                  <span style={{ fontSize: '11px', color: c.muted }}>
                     {t('facility.reportCount', { count: selectedFacility.stats.total_reports })}
                   </span>
                 )}
@@ -496,7 +494,7 @@ export default function MapPage() {
             <button
               type="button"
               onClick={() => setSelectedFacility(null)}
-              style={{ background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer', color: '#6b7280', flexShrink: 0, padding: '0 0 0 8px' }}
+              style={{ background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer', color: c.muted, flexShrink: 0, padding: '0 0 0 8px' }}
             >
               ✕
             </button>
@@ -506,8 +504,8 @@ export default function MapPage() {
             onClick={() => navigate(`/facility/${selectedFacility.id}`)}
             style={{
               marginTop: '12px', width: '100%', padding: '9px',
-              backgroundColor: '#6366f1', color: '#fff', border: 'none',
-              borderRadius: '8px', fontSize: '14px', fontWeight: 600, cursor: 'pointer',
+              backgroundColor: c.accent, color: c.accentInk, border: 'none',
+              borderRadius: c.radius, fontSize: '14px', fontWeight: 600, cursor: 'pointer',
             }}
           >
             {t('common.viewDetail')}
@@ -523,7 +521,7 @@ export default function MapPage() {
         style={{
           position: 'absolute', bottom: selectedFacility ? '172px' : '16px', right: '16px',
           width: '40px', height: '40px', borderRadius: '50%',
-          backgroundColor: '#fff', border: '1px solid #d1d5db', fontSize: '18px',
+          backgroundColor: c.surface, border: `1px solid ${c.edge}`, fontSize: '18px',
           cursor: geoLoading ? 'not-allowed' : 'pointer',
           boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -541,7 +539,7 @@ export default function MapPage() {
         style={{
           position: 'absolute', bottom: selectedFacility ? '224px' : '68px', right: '16px',
           width: '44px', height: '44px', borderRadius: '50%',
-          backgroundColor: '#6366f1', color: '#fff', border: 'none', fontSize: '22px',
+          backgroundColor: c.accent, color: c.accentInk, border: 'none', fontSize: '22px',
           cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.25)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           zIndex: 10, transition: 'bottom 0.2s',

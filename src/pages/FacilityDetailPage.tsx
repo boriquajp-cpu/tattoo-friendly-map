@@ -11,13 +11,14 @@ import { useFavorites } from '../hooks/useFavorites';
 import { useRecentlyViewed } from '../hooks/useRecentlyViewed';
 import { useBlockedUsers } from '../hooks/useBlockedUsers';
 import { useAuth } from '../contexts/AuthContext';
+import { c, summaryBadge as SUMMARY_BADGE_STYLE } from '../theme';
 import type { FacilityWithStats, Report, SummaryLabel, SupportedLang } from '../types';
 
 const SHARE_COLORS: Record<string, string> = {
   line: '#06C755',
   facebook: '#1877F2',
   twitter: '#000',
-  copy: '#6366f1',
+  copy: c.accent,
 };
 
 // WCAG AA(4.5:1)を満たすため、明るい背景色のボタンは濃色テキストにする
@@ -25,15 +26,7 @@ const SHARE_TEXT_COLORS: Record<string, string> = {
   line: '#111827',
   facebook: '#111827',
   twitter: '#fff',
-  copy: '#fff',
-};
-
-const SUMMARY_BADGE_STYLE: Record<SummaryLabel, { bg: string; color: string }> = {
-  high:        { bg: '#dcfce7', color: '#166534' },
-  conditional: { bg: '#fef9c3', color: '#854d0e' },
-  mixed:       { bg: '#ffedd5', color: '#9a3412' },
-  low:         { bg: '#fee2e2', color: '#991b1b' },
-  no_data:     { bg: '#f3f4f6', color: '#374151' },
+  copy: c.accentInk,
 };
 
 export default function FacilityDetailPage() {
@@ -196,7 +189,7 @@ export default function FacilityDetailPage() {
 
   const stats = facility.stats;
   const summaryLabel: SummaryLabel = stats?.summary_label ?? 'no_data';
-  const { bg, color } = SUMMARY_BADGE_STYLE[summaryLabel];
+  const { color } = SUMMARY_BADGE_STYLE[summaryLabel];
 
   const visibleReports = reports.filter((r) => !r.user_id || !isBlocked(r.user_id));
 
@@ -207,8 +200,8 @@ export default function FacilityDetailPage() {
         type="button"
         onClick={() => navigate(-1)}
         style={{
-          background: 'none', border: 'none', color: '#6366f1',
-          cursor: 'pointer', fontSize: '14px', marginBottom: '12px', padding: 0,
+          background: 'none', border: 'none', color: c.accent,
+          cursor: 'pointer', fontSize: '14px', marginBottom: '12px', padding: 0, fontWeight: 600,
         }}
       >
         ← {t('common.back')}
@@ -216,11 +209,11 @@ export default function FacilityDetailPage() {
 
       {/* 施設ヘッダー */}
       <div style={{ marginBottom: '16px' }}>
-        <p style={{ margin: 0, fontSize: '11px', color: '#6b7280', textTransform: 'uppercase' }}>
+        <p style={{ margin: 0, fontSize: '11px', color: c.muted, textTransform: 'uppercase' }}>
           {t(`facility.categories.${facility.category}`)}
         </p>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <h1 style={{ margin: '4px 0', fontSize: '22px', fontWeight: 700, flex: 1 }}>{facility.name}</h1>
+          <h1 style={{ margin: '4px 0', fontSize: '22px', fontWeight: 700, flex: 1, letterSpacing: '-0.02em', color: c.ink }}>{facility.name}</h1>
           <button
             type="button"
             onClick={() => toggle(facility.id)}
@@ -230,10 +223,10 @@ export default function FacilityDetailPage() {
               width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}
           >
-            <HeartIcon filled={isFavorite(facility.id)} color={isFavorite(facility.id) ? '#ef4444' : '#6b7280'} size={26} />
+            <HeartIcon filled={isFavorite(facility.id)} color={isFavorite(facility.id) ? '#ef4444' : c.muted} size={26} />
           </button>
         </div>
-        <p style={{ margin: '0 0 12px', color: '#6b7280', fontSize: '14px' }}>{facility.address}</p>
+        <p style={{ margin: '0 0 12px', color: c.muted, fontSize: '14px' }}>{facility.address}</p>
 
         {/* ② ナビボタン */}
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
@@ -244,8 +237,8 @@ export default function FacilityDetailPage() {
             style={{
               display: 'inline-flex', alignItems: 'center', gap: '6px',
               padding: '8px 14px', borderRadius: '8px',
-              backgroundColor: '#fff', border: '1px solid #d1d5db',
-              color: '#374151', textDecoration: 'none', fontSize: '13px', fontWeight: 600,
+              backgroundColor: c.surface, border: `1px solid ${c.edge}`,
+              color: c.inkSoft, textDecoration: 'none', fontSize: '13px', fontWeight: 600,
               boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
             }}
           >
@@ -258,8 +251,8 @@ export default function FacilityDetailPage() {
             style={{
               display: 'inline-flex', alignItems: 'center', gap: '6px',
               padding: '8px 14px', borderRadius: '8px',
-              backgroundColor: '#fff', border: '1px solid #d1d5db',
-              color: '#374151', textDecoration: 'none', fontSize: '13px', fontWeight: 600,
+              backgroundColor: c.surface, border: `1px solid ${c.edge}`,
+              color: c.inkSoft, textDecoration: 'none', fontSize: '13px', fontWeight: 600,
               boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
             }}
           >
@@ -272,31 +265,31 @@ export default function FacilityDetailPage() {
       {facility.official_tattoo_policy && (
         <div
           style={{
-            backgroundColor: '#eff6ff', border: '1px solid #bfdbfe',
-            borderRadius: '12px', padding: '16px', marginBottom: '16px',
+            borderLeft: `2px solid ${c.ink}`,
+            padding: '2px 0 2px 14px', marginBottom: '16px',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
             <span
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: '4px',
-                fontSize: '11px', fontWeight: 700, color: '#1d4ed8',
-                backgroundColor: '#dbeafe', padding: '2px 10px', borderRadius: '9999px',
+                fontSize: '11px', fontWeight: 700, letterSpacing: '0.08em',
+                textTransform: 'uppercase', color: c.muted,
               }}
             >
-              ✓ {t('facility.officialResponse.badge')}
+              {t('facility.officialResponse.badge')}
             </span>
           </div>
-          <p style={{ margin: '0 0 4px', fontSize: '15px', fontWeight: 700, color: '#1e3a8a' }}>
+          <p style={{ margin: '0 0 4px', fontSize: '15px', fontWeight: 700, color: c.ink }}>
             {t(`facility.officialResponse.policy.${facility.official_tattoo_policy}`)}
           </p>
           {facility.official_conditions && facility.official_conditions.length > 0 && (
-            <ul style={{ margin: '6px 0 0', paddingLeft: '20px', fontSize: '13px', color: '#1e40af' }}>
+            <ul style={{ margin: '6px 0 0', paddingLeft: '20px', fontSize: '13px', color: c.inkSoft }}>
               {facility.official_conditions.map((c) => <li key={c}>{c}</li>)}
             </ul>
           )}
           {facility.official_guidance_text && (
-            <p style={{ margin: '8px 0 0', fontSize: '13px', color: '#374151', whiteSpace: 'pre-wrap' }}>
+            <p style={{ margin: '8px 0 0', fontSize: '13px', color: c.inkSoft, whiteSpace: 'pre-wrap' }}>
               {facility.official_guidance_text}
             </p>
           )}
@@ -304,7 +297,7 @@ export default function FacilityDetailPage() {
       )}
 
       {/* 集計結果 */}
-      <div style={{ backgroundColor: bg, borderRadius: '12px', padding: '16px', marginBottom: '20px' }}>
+      <div style={{ borderTop: `1px solid ${c.edge}`, padding: '14px 0 0', marginBottom: '20px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
           <span
             style={{
@@ -315,17 +308,17 @@ export default function FacilityDetailPage() {
             {t(`facility.summaryLabel.${summaryLabel}`)}
           </span>
           {stats && (
-            <span style={{ fontSize: '13px', color: '#374151' }}>
+            <span style={{ fontSize: '13px', color: c.inkSoft }}>
               {t('facility.reportCount', { count: stats.total_reports })}
             </span>
           )}
           {stats?.confidence && (
-            <span style={{ fontSize: '13px', color: '#374151' }}>
+            <span style={{ fontSize: '13px', color: c.inkSoft }}>
               {t(`facility.confidence.${stats.confidence}`)}
             </span>
           )}
           {stats?.last_updated && (
-            <span style={{ fontSize: '12px', color: '#6b7280' }}>
+            <span style={{ fontSize: '12px', color: c.muted }}>
               {t('facility.lastUpdated')}：{new Date(stats.last_updated).toLocaleDateString()}
             </span>
           )}
@@ -350,9 +343,9 @@ export default function FacilityDetailPage() {
             rel="noopener noreferrer"
             style={{
               display: 'inline-block', padding: '8px 16px',
-              backgroundColor: '#6366f1', color: '#fff',
-              borderRadius: '8px', textDecoration: 'none',
-              fontSize: '14px', fontWeight: 500,
+              backgroundColor: c.accent, color: c.accentInk,
+              borderRadius: c.radius, textDecoration: 'none',
+              fontSize: '14px', fontWeight: 600,
             }}
           >
             {t('facility.bookingLinks.official')}
@@ -367,8 +360,8 @@ export default function FacilityDetailPage() {
           style={{
             flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
             padding: '10px 16px', textAlign: 'center',
-            backgroundColor: '#f97316', color: '#111827',
-            borderRadius: '8px', textDecoration: 'none',
+            backgroundColor: c.report, color: c.ink,
+            borderRadius: c.radius, textDecoration: 'none',
             fontSize: '14px', fontWeight: 600,
           }}
         >
@@ -380,8 +373,8 @@ export default function FacilityDetailPage() {
           style={{
             flex: 1,
             padding: '10px 16px',
-            backgroundColor: '#fff', color: '#374151',
-            border: '1px solid #d1d5db', borderRadius: '8px',
+            backgroundColor: c.surface, color: c.inkSoft,
+            border: `1px solid ${c.edge}`, borderRadius: c.radius,
             fontSize: '14px', fontWeight: 600, cursor: 'pointer',
           }}
         >
@@ -391,7 +384,7 @@ export default function FacilityDetailPage() {
 
       {/* ⑩ SNSシェア */}
       <div style={{ marginBottom: '28px' }}>
-        <p style={{ fontSize: '13px', color: '#6b7280', marginBottom: '8px' }}>{t('facility.share')}</p>
+        <p style={{ fontSize: '13px', color: c.muted, marginBottom: '8px' }}>{t('facility.share')}</p>
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
           {canNativeShare && (
             <button
@@ -399,7 +392,7 @@ export default function FacilityDetailPage() {
               onClick={() => { void handleNativeShare(); }}
               style={{
                 padding: '7px 16px',
-                backgroundColor: '#374151',
+                backgroundColor: c.inkSoft,
                 color: '#fff',
                 border: 'none',
                 borderRadius: '20px',
@@ -451,7 +444,7 @@ export default function FacilityDetailPage() {
         {t('facility.reportList')}
       </h2>
       {visibleReports.length === 0 ? (
-        <p style={{ color: '#6b7280', textAlign: 'center', padding: '24px 0' }}>
+        <p style={{ color: c.muted, textAlign: 'center', padding: '24px 0' }}>
           {t('facility.noReports')}
         </p>
       ) : (
@@ -460,8 +453,8 @@ export default function FacilityDetailPage() {
             <div
               key={report.id}
               style={{
-                border: '1px solid #e5e7eb', borderRadius: '10px',
-                padding: '14px 16px', backgroundColor: '#fff',
+                border: `1px solid ${c.edge}`, borderRadius: '10px',
+                padding: '14px 16px', backgroundColor: c.surface,
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
@@ -469,19 +462,19 @@ export default function FacilityDetailPage() {
                   style={{
                     fontSize: '12px', fontWeight: 600,
                     padding: '2px 8px', borderRadius: '4px',
-                    backgroundColor: '#e0e7ff', color: '#3730a3',
+                    backgroundColor: c.accentSoft, color: c.ink,
                   }}
                 >
                   {t(`report.result.${report.result}`)}
                 </span>
-                <span style={{ fontSize: '12px', color: '#6b7280' }}>
+                <span style={{ fontSize: '12px', color: c.muted }}>
                   {report.visit_date ?? report.created_at.slice(0, 10)}
                 </span>
               </div>
 
               {report.comment && (
                 <>
-                  <p style={{ margin: 0, fontSize: '14px', color: '#374151' }}>
+                  <p style={{ margin: 0, fontSize: '14px', color: c.inkSoft }}>
                     {showTranslated[report.id] ? translations[report.id] : report.comment}
                   </p>
                   {report.lang !== currentLang && (
@@ -491,7 +484,7 @@ export default function FacilityDetailPage() {
                       disabled={translatingIds.has(report.id)}
                       style={{
                         marginTop: '6px', background: 'none', border: 'none',
-                        color: '#6366f1', fontSize: '12px', fontWeight: 600,
+                        color: c.accent, fontSize: '12px', fontWeight: 600,
                         cursor: translatingIds.has(report.id) ? 'default' : 'pointer', padding: 0,
                       }}
                     >
@@ -505,7 +498,7 @@ export default function FacilityDetailPage() {
                 </>
               )}
 
-              <div style={{ marginTop: '8px', display: 'flex', gap: '8px', flexWrap: 'wrap', fontSize: '12px', color: '#6b7280' }}>
+              <div style={{ marginTop: '8px', display: 'flex', gap: '8px', flexWrap: 'wrap', fontSize: '12px', color: c.muted }}>
                 {report.tattoo_size && <span>{t(`report.tattooSize.${report.tattoo_size}`)}</span>}
                 {report.tattoo_locations?.map((loc) => (
                   <span key={loc}>{t(`report.tattooLocation.${loc}`)}</span>
@@ -521,7 +514,7 @@ export default function FacilityDetailPage() {
                   onClick={() => setFlaggingReportId(report.id)}
                   style={{
                     background: 'none', border: 'none',
-                    color: '#6b7280', fontSize: '12px', cursor: 'pointer', padding: 0,
+                    color: c.muted, fontSize: '12px', cursor: 'pointer', padding: 0,
                   }}
                 >
                   🚩 {t('reportFlag.reportButton')}
@@ -529,19 +522,19 @@ export default function FacilityDetailPage() {
 
                 {user && report.user_id && report.user_id !== user.id && (
                   blockConfirmId === report.id ? (
-                    <span style={{ fontSize: '12px', color: '#6b7280', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ fontSize: '12px', color: c.muted, display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                       {t('report.blockConfirm')}
                       <button
                         type="button"
                         onClick={() => { toggleBlock(report.user_id!); setBlockConfirmId(null); }}
-                        style={{ background: 'none', border: 'none', color: '#dc2626', fontWeight: 600, cursor: 'pointer', padding: 0, fontSize: '12px' }}
+                        style={{ background: 'none', border: 'none', color: c.danger, fontWeight: 600, cursor: 'pointer', padding: 0, fontSize: '12px' }}
                       >
                         {t('report.blockConfirmYes')}
                       </button>
                       <button
                         type="button"
                         onClick={() => setBlockConfirmId(null)}
-                        style={{ background: 'none', border: 'none', color: '#6b7280', cursor: 'pointer', padding: 0, fontSize: '12px' }}
+                        style={{ background: 'none', border: 'none', color: c.muted, cursor: 'pointer', padding: 0, fontSize: '12px' }}
                       >
                         {t('report.blockConfirmNo')}
                       </button>
@@ -552,7 +545,7 @@ export default function FacilityDetailPage() {
                       onClick={() => setBlockConfirmId(report.id)}
                       style={{
                         background: 'none', border: 'none',
-                        color: '#6b7280', fontSize: '12px', cursor: 'pointer', padding: 0,
+                        color: c.muted, fontSize: '12px', cursor: 'pointer', padding: 0,
                       }}
                     >
                       🚫 {t('report.blockUser')}

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
 import type { FacilityCategory } from '../../types';
+import { c } from '../../theme';
 
 const CATEGORIES: FacilityCategory[] = ['onsen', 'gym_pool', 'outdoor'];
 
@@ -49,7 +50,7 @@ export default function FacilityRequestModal({ onClose }: Props) {
   const inputStyle: React.CSSProperties = {
     width: '100%',
     padding: '8px 12px',
-    border: '1px solid #d1d5db',
+    border: `1px solid ${c.edge}`,
     borderRadius: '6px',
     fontSize: '16px',
     boxSizing: 'border-box',
@@ -59,7 +60,7 @@ export default function FacilityRequestModal({ onClose }: Props) {
     display: 'block',
     fontSize: '13px',
     fontWeight: 600,
-    color: '#374151',
+    color: c.inkSoft,
     marginBottom: '4px',
   };
 
@@ -92,7 +93,7 @@ export default function FacilityRequestModal({ onClose }: Props) {
           <button
             type="button"
             onClick={onClose}
-            style={{ background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', color: '#6b7280' }}
+            style={{ background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', color: c.muted }}
           >
             ×
           </button>
@@ -101,7 +102,7 @@ export default function FacilityRequestModal({ onClose }: Props) {
         {success ? (
           <div style={{ textAlign: 'center', padding: '24px 0' }}>
             <div style={{ fontSize: '40px', marginBottom: '12px' }}>🎉</div>
-            <p style={{ fontSize: '15px', color: '#374151', marginBottom: '20px' }}>
+            <p style={{ fontSize: '15px', color: c.inkSoft, marginBottom: '20px' }}>
               {t('facilityRequest.success')}
             </p>
             <button
@@ -109,7 +110,7 @@ export default function FacilityRequestModal({ onClose }: Props) {
               onClick={onClose}
               style={{
                 padding: '10px 24px',
-                backgroundColor: '#6366f1',
+                backgroundColor: c.accent,
                 color: '#fff',
                 border: 'none',
                 borderRadius: '8px',
@@ -122,7 +123,7 @@ export default function FacilityRequestModal({ onClose }: Props) {
           </div>
         ) : (
           <form onSubmit={(e) => { void handleSubmit(e); }}>
-            <p style={{ fontSize: '13px', color: '#6b7280', marginBottom: '16px', marginTop: 0 }}>
+            <p style={{ fontSize: '13px', color: c.muted, marginBottom: '16px', marginTop: 0 }}>
               {t('facilityRequest.description')}
             </p>
 
@@ -201,7 +202,7 @@ export default function FacilityRequestModal({ onClose }: Props) {
               style={{
                 width: '100%',
                 padding: '12px',
-                backgroundColor: submitting || !nameJa.trim() || !addressJa.trim() ? '#c7d2fe' : '#6366f1',
+                backgroundColor: submitting || !nameJa.trim() || !addressJa.trim() ? '#c7d2fe' : c.accent,
                 color: '#fff',
                 border: 'none',
                 borderRadius: '8px',

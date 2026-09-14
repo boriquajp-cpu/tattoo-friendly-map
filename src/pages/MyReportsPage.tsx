@@ -5,13 +5,14 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { useBlockedUsers } from '../hooks/useBlockedUsers';
 import type { Report, ReportResult } from '../types';
+import { c } from '../theme';
 
 const RESULT_COLORS: Record<ReportResult, { bg: string; color: string }> = {
   admitted:              { bg: '#dcfce7', color: '#166534' },
   admitted_with_sticker: { bg: '#d1fae5', color: '#065f46' },
   admitted_with_cover:   { bg: '#fef9c3', color: '#854d0e' },
   denied:                { bg: '#fee2e2', color: '#991b1b' },
-  not_asked:             { bg: '#f3f4f6', color: '#374151' },
+  not_asked:             { bg: '#f3f4f6', color: c.inkSoft },
 };
 
 interface ReportWithFacility extends Report {
@@ -150,7 +151,7 @@ export default function MyReportsPage() {
   return (
     <div style={{ maxWidth: '720px', margin: '0 auto', padding: '16px 16px 40px' }}>
       <h1 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '4px' }}>{t('mypage.title')}</h1>
-      <p style={{ fontSize: '13px', color: '#6b7280', marginBottom: '20px' }}>{user?.email}</p>
+      <p style={{ fontSize: '13px', color: c.muted, marginBottom: '20px' }}>{user?.email}</p>
 
       {statusMsg && (
         <p style={{ padding: '10px 14px', borderRadius: '8px', backgroundColor: '#f0fdf4', color: '#166534', fontSize: '14px', marginBottom: '16px' }}>
@@ -161,9 +162,9 @@ export default function MyReportsPage() {
       <h2 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '12px' }}>{t('mypage.myReports')}（{reports.length}件）</h2>
 
       {reports.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '48px 0', color: '#6b7280' }}>
+        <div style={{ textAlign: 'center', padding: '48px 0', color: c.muted }}>
           <p style={{ marginBottom: '16px' }}>{t('mypage.noReports')}</p>
-          <Link to="/" style={{ color: '#6366f1', fontSize: '14px' }}>
+          <Link to="/" style={{ color: c.accent, fontSize: '14px' }}>
             {t('mypage.exploreFacilities')}
           </Link>
         </div>
@@ -177,7 +178,7 @@ export default function MyReportsPage() {
               <div
                 key={report.id}
                 style={{
-                  border: '1px solid #e5e7eb',
+                  border: `1px solid ${c.edge}`,
                   borderRadius: '12px',
                   padding: '16px',
                   backgroundColor: '#fff',
@@ -186,7 +187,7 @@ export default function MyReportsPage() {
                 {/* 施設名リンク */}
                 <Link
                   to={`/facility/${report.facilityId}`}
-                  style={{ fontSize: '15px', fontWeight: 600, color: '#111827', textDecoration: 'none' }}
+                  style={{ fontSize: '15px', fontWeight: 600, color: c.ink, textDecoration: 'none' }}
                 >
                   {report.facilityName}
                 </Link>
@@ -195,13 +196,13 @@ export default function MyReportsPage() {
                   /* 編集フォーム */
                   <div style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                     <div>
-                      <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '4px' }}>
+                      <label style={{ fontSize: '12px', fontWeight: 600, color: c.inkSoft, display: 'block', marginBottom: '4px' }}>
                         {t('report.result.label')}
                       </label>
                       <select
                         value={editState.result}
                         onChange={(e) => setEditState((p) => ({ ...p, result: e.target.value as ReportResult }))}
-                        style={{ width: '100%', padding: '7px 10px', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '16px' }}
+                        style={{ width: '100%', padding: '7px 10px', border: `1px solid ${c.edge}`, borderRadius: '6px', fontSize: '16px' }}
                       >
                         {RESULTS.map((r) => (
                           <option key={r} value={r}>{t(`report.result.${r}`)}</option>
@@ -209,25 +210,25 @@ export default function MyReportsPage() {
                       </select>
                     </div>
                     <div>
-                      <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '4px' }}>
+                      <label style={{ fontSize: '12px', fontWeight: 600, color: c.inkSoft, display: 'block', marginBottom: '4px' }}>
                         {t('report.visitDate')}
                       </label>
                       <input
                         type="date"
                         value={editState.visit_date}
                         onChange={(e) => setEditState((p) => ({ ...p, visit_date: e.target.value }))}
-                        style={{ width: '100%', padding: '7px 10px', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '16px', boxSizing: 'border-box' }}
+                        style={{ width: '100%', padding: '7px 10px', border: `1px solid ${c.edge}`, borderRadius: '6px', fontSize: '16px', boxSizing: 'border-box' }}
                       />
                     </div>
                     <div>
-                      <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '4px' }}>
+                      <label style={{ fontSize: '12px', fontWeight: 600, color: c.inkSoft, display: 'block', marginBottom: '4px' }}>
                         {t('report.comment')}
                       </label>
                       <textarea
                         rows={3}
                         value={editState.comment}
                         onChange={(e) => setEditState((p) => ({ ...p, comment: e.target.value }))}
-                        style={{ width: '100%', padding: '7px 10px', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '16px', boxSizing: 'border-box', resize: 'vertical' }}
+                        style={{ width: '100%', padding: '7px 10px', border: `1px solid ${c.edge}`, borderRadius: '6px', fontSize: '16px', boxSizing: 'border-box', resize: 'vertical' }}
                       />
                     </div>
                     <div style={{ display: 'flex', gap: '8px' }}>
@@ -235,14 +236,14 @@ export default function MyReportsPage() {
                         type="button"
                         disabled={saving}
                         onClick={() => void saveEdit(report.id)}
-                        style={{ padding: '7px 18px', backgroundColor: saving ? '#a5b4fc' : '#6366f1', color: '#fff', border: 'none', borderRadius: '6px', fontSize: '13px', fontWeight: 600, cursor: saving ? 'not-allowed' : 'pointer' }}
+                        style={{ padding: '7px 18px', backgroundColor: saving ? c.muted : c.accent, color: '#fff', border: 'none', borderRadius: '6px', fontSize: '13px', fontWeight: 600, cursor: saving ? 'not-allowed' : 'pointer' }}
                       >
                         {saving ? t('common.submitting') : t('mypage.save')}
                       </button>
                       <button
                         type="button"
                         onClick={cancelEdit}
-                        style={{ padding: '7px 18px', backgroundColor: '#fff', color: '#374151', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '13px', cursor: 'pointer' }}
+                        style={{ padding: '7px 18px', backgroundColor: '#fff', color: c.inkSoft, border: `1px solid ${c.edge}`, borderRadius: '6px', fontSize: '13px', cursor: 'pointer' }}
                       >
                         {t('common.cancel')}
                       </button>
@@ -260,20 +261,20 @@ export default function MyReportsPage() {
                       >
                         {t(`report.result.${report.result}`)}
                       </span>
-                      <span style={{ fontSize: '12px', color: '#6b7280' }}>
+                      <span style={{ fontSize: '12px', color: c.muted }}>
                         {report.visit_date ?? report.created_at.slice(0, 10)}
                       </span>
                     </div>
 
                     {report.comment && (
-                      <p style={{ margin: '8px 0 0', fontSize: '14px', color: '#374151' }}>{report.comment}</p>
+                      <p style={{ margin: '8px 0 0', fontSize: '14px', color: c.inkSoft }}>{report.comment}</p>
                     )}
 
                     <div style={{ marginTop: '10px', display: 'flex', gap: '8px' }}>
                       <button
                         type="button"
                         onClick={() => startEdit(report)}
-                        style={{ padding: '5px 14px', backgroundColor: '#f3f4f6', color: '#374151', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '12px', cursor: 'pointer' }}
+                        style={{ padding: '5px 14px', backgroundColor: '#f3f4f6', color: c.inkSoft, border: `1px solid ${c.edge}`, borderRadius: '6px', fontSize: '12px', cursor: 'pointer' }}
                       >
                         {t('mypage.edit')}
                       </button>
@@ -298,7 +299,7 @@ export default function MyReportsPage() {
         {t('mypage.blockedUsers')}（{blockedRows.length}件）
       </h2>
       {blockedRows.length === 0 ? (
-        <p style={{ color: '#6b7280', fontSize: '13px' }}>{t('mypage.noBlockedUsers')}</p>
+        <p style={{ color: c.muted, fontSize: '13px' }}>{t('mypage.noBlockedUsers')}</p>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {blockedRows.map((row) => (
@@ -306,16 +307,16 @@ export default function MyReportsPage() {
               key={row.blocked_user_id}
               style={{
                 display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                border: '1px solid #e5e7eb', borderRadius: '8px', padding: '10px 14px',
+                border: `1px solid ${c.edge}`, borderRadius: '8px', padding: '10px 14px',
               }}
             >
-              <span style={{ fontSize: '13px', color: '#6b7280' }}>
+              <span style={{ fontSize: '13px', color: c.muted }}>
                 {new Date(row.created_at).toLocaleDateString()}
               </span>
               <button
                 type="button"
                 onClick={() => toggleBlock(row.blocked_user_id)}
-                style={{ padding: '5px 14px', backgroundColor: '#fff', color: '#374151', border: '1px solid #d1d5db', borderRadius: '6px', fontSize: '12px', cursor: 'pointer' }}
+                style={{ padding: '5px 14px', backgroundColor: '#fff', color: c.inkSoft, border: `1px solid ${c.edge}`, borderRadius: '6px', fontSize: '12px', cursor: 'pointer' }}
               >
                 {t('mypage.unblock')}
               </button>

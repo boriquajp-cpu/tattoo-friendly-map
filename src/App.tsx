@@ -14,6 +14,7 @@ import ReportFormPage from './pages/ReportFormPage';
 import LoginPage from './pages/LoginPage';
 import MyReportsPage from './pages/MyReportsPage';
 import AdminPage from './pages/AdminPage';
+import { c } from './theme';
 
 function App() {
   const [showDisclaimer, setShowDisclaimer] = useState(
@@ -43,7 +44,7 @@ function App() {
                 element={
                   <div style={{ padding: '60px', textAlign: 'center' }}>
                     <h2>404 - ページが見つかりません</h2>
-                    <a href="/" style={{ color: '#6366f1' }}>トップに戻る</a>
+                    <a href="/" style={{ color: c.accent }}>トップに戻る</a>
                   </div>
                 }
               />

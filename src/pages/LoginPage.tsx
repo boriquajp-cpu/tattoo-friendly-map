@@ -2,11 +2,12 @@ import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
+import { c } from '../theme';
 
 const inputStyle: React.CSSProperties = {
   width: '100%',
   padding: '10px 14px',
-  border: '1px solid #d1d5db',
+  border: `1px solid ${c.edge}`,
   borderRadius: '8px',
   fontSize: '16px',
   boxSizing: 'border-box',
@@ -67,9 +68,9 @@ export default function LoginPage() {
     flex: 1,
     padding: '10px',
     border: 'none',
-    borderBottom: active ? '2px solid #6366f1' : '2px solid #e5e7eb',
+    borderBottom: active ? `2px solid ${c.ink}` : `2px solid ${c.edge}`,
     backgroundColor: 'transparent',
-    color: active ? '#6366f1' : '#6b7280',
+    color: active ? c.accent : c.muted,
     fontWeight: active ? 700 : 400,
     fontSize: '14px',
     cursor: 'pointer',
@@ -85,7 +86,7 @@ export default function LoginPage() {
     >
       <div
         style={{
-          border: '1px solid #e5e7eb',
+          border: `1px solid ${c.edge}`,
           borderRadius: '16px',
           backgroundColor: '#fff',
           boxShadow: '0 4px 24px rgba(0,0,0,0.06)',
@@ -93,7 +94,7 @@ export default function LoginPage() {
         }}
       >
         {/* タブ */}
-        <div style={{ display: 'flex', borderBottom: '1px solid #e5e7eb' }}>
+        <div style={{ display: 'flex', borderBottom: `1px solid ${c.edge}` }}>
           <button type="button" style={tabStyle(mode === 'login')} onClick={() => switchMode('login')}>
             {t('auth.loginTitle')}
           </button>
@@ -109,8 +110,8 @@ export default function LoginPage() {
             onClick={() => { void supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin } }); }}
             style={{
               width: '100%', padding: '10px', marginBottom: '16px',
-              border: '1px solid #d1d5db', borderRadius: '8px',
-              backgroundColor: '#fff', color: '#374151',
+              border: `1px solid ${c.edge}`, borderRadius: '8px',
+              backgroundColor: '#fff', color: c.inkSoft,
               fontSize: '14px', fontWeight: 600, cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
             }}
@@ -120,9 +121,9 @@ export default function LoginPage() {
           </button>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-            <div style={{ flex: 1, height: '1px', backgroundColor: '#e5e7eb' }} />
-            <span style={{ fontSize: '12px', color: '#6b7280' }}>{t('auth.or')}</span>
-            <div style={{ flex: 1, height: '1px', backgroundColor: '#e5e7eb' }} />
+            <div style={{ flex: 1, height: '1px', backgroundColor: c.edge }} />
+            <span style={{ fontSize: '12px', color: c.muted }}>{t('auth.or')}</span>
+            <div style={{ flex: 1, height: '1px', backgroundColor: c.edge }} />
           </div>
 
           <form
@@ -132,7 +133,7 @@ export default function LoginPage() {
             <div>
               <label
                 htmlFor="email"
-                style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#374151', marginBottom: '6px' }}
+                style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: c.inkSoft, marginBottom: '6px' }}
               >
                 {t('auth.email')}
               </label>
@@ -150,7 +151,7 @@ export default function LoginPage() {
             <div>
               <label
                 htmlFor="password"
-                style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#374151', marginBottom: '6px' }}
+                style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: c.inkSoft, marginBottom: '6px' }}
               >
                 {t('auth.password')}
               </label>
@@ -177,7 +178,7 @@ export default function LoginPage() {
               disabled={loading}
               style={{
                 padding: '11px',
-                backgroundColor: loading ? '#a5b4fc' : '#6366f1',
+                backgroundColor: loading ? c.muted : c.accent,
                 color: '#fff',
                 border: 'none',
                 borderRadius: '8px',

@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import HeartIcon from '../HeartIcon/HeartIcon';
 import type { FacilityWithStats, SummaryLabel, ConfidenceLevel } from '../../types';
+import { c } from '../../theme';
 
 interface FacilityCardProps {
   facility: FacilityWithStats;
@@ -14,7 +15,7 @@ const SUMMARY_BADGE_STYLE: Record<SummaryLabel, { bg: string; color: string }> =
   conditional: { bg: '#fef9c3', color: '#854d0e' },
   mixed:       { bg: '#ffedd5', color: '#9a3412' },
   low:         { bg: '#fee2e2', color: '#991b1b' },
-  no_data:     { bg: '#f3f4f6', color: '#374151' },
+  no_data:     { bg: '#f3f4f6', color: c.inkSoft },
 };
 
 const CONFIDENCE_DOT: Record<ConfidenceLevel, string> = {
@@ -36,7 +37,7 @@ export default function FacilityCard({ facility, isFavorite = false, onToggleFav
     <div
       onClick={() => navigate(`/facility/${facility.id}`)}
       style={{
-        border: '1px solid #e5e7eb',
+        border: `1px solid ${c.edge}`,
         borderRadius: '12px',
         padding: '16px',
         cursor: 'pointer',
@@ -68,20 +69,20 @@ export default function FacilityCard({ facility, isFavorite = false, onToggleFav
             transition: 'color 0.15s',
           }}
         >
-          <HeartIcon filled={isFavorite} color={isFavorite ? '#ef4444' : '#6b7280'} size={20} />
+          <HeartIcon filled={isFavorite} color={isFavorite ? '#ef4444' : c.muted} size={20} />
         </button>
       )}
 
       {/* ヘッダー行 */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px', paddingRight: onToggleFavorite ? '28px' : '0' }}>
         <div style={{ minWidth: 0 }}>
-          <p style={{ margin: 0, fontSize: '11px', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <p style={{ margin: 0, fontSize: '11px', color: c.muted, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             {t(`facility.categories.${facility.category}`)}
           </p>
-          <h3 style={{ margin: '2px 0 0', fontSize: '16px', fontWeight: 600, color: '#111827', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <h3 style={{ margin: '2px 0 0', fontSize: '16px', fontWeight: 600, color: c.ink, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {facility.name}
           </h3>
-          <p style={{ margin: '4px 0 0', fontSize: '13px', color: '#6b7280' }}>{facility.address}</p>
+          <p style={{ margin: '4px 0 0', fontSize: '13px', color: c.muted }}>{facility.address}</p>
         </div>
         <span
           style={{
@@ -99,7 +100,7 @@ export default function FacilityCard({ facility, isFavorite = false, onToggleFav
       </div>
 
       {/* フッター行 */}
-      <div style={{ marginTop: '12px', display: 'flex', alignItems: 'center', gap: '12px', fontSize: '13px', color: '#6b7280' }}>
+      <div style={{ marginTop: '12px', display: 'flex', alignItems: 'center', gap: '12px', fontSize: '13px', color: c.muted }}>
         <span>
           {stats ? t('facility.reportCount', { count: stats.total_reports }) : t('facility.noReports')}
         </span>

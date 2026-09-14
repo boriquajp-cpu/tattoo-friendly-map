@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { sendPushNotification } from '../lib/push';
+import { c } from '../theme';
 
 interface FacilityRequestRow {
   id: string;
@@ -47,7 +48,7 @@ interface FacilityOption {
 }
 
 const sectionStyle: React.CSSProperties = {
-  border: '1px solid #e5e7eb',
+  border: `1px solid ${c.edge}`,
   borderRadius: '10px',
   padding: '14px 16px',
   backgroundColor: '#fff',
@@ -204,7 +205,7 @@ export default function AdminPage() {
     return (
       <div style={{ padding: '32px', textAlign: 'center' }}>
         <p>{t('admin.loginRequired')}</p>
-        <Link to="/login" style={{ color: '#6366f1' }}>{t('nav.login')}</Link>
+        <Link to="/login" style={{ color: c.accent }}>{t('nav.login')}</Link>
       </div>
     );
   }
@@ -214,7 +215,7 @@ export default function AdminPage() {
   }
 
   const searchInputStyle: React.CSSProperties = {
-    width: '100%', padding: '8px 12px', border: '1px solid #d1d5db',
+    width: '100%', padding: '8px 12px', border: `1px solid ${c.edge}`,
     borderRadius: '8px', fontSize: '16px', marginBottom: '10px', boxSizing: 'border-box',
   };
 
@@ -236,7 +237,7 @@ export default function AdminPage() {
       <h2 style={{ fontSize: '15px', fontWeight: 600, marginBottom: '4px' }}>
         {t('admin.facilityRequests')} ({filteredRequests.length}{requestSearch ? ` / ${requests.length}` : ''})
       </h2>
-      <p style={{ fontSize: '12px', color: '#6b7280', marginBottom: '10px' }}>
+      <p style={{ fontSize: '12px', color: c.muted, marginBottom: '10px' }}>
         {t('admin.facilityRequestsHint')}
       </p>
       {requests.length > 0 && (
@@ -249,7 +250,7 @@ export default function AdminPage() {
         />
       )}
       {requests.length === 0 ? (
-        <p style={{ color: '#6b7280', fontSize: '13px', marginBottom: '24px' }}>{t('admin.noPendingRequests')}</p>
+        <p style={{ color: c.muted, fontSize: '13px', marginBottom: '24px' }}>{t('admin.noPendingRequests')}</p>
       ) : (
         <div style={{ marginBottom: '24px' }}>
           {visibleRequests.map((req) => {
@@ -261,8 +262,8 @@ export default function AdminPage() {
                     <span
                       style={{
                         fontSize: '11px', fontWeight: 700, padding: '2px 8px', borderRadius: '4px',
-                        backgroundColor: isCorrection ? '#fef9c3' : '#e0e7ff',
-                        color: isCorrection ? '#854d0e' : '#3730a3',
+                        backgroundColor: isCorrection ? '#fef9c3' : c.accentSoft,
+                        color: isCorrection ? '#854d0e' : c.ink,
                         marginRight: '8px',
                       }}
                     >
@@ -270,25 +271,25 @@ export default function AdminPage() {
                     </span>
                     <strong style={{ fontSize: '14px' }}>{req.name_ja}</strong>
                   </div>
-                  <span style={{ fontSize: '12px', color: '#6b7280' }}>{req.created_at.slice(0, 10)}</span>
+                  <span style={{ fontSize: '12px', color: c.muted }}>{req.created_at.slice(0, 10)}</span>
                 </div>
                 {isCorrection ? (
                   <p style={{ margin: '8px 0 4px', fontSize: '13px' }}>
-                    <Link to={`/facility/${req.address_ja}`} target="_blank" style={{ color: '#6366f1' }}>
+                    <Link to={`/facility/${req.address_ja}`} target="_blank" style={{ color: c.accent }}>
                       {t('admin.viewTargetFacility')} →
                     </Link>
                   </p>
                 ) : (
-                  <p style={{ margin: '8px 0 4px', fontSize: '13px', color: '#374151' }}>
+                  <p style={{ margin: '8px 0 4px', fontSize: '13px', color: c.inkSoft }}>
                     {t('admin.address')}: {req.address_ja}
                   </p>
                 )}
-                <p style={{ margin: '0 0 4px', fontSize: '13px', color: '#374151' }}>
+                <p style={{ margin: '0 0 4px', fontSize: '13px', color: c.inkSoft }}>
                   {t('admin.category')}: {t(`facility.categories.${req.category}`)}
                 </p>
                 {req.official_url && (
                   <p style={{ margin: '0 0 4px', fontSize: '13px' }}>
-                    <a href={req.official_url} target="_blank" rel="noopener noreferrer" style={{ color: '#6366f1' }}>
+                    <a href={req.official_url} target="_blank" rel="noopener noreferrer" style={{ color: c.accent }}>
                       {req.official_url}
                     </a>
                   </p>
@@ -302,7 +303,7 @@ export default function AdminPage() {
                   <button type="button" onClick={() => { void handleRequestStatus(req.id, 'approved'); }} style={buttonStyle('#16a34a')}>
                     {t('admin.approve')}
                   </button>
-                  <button type="button" onClick={() => { void handleRequestStatus(req.id, 'rejected'); }} style={buttonStyle('#dc2626')}>
+                  <button type="button" onClick={() => { void handleRequestStatus(req.id, 'rejected'); }} style={buttonStyle(c.danger)}>
                     {t('admin.reject')}
                   </button>
                 </div>
@@ -314,8 +315,8 @@ export default function AdminPage() {
               type="button"
               onClick={() => setVisibleRequestCount((c) => c + PAGE_SIZE)}
               style={{
-                width: '100%', padding: '10px', backgroundColor: '#fff', color: '#374151',
-                border: '1px solid #d1d5db', borderRadius: '8px', fontSize: '13px', fontWeight: 600, cursor: 'pointer',
+                width: '100%', padding: '10px', backgroundColor: '#fff', color: c.inkSoft,
+                border: `1px solid ${c.edge}`, borderRadius: '8px', fontSize: '13px', fontWeight: 600, cursor: 'pointer',
               }}
             >
               {t('admin.showMore')}
@@ -328,11 +329,11 @@ export default function AdminPage() {
       <h2 style={{ fontSize: '15px', fontWeight: 600, marginBottom: '4px' }}>
         {t('admin.officialResponses')} ({officialResponses.length})
       </h2>
-      <p style={{ fontSize: '12px', color: '#6b7280', marginBottom: '10px' }}>
+      <p style={{ fontSize: '12px', color: c.muted, marginBottom: '10px' }}>
         {t('admin.officialResponsesHint')}
       </p>
       {officialResponses.length === 0 ? (
-        <p style={{ color: '#6b7280', fontSize: '13px', marginBottom: '24px' }}>{t('admin.noPendingOfficialResponses')}</p>
+        <p style={{ color: c.muted, fontSize: '13px', marginBottom: '24px' }}>{t('admin.noPendingOfficialResponses')}</p>
       ) : (
         <div style={{ marginBottom: '24px' }}>
           {officialResponses.map((resp) => {
@@ -358,19 +359,19 @@ export default function AdminPage() {
                     )}
                     <strong style={{ fontSize: '14px' }}>{resp.submitted_name_ja}</strong>
                   </div>
-                  <span style={{ fontSize: '12px', color: '#6b7280' }}>{resp.created_at.slice(0, 10)}</span>
+                  <span style={{ fontSize: '12px', color: c.muted }}>{resp.created_at.slice(0, 10)}</span>
                 </div>
-                <p style={{ margin: '8px 0 4px', fontSize: '13px', color: '#374151' }}>
+                <p style={{ margin: '8px 0 4px', fontSize: '13px', color: c.inkSoft }}>
                   {t('admin.address')}: {resp.submitted_address_ja}
                 </p>
-                <p style={{ margin: '0 0 4px', fontSize: '13px', color: '#374151' }}>
+                <p style={{ margin: '0 0 4px', fontSize: '13px', color: c.inkSoft }}>
                   {t('admin.category')}: {t(`facility.categories.${resp.category}`)}
                 </p>
                 <p style={{ margin: '0 0 4px', fontSize: '13px', fontWeight: 600, color: '#1e3a8a' }}>
                   {t(`facility.officialResponse.policy.${resp.policy}`)}
                 </p>
                 {resp.conditions.length > 0 && (
-                  <ul style={{ margin: '0 0 4px', paddingLeft: '20px', fontSize: '13px', color: '#374151' }}>
+                  <ul style={{ margin: '0 0 4px', paddingLeft: '20px', fontSize: '13px', color: c.inkSoft }}>
                     {resp.conditions.map((c) => <li key={c}>{c}</li>)}
                   </ul>
                 )}
@@ -381,12 +382,12 @@ export default function AdminPage() {
                 )}
                 {resp.official_url && (
                   <p style={{ margin: '0 0 4px', fontSize: '13px' }}>
-                    {t('admin.officialUrl')}: <a href={resp.official_url} target="_blank" rel="noopener noreferrer" style={{ color: '#6366f1' }}>{resp.official_url}</a>
+                    {t('admin.officialUrl')}: <a href={resp.official_url} target="_blank" rel="noopener noreferrer" style={{ color: c.accent }}>{resp.official_url}</a>
                   </p>
                 )}
 
-                <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: '1px dashed #e5e7eb' }}>
-                  <p style={{ margin: '0 0 6px', fontSize: '12px', fontWeight: 600, color: '#374151' }}>
+                <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: `1px dashed ${c.edge}` }}>
+                  <p style={{ margin: '0 0 6px', fontSize: '12px', fontWeight: 600, color: c.inkSoft }}>
                     {t('admin.linkToFacility')}
                   </p>
                   {selectedFacility ? (
@@ -394,7 +395,7 @@ export default function AdminPage() {
                       <span
                         style={{
                           fontSize: '13px', padding: '4px 10px', borderRadius: '6px',
-                          backgroundColor: '#e0e7ff', color: '#3730a3',
+                          backgroundColor: c.accentSoft, color: c.ink,
                         }}
                       >
                         {selectedFacility.name_ja}
@@ -402,7 +403,7 @@ export default function AdminPage() {
                       <button
                         type="button"
                         onClick={() => setSelectedFacilityId((prev) => { const next = { ...prev }; delete next[resp.id]; return next; })}
-                        style={{ background: 'none', border: 'none', color: '#6b7280', cursor: 'pointer', fontSize: '12px' }}
+                        style={{ background: 'none', border: 'none', color: c.muted, cursor: 'pointer', fontSize: '12px' }}
                       >
                         ✕
                       </button>
@@ -425,7 +426,7 @@ export default function AdminPage() {
                               onClick={() => setSelectedFacilityId((prev) => ({ ...prev, [resp.id]: f.id }))}
                               style={{
                                 textAlign: 'left', padding: '6px 10px', fontSize: '13px',
-                                border: '1px solid #e5e7eb', borderRadius: '6px',
+                                border: `1px solid ${c.edge}`, borderRadius: '6px',
                                 backgroundColor: '#fff', cursor: 'pointer',
                               }}
                             >
@@ -446,7 +447,7 @@ export default function AdminPage() {
                     >
                       {t('admin.approveAndReflect')}
                     </button>
-                    <button type="button" onClick={() => { void handleRejectOfficialResponse(resp.id); }} style={buttonStyle('#dc2626')}>
+                    <button type="button" onClick={() => { void handleRejectOfficialResponse(resp.id); }} style={buttonStyle(c.danger)}>
                       {t('admin.reject')}
                     </button>
                     {!selectedFacility && (
@@ -478,13 +479,13 @@ export default function AdminPage() {
             style={{
               ...sectionStyle,
               backgroundColor: rep.flagged ? '#fef2f2' : '#fff',
-              borderColor: rep.flagged ? '#fecaca' : '#e5e7eb',
+              borderColor: rep.flagged ? '#fecaca' : c.edge,
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px', flexWrap: 'wrap' }}>
               <div>
                 <strong style={{ fontSize: '14px' }}>{rep.facilities?.name_ja ?? '—'}</strong>
-                <span style={{ marginLeft: '8px', fontSize: '12px', color: '#6b7280' }}>
+                <span style={{ marginLeft: '8px', fontSize: '12px', color: c.muted }}>
                   {t(`report.result.${rep.result}`)}
                 </span>
                 {(flagCounts[rep.id] ?? 0) > 0 && (
@@ -499,15 +500,15 @@ export default function AdminPage() {
                   </span>
                 )}
               </div>
-              <span style={{ fontSize: '12px', color: '#6b7280' }}>{rep.visit_date}</span>
+              <span style={{ fontSize: '12px', color: c.muted }}>{rep.visit_date}</span>
             </div>
             {rep.comment_original && (
-              <p style={{ margin: '8px 0', fontSize: '13px', color: '#374151' }}>{rep.comment_original}</p>
+              <p style={{ margin: '8px 0', fontSize: '13px', color: c.inkSoft }}>{rep.comment_original}</p>
             )}
             <button
               type="button"
               onClick={() => { void handleToggleFlag(rep); }}
-              style={buttonStyle(rep.flagged ? '#16a34a' : '#dc2626')}
+              style={buttonStyle(rep.flagged ? '#16a34a' : c.danger)}
             >
               {rep.flagged ? t('admin.unflag') : t('admin.flag')}
             </button>
@@ -518,8 +519,8 @@ export default function AdminPage() {
             type="button"
             onClick={() => setVisibleReportCount((c) => c + PAGE_SIZE)}
             style={{
-              width: '100%', padding: '10px', backgroundColor: '#fff', color: '#374151',
-              border: '1px solid #d1d5db', borderRadius: '8px', fontSize: '13px', fontWeight: 600, cursor: 'pointer',
+              width: '100%', padding: '10px', backgroundColor: '#fff', color: c.inkSoft,
+              border: `1px solid ${c.edge}`, borderRadius: '8px', fontSize: '13px', fontWeight: 600, cursor: 'pointer',
             }}
           >
             {t('admin.showMore')}

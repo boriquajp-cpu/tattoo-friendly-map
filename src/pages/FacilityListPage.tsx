@@ -10,6 +10,7 @@ import { useFavorites } from '../hooks/useFavorites';
 import { useRecentlyViewed } from '../hooks/useRecentlyViewed';
 import { saveFacilitiesCache, loadFacilitiesCache } from '../lib/offlineCache';
 import type { FacilityCategory, FacilityWithStats, SummaryLabel } from '../types';
+import { c } from '../theme';
 
 const ALL_CATEGORIES: FacilityCategory[] = ['onsen', 'gym_pool', 'outdoor'];
 const ALL_LABELS: SummaryLabel[] = ['high', 'conditional', 'mixed', 'low', 'no_data'];
@@ -249,9 +250,9 @@ export default function FacilityListPage() {
     padding: '3px 12px',
     borderRadius: '9999px',
     border: '1px solid',
-    borderColor: active ? '#6366f1' : '#d1d5db',
-    backgroundColor: active ? '#6366f1' : '#fff',
-    color: active ? '#fff' : '#374151',
+    borderColor: active ? c.accent : c.edge,
+    backgroundColor: active ? c.accent : '#fff',
+    color: active ? '#fff' : c.inkSoft,
     cursor: 'pointer',
     fontSize: '13px',
     whiteSpace: 'nowrap',
@@ -263,7 +264,7 @@ export default function FacilityListPage() {
       {/* オフラインバナー */}
       {isOffline && (
         <div style={{
-          backgroundColor: '#1f2937', color: '#fff', padding: '6px 12px',
+          backgroundColor: c.ink, color: '#fff', padding: '6px 12px',
           borderRadius: '8px', fontSize: '12px', textAlign: 'center', marginBottom: '12px',
         }}>
           {offlineSavedAt
@@ -275,7 +276,7 @@ export default function FacilityListPage() {
       {/* 最近見た施設 */}
       {recentItems.length > 0 && (
         <div style={{ marginBottom: '16px' }}>
-          <p style={{ margin: '0 0 8px', fontSize: '12px', fontWeight: 600, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <p style={{ margin: '0 0 8px', fontSize: '12px', fontWeight: 600, color: c.muted, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             {t('facilityList.recentlyViewed')}
           </p>
           <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px' }}>
@@ -288,12 +289,12 @@ export default function FacilityListPage() {
                   flexShrink: 0,
                   padding: '6px 12px',
                   borderRadius: '8px',
-                  border: '1px solid #e5e7eb',
-                  backgroundColor: '#f9fafb',
+                  border: `1px solid ${c.edge}`,
+                  backgroundColor: c.bg,
                   cursor: 'pointer',
                   fontSize: '13px',
                   fontWeight: 500,
-                  color: '#374151',
+                  color: c.inkSoft,
                   whiteSpace: 'nowrap',
                   maxWidth: '160px',
                   overflow: 'hidden',
@@ -317,7 +318,7 @@ export default function FacilityListPage() {
         style={{
           width: '100%',
           padding: '10px 14px',
-          border: '1px solid #d1d5db',
+          border: `1px solid ${c.edge}`,
           borderRadius: '8px',
           fontSize: '16px',
           marginBottom: '12px',
@@ -386,11 +387,11 @@ export default function FacilityListPage() {
             display: 'inline-flex',
             alignItems: 'center',
             gap: '6px',
-            borderColor: favoritesOnly ? '#ef4444' : '#d1d5db',
+            borderColor: favoritesOnly ? '#ef4444' : c.edge,
             backgroundColor: favoritesOnly ? '#ef4444' : '#fff',
           }}
         >
-          <HeartIcon filled={favoritesOnly} color={favoritesOnly ? '#fff' : '#374151'} size={14} />
+          <HeartIcon filled={favoritesOnly} color={favoritesOnly ? '#fff' : c.inkSoft} size={14} />
           {t('common.favoriteOnly')}
         </button>
         <button
@@ -399,7 +400,7 @@ export default function FacilityListPage() {
           disabled={geoLoading}
           style={{
             ...chipStyle(sortByDistance),
-            borderColor: sortByDistance ? '#f97316' : '#d1d5db',
+            borderColor: sortByDistance ? '#f97316' : c.edge,
             backgroundColor: sortByDistance ? '#f97316' : '#fff',
             opacity: geoLoading ? 0.6 : 1,
           }}
@@ -409,26 +410,26 @@ export default function FacilityListPage() {
       </div>
 
       {/* 件数 */}
-      <p style={{ margin: '0 0 12px', fontSize: '13px', color: '#6b7280' }}>
+      <p style={{ margin: '0 0 12px', fontSize: '13px', color: c.muted }}>
         {loading ? t('common.loading') : `${filtered.length} ${t('map.facilityCount')}`}
       </p>
 
       {/* 施設一覧 */}
       {loading ? (
-        <p style={{ textAlign: 'center', color: '#6b7280', padding: '32px 0' }}>
+        <p style={{ textAlign: 'center', color: c.muted, padding: '32px 0' }}>
           {t('common.loading')}
         </p>
       ) : filtered.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '32px 16px' }}>
-          <p style={{ color: '#6b7280', marginBottom: '8px' }}>{t('common.noData')}</p>
-          <p style={{ color: '#6b7280', fontSize: '13px', marginBottom: '16px', lineHeight: 1.6 }}>
+          <p style={{ color: c.muted, marginBottom: '8px' }}>{t('common.noData')}</p>
+          <p style={{ color: c.muted, fontSize: '13px', marginBottom: '16px', lineHeight: 1.6 }}>
             {t('facilityList.noResultsHint')}
           </p>
           <button
             type="button"
             onClick={() => setShowRequestModal(true)}
             style={{
-              padding: '10px 20px', backgroundColor: '#6366f1', color: '#fff',
+              padding: '10px 20px', backgroundColor: c.accent, color: '#fff',
               border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: 600, cursor: 'pointer',
             }}
           >
@@ -452,13 +453,13 @@ export default function FacilityListPage() {
             <div key={region}>
               <h2
                 style={{
-                  fontSize: '15px', fontWeight: 700, color: '#374151',
+                  fontSize: '15px', fontWeight: 700, color: c.inkSoft,
                   margin: '0 0 10px', paddingBottom: '4px',
-                  borderBottom: '2px solid #e5e7eb',
+                  borderBottom: `2px solid ${c.edge}`,
                 }}
               >
                 {t(`facilityList.regions.${region}`)}
-                <span style={{ marginLeft: '8px', fontSize: '12px', fontWeight: 400, color: '#6b7280' }}>
+                <span style={{ marginLeft: '8px', fontSize: '12px', fontWeight: 400, color: c.muted }}>
                   ({groupedByRegion.get(region)!.length})
                 </span>
               </h2>
