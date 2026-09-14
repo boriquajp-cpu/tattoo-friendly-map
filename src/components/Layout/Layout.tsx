@@ -112,7 +112,7 @@ export default function Layout({ children }: LayoutProps) {
             letterSpacing: '-0.01em',
           }}
         >
-          🗺️ Tattoo Map
+          🗺️ Tattour
         </button>
 
         {isMobile ? (
