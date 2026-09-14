@@ -21,7 +21,8 @@
     "list": "列表",
     "mypage": "我的頁面",
     "login": "登入",
-    "admin": "管理"
+    "admin": "管理",
+    "contact": "聯絡我們"
   },
   "facility": {
     "categories": {
@@ -116,6 +117,7 @@
     "photoSizeError": "圖片大小請控制在 5MB 以內。",
     "submitSuccess": "感謝您的回報！",
     "submitError": "送出失敗，請再試一次。",
+    "commentFiltered": "留言中似乎包含不當內容或廣告宣傳，請重新修改後再送出。",
     "loginPrompt": "登入後可隨時編輯或刪除您的回報。",
     "loginLink": "前往登入",
     "resultRequired": "請選擇入場結果。",
@@ -211,7 +213,8 @@
     "messagePlaceholder": "如有刺青相關資訊，歡迎告知",
     "submit": "送出申請",
     "success": "已收到您的申請，感謝您！",
-    "error": "送出失敗，請再試一次。"
+    "error": "送出失敗，請再試一次。",
+    "messageFiltered": "內容中似乎包含不當內容或廣告宣傳，請重新修改後再送出。"
   },
   "correction": {
     "title": "回報資訊錯誤",
@@ -228,7 +231,8 @@
     "detailPlaceholder": "請描述變更的詳細內容",
     "submit": "送出回報",
     "success": "感謝您的回報，我們將確認後更新資訊。",
-    "error": "送出失敗，請再試一次。"
+    "error": "送出失敗，請再試一次。",
+    "detailFiltered": "內容中似乎包含不當內容或廣告宣傳，請重新修改後再送出。"
   },
   "admin": {
     "title": "管理後台",
@@ -275,7 +279,8 @@
     "detailPlaceholder": "請描述具體情況",
     "submit": "送出檢舉",
     "success": "感謝您的回報，我們將會確認。",
-    "error": "送出失敗，請再試一次。"
+    "error": "送出失敗，請再試一次。",
+    "detailFiltered": "內容中似乎包含不當內容或廣告宣傳，請重新修改後再送出。"
   },
   "disclaimer": {
     "title": "使用須知",

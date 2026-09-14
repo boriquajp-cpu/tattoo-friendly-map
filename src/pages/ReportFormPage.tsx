@@ -5,6 +5,7 @@ import { Capacitor } from '@capacitor/core';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { pickPhoto } from '../lib/nativePhoto';
+import { containsProhibitedContent } from '../lib/contentFilter';
 import { c } from '../theme';
 import type {
   ReportFormData,
@@ -138,6 +139,10 @@ export default function ReportFormPage() {
     e.preventDefault();
     if (!formData.result) {
       setErrorMsg(t('report.resultRequired'));
+      return;
+    }
+    if (containsProhibitedContent(formData.comment)) {
+      setErrorMsg(t('report.commentFiltered'));
       return;
     }
     setSubmitting(true);

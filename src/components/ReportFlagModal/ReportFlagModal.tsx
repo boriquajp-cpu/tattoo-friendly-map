@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
+import { containsProhibitedContent } from '../../lib/contentFilter';
 import { c } from '../../theme';
 
 interface Props {
@@ -23,6 +24,10 @@ export default function ReportFlagModal({ reportId, onClose }: Props) {
 
   const handleSubmit = async () => {
     if (!reason) return;
+    if (containsProhibitedContent(detail)) {
+      setErrorMsg(t('reportFlag.detailFiltered'));
+      return;
+    }
     setSubmitting(true);
     setErrorMsg('');
     try {

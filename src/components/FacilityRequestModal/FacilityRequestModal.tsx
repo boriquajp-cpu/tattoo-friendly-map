@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
+import { containsProhibitedContent } from '../../lib/contentFilter';
 import type { FacilityCategory } from '../../types';
 import { c } from '../../theme';
 
@@ -27,6 +28,10 @@ export default function FacilityRequestModal({ onClose }: Props) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!nameJa.trim() || !addressJa.trim()) return;
+    if (containsProhibitedContent(message)) {
+      setErrorMsg(t('facilityRequest.messageFiltered'));
+      return;
+    }
     setSubmitting(true);
     setErrorMsg('');
 

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../../lib/supabase';
+import { containsProhibitedContent } from '../../lib/contentFilter';
 import type { FacilityCategory } from '../../types';
 import { c } from '../../theme';
 
@@ -24,6 +25,10 @@ export default function CorrectionModal({ facilityId, facilityName, facilityCate
 
   const handleSubmit = async () => {
     if (!correctionType) return;
+    if (containsProhibitedContent(detail)) {
+      setErrorMsg(t('correction.detailFiltered'));
+      return;
+    }
     setSubmitting(true);
     setErrorMsg('');
     try {

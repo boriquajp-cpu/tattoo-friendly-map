@@ -21,7 +21,8 @@
     "list": "목록",
     "mypage": "마이페이지",
     "login": "로그인",
-    "admin": "관리"
+    "admin": "관리",
+    "contact": "문의하기"
   },
   "facility": {
     "categories": {
@@ -116,6 +117,7 @@
     "photoSizeError": "이미지 크기는 5MB 이하로 해주세요.",
     "submitSuccess": "보고해 주셔서 감사합니다！",
     "submitError": "제출에 실패했습니다. 다시 시도해 주세요.",
+    "commentFiltered": "부적절한 내용이나 광고성 내용이 포함된 것 같습니다. 내용을 수정해 주세요.",
     "loginPrompt": "로그인하면 나중에 보고를 수정・삭제할 수 있습니다.",
     "loginLink": "로그인하기",
     "resultRequired": "입장 결과를 선택해주세요.",
@@ -211,7 +213,8 @@
     "messagePlaceholder": "문신 관련 정보가 있으면 알려주세요",
     "submit": "신청하기",
     "success": "신청이 접수되었습니다. 감사합니다！",
-    "error": "제출에 실패했습니다. 다시 시도해 주세요."
+    "error": "제출에 실패했습니다. 다시 시도해 주세요.",
+    "messageFiltered": "부적절한 내용이나 광고성 내용이 포함된 것 같습니다. 내용을 수정해 주세요."
   },
   "correction": {
     "title": "정보 수정 요청",
@@ -228,7 +231,8 @@
     "detailPlaceholder": "변경 내용을 설명해 주세요",
     "submit": "보고 제출",
     "success": "보고해 주셔서 감사합니다. 확인 후 반영하겠습니다.",
-    "error": "제출에 실패했습니다. 다시 시도해 주세요."
+    "error": "제출에 실패했습니다. 다시 시도해 주세요.",
+    "detailFiltered": "부적절한 내용이나 광고성 내용이 포함된 것 같습니다. 내용을 수정해 주세요."
   },
   "admin": {
     "title": "관리자 페이지",
@@ -275,7 +279,8 @@
     "detailPlaceholder": "구체적인 내용을 알려주세요",
     "submit": "신고하기",
     "success": "신고해 주셔서 감사합니다. 확인하겠습니다.",
-    "error": "제출에 실패했습니다. 다시 시도해 주세요."
+    "error": "제출에 실패했습니다. 다시 시도해 주세요.",
+    "detailFiltered": "부적절한 내용이나 광고성 내용이 포함된 것 같습니다. 내용을 수정해 주세요."
   },
   "disclaimer": {
     "title": "이용 안내",

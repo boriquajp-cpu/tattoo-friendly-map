@@ -72,5 +72,16 @@
 	<string>報告に添付する写真をアルバムから選ぶために使用します。</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>撮影した写真をアルバムに保存するために使用します。</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>近くのタトゥーフレンドリー施設を地図上に表示するために使用します。</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.tattoomapjapan.app</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

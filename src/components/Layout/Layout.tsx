@@ -151,6 +151,15 @@ export default function Layout({ children }: LayoutProps) {
             ) : (
               <NavLink to="/login" style={navLinkStyle}>{t('nav.login')}</NavLink>
             )}
+            <a
+              href="mailto:tattoomapjapan.dev@gmail.com"
+              style={{
+                textDecoration: 'none', padding: '6px 12px', borderRadius: '6px',
+                fontSize: '14px', color: c.muted,
+              }}
+            >
+              {t('nav.contact')}
+            </a>
             <div style={{ display: 'flex', gap: '4px', marginLeft: '8px' }}>
               {LANGUAGES.map(({ code, label }) => (
                 <button
@@ -188,25 +197,33 @@ export default function Layout({ children }: LayoutProps) {
             }}
           >
             {/* マップ・一覧・マイページ／ログインは下部タブバーに集約したため、
-                ここには頻度の低い項目（管理・ログアウト）のみ残す */}
-            {(isAdmin || user) && (
-              <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '12px' }}>
-                {isAdmin && <NavLink to="/admin" style={navLinkStyle} onClick={() => setMenuOpen(false)}>{t('nav.admin')}</NavLink>}
-                {user && (
-                  <button
-                    type="button"
-                    onClick={() => void handleSignOut()}
-                    style={{
-                      padding: '10px 16px', borderRadius: '6px', fontSize: '15px',
-                      color: c.muted, background: 'none', border: 'none',
-                      cursor: 'pointer', textAlign: 'left',
-                    }}
-                  >
-                    {t('auth.logoutButton')}
-                  </button>
-                )}
-              </nav>
-            )}
+                ここには頻度の低い項目（管理・ログアウト・お問い合わせ）のみ残す */}
+            <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '12px' }}>
+              {isAdmin && <NavLink to="/admin" style={navLinkStyle} onClick={() => setMenuOpen(false)}>{t('nav.admin')}</NavLink>}
+              {user && (
+                <button
+                  type="button"
+                  onClick={() => void handleSignOut()}
+                  style={{
+                    padding: '10px 16px', borderRadius: '6px', fontSize: '15px',
+                    color: c.muted, background: 'none', border: 'none',
+                    cursor: 'pointer', textAlign: 'left',
+                  }}
+                >
+                  {t('auth.logoutButton')}
+                </button>
+              )}
+              <a
+                href="mailto:tattoomapjapan.dev@gmail.com"
+                onClick={() => setMenuOpen(false)}
+                style={{
+                  padding: '10px 16px', borderRadius: '6px', fontSize: '15px',
+                  color: c.muted, textDecoration: 'none',
+                }}
+              >
+                {t('nav.contact')}
+              </a>
+            </nav>
 
             {/* 言語切り替え */}
             <div style={{ display: 'flex', gap: '6px' }}>

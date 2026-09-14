@@ -1,8 +1,13 @@
-import { useState, type FormEvent } from 'react';
+import { useState, useEffect, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Capacitor } from '@capacitor/core';
+import { Browser } from '@capacitor/browser';
 import { supabase } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
 import { c } from '../theme';
+
+const GOOGLE_REDIRECT_NATIVE = 'com.tattoomapjapan.app://login-callback';
 
 const inputStyle: React.CSSProperties = {
   width: '100%',
@@ -18,6 +23,13 @@ type Mode = 'login' | 'register';
 export default function LoginPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  // Googleログインはブラウザシート経由の非同期処理でセッションが確立するため、
+  // ここでログイン完了を検知して画面遷移する（メール/パスワードはhandleLogin内で直接遷移）
+  useEffect(() => {
+    if (user) navigate('/');
+  }, [user, navigate]);
 
   const [mode, setMode] = useState<Mode>('login');
   const [email, setEmail] = useState('');
@@ -27,6 +39,22 @@ export default function LoginPage() {
   const [successMsg, setSuccessMsg] = useState('');
 
   const resetMessages = () => { setErrorMsg(''); setSuccessMsg(''); };
+
+  const handleGoogleLogin = async () => {
+    const isNative = Capacitor.isNativePlatform();
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: isNative ? GOOGLE_REDIRECT_NATIVE : window.location.origin,
+        skipBrowserRedirect: isNative,
+      },
+    });
+    // ネイティブではAuthContextのappUrlOpenリスナーがcom.tattoomapjapan.app://login-callback
+    // を受け取ってセッション化する。ここではアプリ内シートでGoogleの認証画面を開くだけ。
+    if (isNative && !error && data?.url) {
+      await Browser.open({ url: data.url });
+    }
+  };
 
   const switchMode = (next: Mode) => { setMode(next); resetMessages(); };
 
@@ -107,7 +135,7 @@ export default function LoginPage() {
           {/* Googleログイン */}
           <button
             type="button"
-            onClick={() => { void supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin } }); }}
+            onClick={() => { void handleGoogleLogin(); }}
             style={{
               width: '100%', padding: '10px', marginBottom: '16px',
               border: `1px solid ${c.edge}`, borderRadius: '8px',

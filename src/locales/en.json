@@ -21,7 +21,8 @@
     "list": "List",
     "mypage": "My Page",
     "login": "Login",
-    "admin": "Admin"
+    "admin": "Admin",
+    "contact": "Contact"
   },
   "facility": {
     "categories": {
@@ -116,6 +117,7 @@
     "photoSizeError": "Image size must be under 5MB.",
     "submitSuccess": "Thank you for your report!",
     "submitError": "Submission failed. Please try again.",
+    "commentFiltered": "Your comment appears to contain inappropriate content or advertising. Please revise it.",
     "loginPrompt": "Log in to edit or delete your reports later.",
     "loginLink": "Log in",
     "resultRequired": "Please select an entry result.",
@@ -211,7 +213,8 @@
     "messagePlaceholder": "If you have any info about tattoo policies, please share",
     "submit": "Submit Request",
     "success": "Your request has been received. Thank you!",
-    "error": "Submission failed. Please try again."
+    "error": "Submission failed. Please try again.",
+    "messageFiltered": "Your message appears to contain inappropriate content or advertising. Please revise it."
   },
   "correction": {
     "title": "Report an Issue",
@@ -228,7 +231,8 @@
     "detailPlaceholder": "Please describe what has changed",
     "submit": "Submit Report",
     "success": "Thank you for your report. We'll review and update the information.",
-    "error": "Submission failed. Please try again."
+    "error": "Submission failed. Please try again.",
+    "detailFiltered": "Your message appears to contain inappropriate content or advertising. Please revise it."
   },
   "admin": {
     "title": "Admin Panel",
@@ -275,7 +279,8 @@
     "detailPlaceholder": "Please describe the issue",
     "submit": "Submit Report",
     "success": "Thank you for your report. We'll review it.",
-    "error": "Submission failed. Please try again."
+    "error": "Submission failed. Please try again.",
+    "detailFiltered": "Your message appears to contain inappropriate content or advertising. Please revise it."
   },
   "disclaimer": {
     "title": "Please Note",

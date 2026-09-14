@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
+import { App as CapacitorApp } from '@capacitor/app';
+import { Browser } from '@capacitor/browser';
 import { supabase } from '../lib/supabase';
 
 interface AuthContextValue {
@@ -37,6 +39,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     return () => subscription.unsubscribe();
+  }, []);
+
+  // ネイティブアプリでのGoogleログイン: システムブラウザのシートで認証後、
+  // カスタムURLスキーム経由でアプリに戻ってきたところをここで受け取ってセッション化する
+  useEffect(() => {
+    const listenerPromise = CapacitorApp.addListener('appUrlOpen', ({ url }) => {
+      if (!url.includes('login-callback')) return;
+      // exchangeCodeForSession() はコールバックURL全体ではなく code パラメータの値のみを受け取る
+      const code = new URL(url).searchParams.get('code');
+      if (!code) return;
+      void supabase.auth.exchangeCodeForSession(code)
+        .then(({ error }) => {
+          if (error) console.error('Googleログインのセッション化に失敗:', error.message);
+        })
+        .finally(() => {
+          void Browser.close();
+        });
+    });
+
+    return () => { void listenerPromise.then((l) => l.remove()); };
   }, []);
 
   useEffect(() => {
