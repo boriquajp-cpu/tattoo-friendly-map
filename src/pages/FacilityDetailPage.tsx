@@ -156,7 +156,7 @@ export default function FacilityDetailPage() {
 
   const handleShare = async (platform: 'line' | 'facebook' | 'twitter' | 'copy') => {
     const url = window.location.href;
-    const text = `${facility?.name ?? ''} | Tattoo Map Japan`;
+    const text = `${facility?.name ?? ''} | Tattour`;
     if (platform === 'line') {
       window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(url)}`, '_blank');
     } else if (platform === 'facebook') {
@@ -172,7 +172,7 @@ export default function FacilityDetailPage() {
 
   const handleNativeShare = async () => {
     const url = window.location.href;
-    const text = `${facility?.name ?? ''} | Tattoo Map Japan`;
+    const text = `${facility?.name ?? ''} | Tattour`;
     try {
       await navigator.share({ title: text, url });
     } catch {

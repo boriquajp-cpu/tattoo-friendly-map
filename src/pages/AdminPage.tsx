@@ -138,7 +138,7 @@ export default function AdminPage() {
     if (target?.user_id) {
       sendPushNotification(
         [target.user_id],
-        'Tattoo Map Japan',
+        'Tattour',
         status === 'approved'
           ? `「${target.name_ja}」の報告が承認されました`
           : `「${target.name_ja}」の報告は今回反映されませんでした`
@@ -181,7 +181,7 @@ export default function AdminPage() {
     if (favoriteUserIds.length > 0) {
       sendPushNotification(
         favoriteUserIds,
-        'Tattoo Map Japan',
+        'Tattour',
         `お気に入りの「${facility?.name_ja ?? '施設'}」に公式回答が届きました`
       );
     }
