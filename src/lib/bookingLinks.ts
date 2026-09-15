@@ -39,27 +39,51 @@ export interface BookingLinks {
   tripcom: string;
 }
 
+/** 各社のアフィリエイトパラメータ（例: "aid=12345"）。未提携の間は undefined/null でよい。 */
+export interface AffiliateParams {
+  kkday?: string | null;
+  klook?: string | null;
+  agoda?: string | null;
+  tripcom?: string | null;
+}
+
+/** URL に `key=value` 形式のパラメータ文字列を安全に追加する（? か & かは既存クエリの有無で判断）。 */
+function appendParam(url: string, param: string | null | undefined): string {
+  if (!param) return url;
+  return `${url}${url.includes('?') ? '&' : '?'}${param}`;
+}
+
 /**
  * 施設名・住所から各予約プラットフォームへのリンクを組み立てる。
  * Klook: 施設名でのサイト内検索が機能することを確認済み。
  * Agoda: 施設名検索は不可のため都道府県単位のシティページを使用。
  * KKday / Trip.com: 直リンク可能な検索URLが存在しないため、ロケール別トップページにフォールバック。
+ *
+ * `affiliate` はアプリの再デプロイなしで有効化できるよう Supabase の app_settings から渡す
+ * 想定（各社の提携プログラム審査が通り次第、DBの値を書き換えるだけで反映される）。
  */
 export function getBookingLinks(
   facilityName: string,
   addressJa: string | undefined,
-  lang: SupportedLang
+  lang: SupportedLang,
+  affiliate?: AffiliateParams
 ): BookingLinks {
   const query = encodeURIComponent(facilityName);
   const prefecture = extractPrefecture(addressJa);
   const prefSlug = prefecture ? PREFECTURE_SLUG[prefecture] : null;
 
   return {
-    klook: `https://www.klook.com/${KLOOK_LOCALE[lang]}/search/result/?query=${query}`,
-    agoda: prefSlug
-      ? `https://www.agoda.com/${AGODA_LOCALE[lang]}/city/${prefSlug}-jp.html`
-      : `https://www.agoda.com/${AGODA_LOCALE[lang]}/`,
-    kkday: `https://www.kkday.com/${KKDAY_LOCALE[lang]}`,
-    tripcom: 'https://www.trip.com/',
+    klook: appendParam(
+      `https://www.klook.com/${KLOOK_LOCALE[lang]}/search/result/?query=${query}`,
+      affiliate?.klook
+    ),
+    agoda: appendParam(
+      prefSlug
+        ? `https://www.agoda.com/${AGODA_LOCALE[lang]}/city/${prefSlug}-jp.html`
+        : `https://www.agoda.com/${AGODA_LOCALE[lang]}/`,
+      affiliate?.agoda
+    ),
+    kkday: appendParam(`https://www.kkday.com/${KKDAY_LOCALE[lang]}`, affiliate?.kkday),
+    tripcom: appendParam('https://www.trip.com/', affiliate?.tripcom),
   };
 }

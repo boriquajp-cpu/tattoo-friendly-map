@@ -13,6 +13,8 @@ import { useBlockedUsers } from '../hooks/useBlockedUsers';
 import { useAuth } from '../contexts/AuthContext';
 import { c, summaryBadge as SUMMARY_BADGE_STYLE } from '../theme';
 import { getBookingLinks } from '../lib/bookingLinks';
+import { useAffiliateSettings } from '../hooks/useAffiliateSettings';
+import { facilityShareUrl } from '../lib/appUrl';
 import type { FacilityWithStats, Report, SummaryLabel, SupportedLang } from '../types';
 
 const SHARE_ICONS: Record<string, string> = {
@@ -36,6 +38,7 @@ export default function FacilityDetailPage() {
   const { addItem } = useRecentlyViewed();
   const { user } = useAuth();
   const { isBlocked, toggle: toggleBlock } = useBlockedUsers();
+  const affiliateParams = useAffiliateSettings();
   const [facility, setFacility] = useState<FacilityWithStats | null>(null);
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
@@ -153,7 +156,7 @@ export default function FacilityDetailPage() {
   const canNativeShare = typeof navigator !== 'undefined' && typeof navigator.share === 'function';
 
   const handleShare = async (platform: 'line' | 'facebook' | 'twitter' | 'copy') => {
-    const url = window.location.href;
+    const url = facility ? facilityShareUrl(facility.id) : window.location.href;
     const text = `${facility?.name ?? ''} | Tattour`;
     if (platform === 'line') {
       window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(url)}`, '_blank');
@@ -169,12 +172,15 @@ export default function FacilityDetailPage() {
   };
 
   const handleNativeShare = async () => {
-    const url = window.location.href;
+    const url = facility ? facilityShareUrl(facility.id) : window.location.href;
     const text = `${facility?.name ?? ''} | Tattour`;
     try {
       await navigator.share({ title: text, url });
-    } catch {
-      /* ユーザーによるキャンセル等は無視 */
+    } catch (err) {
+      // AbortError（ユーザーによるキャンセル）以外はコンソールに残す
+      if (err instanceof Error && err.name !== 'AbortError') {
+        console.error('navigator.share failed:', err);
+      }
     }
   };
 
@@ -384,7 +390,7 @@ export default function FacilityDetailPage() {
 
       {/* 宿泊予約（温泉・銭湯カテゴリのみ表示） */}
       {facility.category === 'onsen' && (() => {
-        const links = getBookingLinks(facility.name, facility.address_ja, currentLang);
+        const links = getBookingLinks(facility.name, facility.address_ja, currentLang, affiliateParams);
         const bookingCards = [
           { key: 'kkday', name: 'KKday', icon: '/brand-icons/kkday.png', href: links.kkday },
           { key: 'klook', name: 'Klook', icon: '/brand-icons/klook.png', href: links.klook },
