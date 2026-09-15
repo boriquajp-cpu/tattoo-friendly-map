@@ -12,21 +12,19 @@ import { useRecentlyViewed } from '../hooks/useRecentlyViewed';
 import { useBlockedUsers } from '../hooks/useBlockedUsers';
 import { useAuth } from '../contexts/AuthContext';
 import { c, summaryBadge as SUMMARY_BADGE_STYLE } from '../theme';
+import { getBookingLinks } from '../lib/bookingLinks';
 import type { FacilityWithStats, Report, SummaryLabel, SupportedLang } from '../types';
 
-const SHARE_COLORS: Record<string, string> = {
-  line: '#06C755',
-  facebook: '#1877F2',
-  twitter: '#000',
-  copy: c.accent,
+const SHARE_ICONS: Record<string, string> = {
+  line: '/brand-icons/line.png',
+  facebook: '/brand-icons/facebook.png',
+  twitter: '/brand-icons/x.png',
 };
 
-// WCAG AA(4.5:1)を満たすため、明るい背景色のボタンは濃色テキストにする
-const SHARE_TEXT_COLORS: Record<string, string> = {
-  line: '#111827',
-  facebook: '#111827',
-  twitter: '#fff',
-  copy: c.accentInk,
+const SHARE_LABELS: Record<string, string> = {
+  line: 'LINE',
+  facebook: 'Facebook',
+  twitter: 'X',
 };
 
 export default function FacilityDetailPage() {
@@ -235,28 +233,30 @@ export default function FacilityDetailPage() {
             target="_blank"
             rel="noopener noreferrer"
             style={{
-              display: 'inline-flex', alignItems: 'center', gap: '6px',
-              padding: '8px 14px', borderRadius: '8px',
+              display: 'inline-flex', alignItems: 'center', gap: '7px',
+              padding: '7px 14px 7px 9px', borderRadius: '8px',
               backgroundColor: c.surface, border: `1px solid ${c.edge}`,
               color: c.inkSoft, textDecoration: 'none', fontSize: '13px', fontWeight: 600,
-              boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.08)', whiteSpace: 'nowrap',
             }}
           >
-            🗺️ {t('facility.navigateGoogle')}
+            <img src="/brand-icons/googlemaps.png" alt="" width={18} height={18} style={{ borderRadius: '4px', display: 'block' }} />
+            {t('facility.navigateGoogle')}
           </a>
           <a
             href={`https://maps.apple.com/?ll=${facility.latitude},${facility.longitude}&q=${encodeURIComponent(facility.name)}`}
             target="_blank"
             rel="noopener noreferrer"
             style={{
-              display: 'inline-flex', alignItems: 'center', gap: '6px',
-              padding: '8px 14px', borderRadius: '8px',
+              display: 'inline-flex', alignItems: 'center', gap: '7px',
+              padding: '7px 14px 7px 9px', borderRadius: '8px',
               backgroundColor: c.surface, border: `1px solid ${c.edge}`,
               color: c.inkSoft, textDecoration: 'none', fontSize: '13px', fontWeight: 600,
-              boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.08)', whiteSpace: 'nowrap',
             }}
           >
-            🍎 {t('facility.navigateApple')}
+            <img src="/brand-icons/applemaps.png" alt="" width={18} height={18} style={{ borderRadius: '4px', display: 'block' }} />
+            {t('facility.navigateApple')}
           </a>
         </div>
       </div>
@@ -382,50 +382,94 @@ export default function FacilityDetailPage() {
         </button>
       </div>
 
+      {/* 宿泊予約（温泉・銭湯カテゴリのみ表示） */}
+      {facility.category === 'onsen' && (() => {
+        const links = getBookingLinks(facility.name, facility.address_ja, currentLang);
+        const bookingCards = [
+          { key: 'kkday', name: 'KKday', icon: '/brand-icons/kkday.png', href: links.kkday },
+          { key: 'klook', name: 'Klook', icon: '/brand-icons/klook.png', href: links.klook },
+          { key: 'agoda', name: 'Agoda', icon: '/brand-icons/agoda.png', href: links.agoda },
+          { key: 'tripcom', name: 'Trip.com', icon: '/brand-icons/tripcom.png', href: links.tripcom },
+        ] as const;
+        return (
+          <div style={{ marginBottom: '24px' }}>
+            <p style={{ fontSize: '13px', color: c.muted, marginBottom: '9px' }}>{t('facility.bookingSection.title')}</p>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+              {bookingCards.map(({ key, name, icon, href }) => (
+                <a
+                  key={key}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: '10px',
+                    padding: '9px 12px', borderRadius: c.radius,
+                    border: `1px solid ${c.edge}`, backgroundColor: c.surface,
+                    textDecoration: 'none', boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                  }}
+                >
+                  <img src={icon} alt="" width={30} height={30} style={{ borderRadius: '8px', flexShrink: 0, display: 'block' }} />
+                  <span style={{ display: 'flex', flexDirection: 'column', gap: '1px', minWidth: 0 }}>
+                    <span style={{ fontSize: '13px', fontWeight: 700, color: c.ink }}>{name}</span>
+                    <span style={{ fontSize: '10.5px', color: c.muted, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {t('facility.bookingSection.subtitle')}
+                    </span>
+                  </span>
+                </a>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
+
       {/* ⑩ SNSシェア */}
       <div style={{ marginBottom: '28px' }}>
-        <p style={{ fontSize: '13px', color: c.muted, marginBottom: '8px' }}>{t('facility.share')}</p>
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+        <p style={{ fontSize: '13px', color: c.muted, marginBottom: '9px' }}>{t('facility.share')}</p>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
           {canNativeShare && (
             <button
               type="button"
               onClick={() => { void handleNativeShare(); }}
               style={{
-                padding: '7px 16px',
-                backgroundColor: c.inkSoft,
-                color: '#fff',
-                border: 'none',
-                borderRadius: '20px',
-                fontSize: '13px',
-                fontWeight: 600,
-                cursor: 'pointer',
+                display: 'flex', alignItems: 'center', gap: '9px',
+                padding: '8px 12px', borderRadius: c.radius,
+                border: `1px solid ${c.edge}`, backgroundColor: c.surface,
+                fontSize: '12.5px', fontWeight: 600, color: c.ink, cursor: 'pointer',
               }}
             >
-              📤 {t('facility.shareNative')}
+              <span style={{ fontSize: '18px', lineHeight: 1 }}>📤</span>
+              {t('facility.shareNative')}
             </button>
           )}
-          {(['line', 'facebook', 'twitter', 'copy'] as const).map((platform) => (
+          {(['line', 'facebook', 'twitter'] as const).map((platform) => (
             <button
               key={platform}
               type="button"
               onClick={() => { void handleShare(platform); }}
               style={{
-                padding: '7px 16px',
-                backgroundColor: SHARE_COLORS[platform],
-                color: SHARE_TEXT_COLORS[platform],
-                border: 'none',
-                borderRadius: '20px',
-                fontSize: '13px',
-                fontWeight: 600,
-                cursor: 'pointer',
+                display: 'flex', alignItems: 'center', gap: '9px',
+                padding: '8px 12px', borderRadius: c.radius,
+                border: `1px solid ${c.edge}`, backgroundColor: c.surface,
+                fontSize: '12.5px', fontWeight: 600, color: c.ink, cursor: 'pointer',
               }}
             >
-              {platform === 'line' && 'LINE'}
-              {platform === 'facebook' && 'Facebook'}
-              {platform === 'twitter' && '𝕏 Twitter'}
-              {platform === 'copy' && (copied ? t('facility.shareCopied') : t('facility.shareCopyLink'))}
+              <img src={SHARE_ICONS[platform]} alt="" width={24} height={24} style={{ borderRadius: '6px', flexShrink: 0, display: 'block' }} />
+              {SHARE_LABELS[platform]}
             </button>
           ))}
+          <button
+            type="button"
+            onClick={() => { void handleShare('copy'); }}
+            style={{
+              display: 'flex', alignItems: 'center', gap: '9px',
+              padding: '8px 12px', borderRadius: c.radius,
+              border: `1px solid ${c.edge}`, backgroundColor: c.surface,
+              fontSize: '12.5px', fontWeight: 600, color: c.ink, cursor: 'pointer',
+            }}
+          >
+            <span style={{ fontSize: '16px', lineHeight: 1 }}>🔗</span>
+            {copied ? t('facility.shareCopied') : t('facility.shareCopyLink')}
+          </button>
         </div>
       </div>
 

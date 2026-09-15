@@ -64,6 +64,10 @@
       "tripCom": "Book on Trip.com",
       "official": "Official Website"
     },
+    "bookingSection": {
+      "title": "Book a Stay",
+      "subtitle": "Find nearby lodging"
+    },
     "officialResponse": {
       "badge": "Official Response from Facility",
       "policy": {

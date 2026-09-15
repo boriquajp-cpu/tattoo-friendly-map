@@ -64,6 +64,10 @@
       "tripCom": "透過 Trip.com 預訂",
       "official": "官方網站"
     },
+    "bookingSection": {
+      "title": "住宿預訂",
+      "subtitle": "搜尋附近住宿"
+    },
     "officialResponse": {
       "badge": "設施官方回覆",
       "policy": {

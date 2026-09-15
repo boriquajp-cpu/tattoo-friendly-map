@@ -1,0 +1,65 @@
+import type { SupportedLang } from '../types';
+
+/** 都道府県名 → 各社サイトのローマ字スラッグ（Agoda の /city/<slug>-jp.html 用）。 */
+const PREFECTURE_SLUG: Record<string, string> = {
+  '北海道': 'hokkaido', '青森県': 'aomori', '岩手県': 'iwate', '宮城県': 'miyagi',
+  '秋田県': 'akita', '山形県': 'yamagata', '福島県': 'fukushima', '茨城県': 'ibaraki',
+  '栃木県': 'tochigi', '群馬県': 'gunma', '埼玉県': 'saitama', '千葉県': 'chiba',
+  '東京都': 'tokyo', '神奈川県': 'kanagawa', '新潟県': 'niigata', '富山県': 'toyama',
+  '石川県': 'ishikawa', '福井県': 'fukui', '山梨県': 'yamanashi', '長野県': 'nagano',
+  '岐阜県': 'gifu', '静岡県': 'shizuoka', '愛知県': 'aichi', '三重県': 'mie',
+  '滋賀県': 'shiga', '京都府': 'kyoto', '大阪府': 'osaka', '兵庫県': 'hyogo',
+  '奈良県': 'nara', '和歌山県': 'wakayama', '鳥取県': 'tottori', '島根県': 'shimane',
+  '岡山県': 'okayama', '広島県': 'hiroshima', '山口県': 'yamaguchi', '徳島県': 'tokushima',
+  '香川県': 'kagawa', '愛媛県': 'ehime', '高知県': 'kochi', '福岡県': 'fukuoka',
+  '佐賀県': 'saga', '長崎県': 'nagasaki', '熊本県': 'kumamoto', '大分県': 'oita',
+  '宮崎県': 'miyazaki', '鹿児島県': 'kagoshima', '沖縄県': 'okinawa',
+};
+
+/** `address_ja` の先頭一致から都道府県名を取り出す。 */
+function extractPrefecture(addressJa?: string): string | null {
+  if (!addressJa) return null;
+  return Object.keys(PREFECTURE_SLUG).find((pref) => addressJa.startsWith(pref)) ?? null;
+}
+
+const KLOOK_LOCALE: Record<SupportedLang, string> = {
+  ja: 'ja', zh_tw: 'zh-TW', en: 'en-US', ko: 'ko',
+};
+const KKDAY_LOCALE: Record<SupportedLang, string> = {
+  ja: 'ja', zh_tw: 'zh-tw', en: 'en', ko: 'ko',
+};
+const AGODA_LOCALE: Record<SupportedLang, string> = {
+  ja: 'ja-jp', zh_tw: 'zh-tw', en: 'en-us', ko: 'ko-kr',
+};
+
+export interface BookingLinks {
+  klook: string;
+  agoda: string;
+  kkday: string;
+  tripcom: string;
+}
+
+/**
+ * 施設名・住所から各予約プラットフォームへのリンクを組み立てる。
+ * Klook: 施設名でのサイト内検索が機能することを確認済み。
+ * Agoda: 施設名検索は不可のため都道府県単位のシティページを使用。
+ * KKday / Trip.com: 直リンク可能な検索URLが存在しないため、ロケール別トップページにフォールバック。
+ */
+export function getBookingLinks(
+  facilityName: string,
+  addressJa: string | undefined,
+  lang: SupportedLang
+): BookingLinks {
+  const query = encodeURIComponent(facilityName);
+  const prefecture = extractPrefecture(addressJa);
+  const prefSlug = prefecture ? PREFECTURE_SLUG[prefecture] : null;
+
+  return {
+    klook: `https://www.klook.com/${KLOOK_LOCALE[lang]}/search/result/?query=${query}`,
+    agoda: prefSlug
+      ? `https://www.agoda.com/${AGODA_LOCALE[lang]}/city/${prefSlug}-jp.html`
+      : `https://www.agoda.com/${AGODA_LOCALE[lang]}/`,
+    kkday: `https://www.kkday.com/${KKDAY_LOCALE[lang]}`,
+    tripcom: 'https://www.trip.com/',
+  };
+}

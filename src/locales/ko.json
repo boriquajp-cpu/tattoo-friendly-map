@@ -64,6 +64,10 @@
       "tripCom": "Trip.com에서 예약",
       "official": "공식 사이트"
     },
+    "bookingSection": {
+      "title": "숙박 예약",
+      "subtitle": "주변 숙소 찾기"
+    },
     "officialResponse": {
       "badge": "시설 공식 답변",
       "policy": {

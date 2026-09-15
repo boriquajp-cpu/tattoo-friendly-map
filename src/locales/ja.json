@@ -64,6 +64,10 @@
       "tripCom": "Trip.comで予約",
       "official": "公式サイト"
     },
+    "bookingSection": {
+      "title": "宿泊予約",
+      "subtitle": "周辺の宿を探す"
+    },
     "officialResponse": {
       "badge": "施設からの公式回答",
       "policy": {
