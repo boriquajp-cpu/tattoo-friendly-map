@@ -235,7 +235,7 @@ export default function FacilityDetailPage() {
         {/* ② ナビボタン */}
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
           <a
-            href={`https://www.google.com/maps/search/?api=1&query=${facility.latitude},${facility.longitude}`}
+            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${facility.name} ${facility.address}`)}`}
             target="_blank"
             rel="noopener noreferrer"
             style={{
