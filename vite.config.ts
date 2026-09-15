@@ -8,34 +8,40 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg'],
+      includeAssets: ['favicon-32.png', 'apple-touch-icon.png'],
       manifest: {
-        name: 'Tattoo Map Japan',
-        short_name: 'Tattoo Map',
+        name: 'Tattour',
+        short_name: 'Tattour',
         description: 'タトゥーOK・NG施設を口コミでリアルに確認',
         start_url: '/',
         display: 'standalone',
         background_color: '#f9fafb',
-        theme_color: '#6366f1',
+        theme_color: '#0f172a',
         lang: 'ja',
         icons: [
           {
-            src: '/favicon.svg',
-            type: 'image/svg+xml',
-            sizes: 'any',
+            src: '/icon-192.png',
+            type: 'image/png',
+            sizes: '192x192',
             purpose: 'any',
           },
           {
-            src: '/favicon.svg',
-            type: 'image/svg+xml',
-            sizes: 'any',
+            src: '/icon-512.png',
+            type: 'image/png',
+            sizes: '512x512',
+            purpose: 'any',
+          },
+          {
+            src: '/icon-maskable-512.png',
+            type: 'image/png',
+            sizes: '512x512',
             purpose: 'maskable',
           },
         ],
       },
       workbox: {
         // アプリシェル（JS/CSS/HTML）は事前キャッシュし、オフラインでも起動できるようにする
-        globPatterns: ['**/*.{js,css,html,svg}'],
+        globPatterns: ['**/*.{js,css,html,svg,png}'],
         navigateFallback: '/index.html',
         runtimeCaching: [
           {

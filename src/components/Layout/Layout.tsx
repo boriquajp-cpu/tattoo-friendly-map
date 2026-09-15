@@ -110,9 +110,11 @@ export default function Layout({ children }: LayoutProps) {
             background: 'none', border: 'none', cursor: 'pointer',
             fontWeight: 700, fontSize: '16px', color: c.ink, padding: 0,
             letterSpacing: '-0.01em',
+            display: 'flex', alignItems: 'center', gap: '8px',
           }}
         >
-          🗺️ Tattour
+          <img src="/favicon-32.png" alt="" width={22} height={22} style={{ borderRadius: '6px', display: 'block' }} />
+          Tattour
         </button>
 
         {isMobile ? (
