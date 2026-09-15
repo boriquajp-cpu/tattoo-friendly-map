@@ -47,10 +47,15 @@ export interface AffiliateParams {
   tripcom?: string | null;
 }
 
-/** URL に `key=value` 形式のパラメータ文字列を安全に追加する（? か & かは既存クエリの有無で判断）。 */
-function appendParam(url: string, param: string | null | undefined): string {
-  if (!param) return url;
-  return `${url}${url.includes('?') ? '&' : '?'}${param}`;
+/**
+ * アフィリエイト設定値を URL に適用する。
+ * - 値が完全な URL（短縮リンクなど）の場合はそのまま置き換える。
+ * - 値が `key=value` のようなクエリ文字列の場合はベース URL に追加する。
+ */
+function applyAffiliate(baseUrl: string, value: string | null | undefined): string {
+  if (!value) return baseUrl;
+  if (/^https?:\/\//.test(value)) return value;
+  return `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}${value}`;
 }
 
 /**
@@ -73,17 +78,17 @@ export function getBookingLinks(
   const prefSlug = prefecture ? PREFECTURE_SLUG[prefecture] : null;
 
   return {
-    klook: appendParam(
+    klook: applyAffiliate(
       `https://www.klook.com/${KLOOK_LOCALE[lang]}/search/result/?query=${query}`,
       affiliate?.klook
     ),
-    agoda: appendParam(
+    agoda: applyAffiliate(
       prefSlug
         ? `https://www.agoda.com/${AGODA_LOCALE[lang]}/city/${prefSlug}-jp.html`
         : `https://www.agoda.com/${AGODA_LOCALE[lang]}/`,
       affiliate?.agoda
     ),
-    kkday: appendParam(`https://www.kkday.com/${KKDAY_LOCALE[lang]}`, affiliate?.kkday),
-    tripcom: appendParam('https://www.trip.com/', affiliate?.tripcom),
+    kkday: applyAffiliate(`https://www.kkday.com/${KKDAY_LOCALE[lang]}`, affiliate?.kkday),
+    tripcom: applyAffiliate('https://www.trip.com/', affiliate?.tripcom),
   };
 }
