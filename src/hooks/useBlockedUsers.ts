@@ -42,24 +42,48 @@ export function useBlockedUsers() {
     })();
   }, [user]);
 
-  const toggle = useCallback((blockedUserId: string) => {
+  const toggle = useCallback(async (blockedUserId: string) => {
     if (!user) return;
 
+    // Reactの状態(user)は登録直後などに更新が追いつかないことがあるため、
+    // 書き込み直前にSupabaseクライアントの現在のセッションを直接取り直す
+    const { data: userData } = await supabase.auth.getUser();
+    const userId = userData.user?.id;
+    if (!userId) return;
+
+    const wasBlocked = blockedUsers.has(blockedUserId);
+
+    // 楽観的更新
     setBlockedUsers((prev) => {
       const next = new Set(prev);
-      const wasBlocked = next.has(blockedUserId);
-      if (wasBlocked) {
-        next.delete(blockedUserId);
-        void supabase.from('blocked_users').delete().eq('user_id', user.id).eq('blocked_user_id', blockedUserId);
-        setRows((prevRows) => prevRows.filter((r) => r.blocked_user_id !== blockedUserId));
-      } else {
-        next.add(blockedUserId);
-        void supabase.from('blocked_users').insert({ user_id: user.id, blocked_user_id: blockedUserId });
-        setRows((prevRows) => [{ blocked_user_id: blockedUserId, created_at: new Date().toISOString() }, ...prevRows]);
-      }
+      if (wasBlocked) next.delete(blockedUserId); else next.add(blockedUserId);
       return next;
     });
-  }, [user]);
+    setRows((prevRows) => (
+      wasBlocked
+        ? prevRows.filter((r) => r.blocked_user_id !== blockedUserId)
+        : [{ blocked_user_id: blockedUserId, created_at: new Date().toISOString() }, ...prevRows]
+    ));
+
+    const { error } = wasBlocked
+      ? await supabase.from('blocked_users').delete().eq('user_id', userId).eq('blocked_user_id', blockedUserId)
+      : await supabase.from('blocked_users').insert({ user_id: userId, blocked_user_id: blockedUserId });
+
+    if (error) {
+      console.error('ブロック状態の更新に失敗:', error.message);
+      // 失敗時は楽観的更新をロールバック
+      setBlockedUsers((prev) => {
+        const next = new Set(prev);
+        if (wasBlocked) next.add(blockedUserId); else next.delete(blockedUserId);
+        return next;
+      });
+      setRows((prevRows) => (
+        wasBlocked
+          ? [{ blocked_user_id: blockedUserId, created_at: new Date().toISOString() }, ...prevRows]
+          : prevRows.filter((r) => r.blocked_user_id !== blockedUserId)
+      ));
+    }
+  }, [user, blockedUsers]);
 
   const isBlocked = useCallback((id: string) => blockedUsers.has(id), [blockedUsers]);
 

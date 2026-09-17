@@ -162,6 +162,10 @@ export default function ReportFormPage() {
         photoUrl = publicUrlData.publicUrl;
       }
 
+      // Reactの状態(user)は登録直後などに更新が追いつかないことがあるため、
+      // 送信直前にSupabaseクライアントの現在のセッションを直接取り直す
+      const { data: userData } = await supabase.auth.getUser();
+
       const { error } = await supabase.from('reports').insert({
         facility_id: formData.facility_id,
         visit_date: formData.visit_date ?? new Date().toISOString().slice(0, 10),
@@ -172,7 +176,7 @@ export default function ReportFormPage() {
         comment_original: formData.comment ?? null,
         comment_lang: formData.lang ?? 'ja',
         photo_url: photoUrl,
-        user_id: user?.id ?? null,
+        user_id: userData.user?.id ?? null,
       });
       if (error) throw error;
       alert(t('report.submitSuccess'));
