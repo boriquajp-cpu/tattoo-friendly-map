@@ -5,6 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Tattour | タトゥー可否マップ</title>
 
+    <script>
+      // 単体の静的ページ（privacy.html / email-confirmed.html / support.html）は
+      // Service Workerのnavigateキャッシュ対象から除外しているが、その変更を
+      // 未取得の古いService Workerが既に端末を制御している場合、この
+      // アプリシェル(index.html)に差し替えられて配信されてしまうことがある。
+      // 本来そのURLにいるはずなのにこのシェルが読み込まれた＝古いSWに
+      // 横取りされたと判断し、SWを解除して1回だけ再読み込みして復旧する。
+      (function () {
+        var standalonePages = ['/privacy.html', '/email-confirmed.html', '/support.html'];
+        if (standalonePages.indexOf(location.pathname) === -1) return;
+        if (!('serviceWorker' in navigator)) return;
+        if (sessionStorage.getItem('sw-bypass-done')) return;
+        sessionStorage.setItem('sw-bypass-done', '1');
+        navigator.serviceWorker.getRegistrations().then(function (regs) {
+          if (regs.length === 0) return;
+          Promise.all(regs.map(function (r) { return r.unregister(); })).then(function () {
+            location.reload();
+          });
+        });
+      })();
+    </script>
+
     <!-- PWA: manifest / service worker は vite-plugin-pwa が自動挿入する -->
     <meta name="theme-color" content="#0f172a" />
 
