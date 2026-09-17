@@ -5,7 +5,6 @@ import { Capacitor } from '@capacitor/core';
 import { Browser } from '@capacitor/browser';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
-import { APP_PUBLIC_URL } from '../lib/appUrl';
 import { c } from '../theme';
 
 const GOOGLE_REDIRECT_NATIVE = 'com.tattoomapjapan.app://login-callback';
@@ -83,16 +82,12 @@ export default function LoginPage() {
     setLoading(true);
     resetMessages();
 
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { emailRedirectTo: `${APP_PUBLIC_URL}/email-confirmed.html` },
-    });
+    const { error } = await supabase.auth.signUp({ email, password });
 
     if (error) {
       setErrorMsg(error.message);
     } else {
-      setSuccessMsg(t('auth.confirmEmailSent'));
+      navigate('/');
     }
     setLoading(false);
   };
