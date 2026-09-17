@@ -43,6 +43,12 @@ export default defineConfig({
         // アプリシェル（JS/CSS/HTML）は事前キャッシュし、オフラインでも起動できるようにする
         globPatterns: ['**/*.{js,css,html,svg,png}'],
         navigateFallback: '/index.html',
+        // 単体の静的ページ（アプリのSPAルーターとは無関係）はnavigateFallbackの
+        // 対象から除外する。含めたままだと、一度でもこのサイトを訪れてService
+        // Workerがインストール済みの端末では、/privacy.html や
+        // /email-confirmed.html への遷移までapp shell(index.html)に
+        // 差し替えられてしまい、React Routerの404にすり替わってしまう。
+        navigateFallbackDenylist: [/^\/privacy\.html$/, /^\/email-confirmed\.html$/, /^\/support\.html$/],
         runtimeCaching: [
           {
             // Supabase REST（施設一覧など）は stale-while-revalidate でオフライン閲覧を許容する
