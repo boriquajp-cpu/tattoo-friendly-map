@@ -29,7 +29,7 @@ interface EditState {
 export default function MyReportsPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, deleteAccount } = useAuth();
   const { rows: blockedRows, toggle: toggleBlock } = useBlockedUsers();
 
   const [reports, setReports] = useState<ReportWithFacility[]>([]);
@@ -38,6 +38,7 @@ export default function MyReportsPage() {
   const [editState, setEditState] = useState<EditState>({ result: 'admitted', visit_date: '', comment: '' });
   const [saving, setSaving] = useState(false);
   const [statusMsg, setStatusMsg] = useState('');
+  const [deletingAccount, setDeletingAccount] = useState(false);
 
   useEffect(() => {
     if (authLoading) return;
@@ -137,6 +138,21 @@ export default function MyReportsPage() {
     } else {
       setStatusMsg(t('mypage.deleteSuccess'));
       setReports((prev) => prev.filter((r) => r.id !== reportId));
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!window.confirm(t('mypage.deleteAccountConfirm'))) return;
+    if (!window.confirm(t('mypage.deleteAccountConfirmFinal'))) return;
+
+    setDeletingAccount(true);
+    const { error } = await deleteAccount();
+    setDeletingAccount(false);
+
+    if (error) {
+      setStatusMsg(t('mypage.deleteAccountError'));
+    } else {
+      navigate('/');
     }
   };
 
@@ -324,6 +340,33 @@ export default function MyReportsPage() {
           ))}
         </div>
       )}
+
+      {/* アカウント削除 */}
+      <div style={{ marginTop: '48px', paddingTop: '24px', borderTop: `1px solid ${c.edge}` }}>
+        <h2 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '8px', color: '#ef4444' }}>
+          {t('mypage.deleteAccountSection')}
+        </h2>
+        <p style={{ fontSize: '13px', color: c.muted, marginBottom: '12px' }}>
+          {t('mypage.deleteAccountDescription')}
+        </p>
+        <button
+          type="button"
+          disabled={deletingAccount}
+          onClick={() => void handleDeleteAccount()}
+          style={{
+            padding: '8px 16px',
+            backgroundColor: '#fff',
+            color: '#ef4444',
+            border: '1px solid #ef4444',
+            borderRadius: '6px',
+            fontSize: '13px',
+            fontWeight: 600,
+            cursor: deletingAccount ? 'not-allowed' : 'pointer',
+          }}
+        >
+          {deletingAccount ? t('common.submitting') : t('mypage.deleteAccountButton')}
+        </button>
+      </div>
     </div>
   );
 }
