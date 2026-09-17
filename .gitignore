@@ -34,3 +34,7 @@ supabase/.branches
 # Generated build/screenshot artifacts (not source)
 ios/build
 appstore-screenshots
+
+# Android signing key — never commit
+android/*.keystore
+android/keystore.properties
