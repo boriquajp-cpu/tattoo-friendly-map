@@ -248,6 +248,7 @@ export default function Layout({ children }: LayoutProps) {
       <main
         style={{
           flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, minWidth: 0,
+          overflowY: 'auto', WebkitOverflowScrolling: 'touch',
           paddingBottom: isMobile ? 'calc(56px + env(safe-area-inset-bottom))' : 0,
         }}
       >
