@@ -146,6 +146,7 @@
     "emailRequired": "Please enter your email and password.",
     "confirmEmailSent": "Confirmation email sent. Please check your inbox.",
     "googleLogin": "Continue with Google",
+    "appleLogin": "Sign in with Apple",
     "or": "or"
   },
   "mypage": {

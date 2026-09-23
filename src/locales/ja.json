@@ -146,6 +146,7 @@
     "emailRequired": "メールアドレスとパスワードを入力してください。",
     "confirmEmailSent": "確認メールを送信しました。メールを確認してください。",
     "googleLogin": "Googleでログイン",
+    "appleLogin": "Appleでサインイン",
     "or": "または"
   },
   "mypage": {

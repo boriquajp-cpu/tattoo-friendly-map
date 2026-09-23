@@ -146,6 +146,7 @@
     "emailRequired": "이메일과 비밀번호를 입력해주세요.",
     "confirmEmailSent": "확인 이메일을 보냈습니다. 이메일을 확인해 주세요.",
     "googleLogin": "Google로 로그인",
+    "appleLogin": "Apple로 로그인",
     "or": "또는"
   },
   "mypage": {

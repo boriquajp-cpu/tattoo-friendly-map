@@ -146,6 +146,7 @@
     "emailRequired": "請輸入電子郵件與密碼。",
     "confirmEmailSent": "已寄送確認信，請查收電子郵件。",
     "googleLogin": "使用 Google 登入",
+    "appleLogin": "透過 Apple 登入",
     "or": "或"
   },
   "mypage": {
