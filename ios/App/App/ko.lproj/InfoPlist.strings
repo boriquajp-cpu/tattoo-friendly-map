@@ -1,0 +1,4 @@
+"NSCameraUsageDescription" = "시설 외관이나 타투 허용 스티커를 촬영하여 후기에 첨부하기 위해 사용합니다.";
+"NSPhotoLibraryUsageDescription" = "후기에 첨부할 사진을 앨범에서 선택하기 위해 사용합니다.";
+"NSPhotoLibraryAddUsageDescription" = "촬영한 사진을 앨범에 저장하기 위해 사용합니다.";
+"NSLocationWhenInUseUsageDescription" = "지도에서 주변 타투 친화적 시설을 표시하기 위해 사용합니다.";

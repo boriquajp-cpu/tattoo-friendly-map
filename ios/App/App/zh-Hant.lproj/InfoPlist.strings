@@ -1,0 +1,4 @@
+"NSCameraUsageDescription" = "用於拍攝設施外觀或刺青OK貼紙，以便附加在回報內容中。";
+"NSPhotoLibraryUsageDescription" = "用於從相簿選擇要附加在回報中的照片。";
+"NSPhotoLibraryAddUsageDescription" = "用於將拍攝的照片儲存到相簿。";
+"NSLocationWhenInUseUsageDescription" = "用於在地圖上顯示附近對刺青友善的設施。";

@@ -1,0 +1,4 @@
+"NSCameraUsageDescription" = "Used to photograph the facility or a tattoo-OK sticker to attach to your report.";
+"NSPhotoLibraryUsageDescription" = "Used to choose a photo from your library to attach to your report.";
+"NSPhotoLibraryAddUsageDescription" = "Used to save photos you take to your photo library.";
+"NSLocationWhenInUseUsageDescription" = "Used to show nearby tattoo-friendly facilities on the map.";
