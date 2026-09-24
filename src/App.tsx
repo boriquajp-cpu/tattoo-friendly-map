@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Suspense } from 'react';
+import { Capacitor } from '@capacitor/core';
+import { Analytics } from '@vercel/analytics/react';
 
 import './lib/i18n';
 
@@ -53,6 +55,7 @@ function App() {
           {showDisclaimer && <DisclaimerModal onConfirm={handleDisclaimerConfirm} />}
         </Suspense>
       </BrowserRouter>
+      {!Capacitor.isNativePlatform() && <Analytics />}
     </AuthProvider>
   );
 }
